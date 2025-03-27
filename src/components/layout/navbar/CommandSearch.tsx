@@ -22,7 +22,7 @@ export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const commandRef = useRef(null);
+  const commandRef = useRef<HTMLDivElement | null>(null); // Określamy typ jako HTMLDivElement
   const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
 
