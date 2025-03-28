@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"; // Importowanie useRouter z Next.js
 import { Input } from "@/components/ui/input";
 
 interface SearchResult {
+  title: string;
   id: string;
   nazwa: string;
 }
