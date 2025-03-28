@@ -15,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body>
+        <div className="xl:w-[1200px] mx-auto">
         {children}
+        </div>
       </body>
     </html>
   );
