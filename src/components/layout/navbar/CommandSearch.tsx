@@ -68,7 +68,8 @@ export default function CommandSearch() {
   // Funkcja do pobierania wyników z API
   const fetchResults = async (query: string) => {
     try {
-      const response = await fetch(`https://fakestoreapi.com/products`);
+      // Dodaj query jako parametr w URL
+      const response = await fetch(`https://fakestoreapi.com/products?search=${query}`);
       const data: SearchResult[] = await response.json();
       setResults(data); // Zaktualizuj wyniki
     } catch (error) {
@@ -78,6 +79,7 @@ export default function CommandSearch() {
       setLoading(false); // Zakończ ładowanie
     }
   };
+  
 
   const handleLinkClick = (id: string) => {
     // Przechodzenie na stronę produktu po kliknięciu
