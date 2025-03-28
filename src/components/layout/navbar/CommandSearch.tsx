@@ -23,7 +23,7 @@ export default function CommandSearch() {
   const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
 
-  const elementRef = useRef(null);
+  const elementRef = useRef<HTMLInputElement | null>(null);
   const [distanceFromLeft, setDistanceFromLeft] = useState(0);
 
   const handleInputClick = () => {
