@@ -129,7 +129,7 @@ export default function CommandSearch() {
 
         {isOpen && (
           <div
-            className="absolute overflow-y-auto z-50 bg-white top-17 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="absolute overflow-y-auto z-50 bg-white top-15 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList 
