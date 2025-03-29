@@ -160,10 +160,10 @@ export default function CommandSearch() {
 
         {isOpen && (
           <div
-            className="h-90 overflow-y-auto absolute overflow-y-auto z-50 bg-white top-17 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="xl:h-90 h-70 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-17 top-26 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
-            <CommandList className="border bg-white border-slate-200">
+            <CommandList className="border h-50 bg-white border-slate-200">
               <CommandGroup className="p-0" heading="Wyniki">
                 {loading ? (
                   [...Array(5)].map((_, index) => (
