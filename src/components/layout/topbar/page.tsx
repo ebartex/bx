@@ -1,7 +1,6 @@
 // Navbar.tsx
 "use client";
-import CommandSearch from "./CommandSearch";
-import Image from "next/image";
+
 
 export default function Topbar() {
   return (
