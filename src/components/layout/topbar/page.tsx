@@ -4,7 +4,7 @@
 
 export default function Topbar() {
   return (
-    <nav className="bg-white flex items-center"> {/* Ustaw stałą wysokość navbaru */}
+    <nav className="hidden xl:block bg-white flex items-center"> {/* Ustaw stałą wysokość navbaru */}
     test
     </nav>
   );
