@@ -73,7 +73,7 @@ const ProductPage = () => {
   // Renderowanie produktów, gdy dane są dostępne
   return (
     <>
-    <Navbar/>
+
     <div className="container mx-auto p-6">
       <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
         {products.map((product) => (

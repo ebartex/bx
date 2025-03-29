@@ -91,11 +91,17 @@ export default function CommandSearch() {
     // Zamykamy okno wyników natychmiast
     setIsOpen(false);
   
+    // Ukrywamy tło po 0.5 sekundy
+    setTimeout(() => {
+      setBackgroundVisible(false);
+    }, 300); // Opóźnienie 0.5 sekundy, aby tło zniknęło po kliknięciu
+  
     // Przekierowanie po 0.5 sekundy
     setTimeout(() => {
       router.push(`/product/view/${id}/slug`);
-    }, 500); // Opóźnienie 0.5 sekundy
+    }, 300); // Opóźnienie 0.5 sekundy
   };
+  
 
   useEffect(() => {
     const updateDistance = () => {
