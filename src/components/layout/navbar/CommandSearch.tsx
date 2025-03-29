@@ -9,7 +9,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
+
 import { ChevronRight, Search } from "lucide-react";
 import Image from 'next/image';
 interface ProductPhoto {
@@ -132,11 +132,22 @@ export default function CommandSearch() {
 
       <Command
         ref={commandRef}
-        className={`rounded-none border md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
+        className={`rounded-none md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
       >
         <div className="relative">
-          <Input
-            className="relative z-60 bg-white transition-all focus:ring-2 focus:ring-sky-600 focus:ring-offset-1 focus:outline-none pl-10 pr-10 block w-full h-10 rounded-md text-sm border border-sky-700"
+          <input
+            className="
+            boder-none
+            relative z-60 
+            bg-slate-100 
+            transition-all 
+            focus:ring-0 
+            focus:ring-offset-none 
+            focus:shadow-none 
+            focus:outline-none 
+            focus:bg-white
+            pl-10 pr-10 block w-full h-10 
+            rounded-none text-sm"
             placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
             onClick={handleInputClick}
             onChange={handleSearchChange}
@@ -149,7 +160,7 @@ export default function CommandSearch() {
 
         {isOpen && (
           <div
-            className="h-90 overflow-y-auto absolute overflow-y-auto z-50 bg-white top-15 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="h-90 overflow-y-auto absolute overflow-y-auto z-50 bg-white top-17 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList className="border bg-white border-slate-200">

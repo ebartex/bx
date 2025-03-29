@@ -1,10 +1,13 @@
 // Navbar.tsx
 "use client";
+import Topbar from "../topbar/page";
 import CommandSearch from "./CommandSearch";
 import Image from "next/image";
 
 export default function Navbar() {
   return (
+    <>
+    <Topbar />
     <nav className="bg-white flex items-center"> {/* Ustaw stałą wysokość navbaru */}
       {/* Obrazek */}
       <Image 
@@ -18,5 +21,6 @@ export default function Navbar() {
       {/* InputSearchBox */}
       <CommandSearch />
     </nav>
+    </>
   );
 }
