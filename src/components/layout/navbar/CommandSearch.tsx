@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { ChevronRight, Search } from "lucide-react";
 import Image from 'next/image';
 interface SearchResult {
+  productphoto: any;
   title: string;
   id: string;
   nazwa: string;
@@ -105,6 +106,10 @@ export default function CommandSearch() {
     };
   }, []);
 
+  function toggleRowExpansion(id: string): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       {/* Grey overlay when open */}
@@ -158,7 +163,7 @@ export default function CommandSearch() {
                       <Image
                 src={
                   result.productphoto.length > 0
-                    ? `${result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
+                    ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
                     : "/product_512.png"
                 }
                 width={40}
