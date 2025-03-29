@@ -12,8 +12,13 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { ChevronRight, Search } from "lucide-react";
 import Image from 'next/image';
+interface ProductPhoto {
+  main_photo: number;
+  photo_512: string;
+}
+
 interface SearchResult {
-  productphoto: any;
+  productphoto: ProductPhoto[];  // Typ zdefiniowany jako tablica obiektów ProductPhoto
   title: string;
   id: string;
   nazwa: string;
