@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <nav className="bg-white flex items-center h-20"> {/* Ustaw stałą wysokość navbaru */}
+    <nav className="bg-white flex items-center"> {/* Ustaw stałą wysokość navbaru */}
       {/* Obrazek */}
       <Image 
         src="/bartex.png" 
