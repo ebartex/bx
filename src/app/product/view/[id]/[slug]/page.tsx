@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Navbar from "@/components/layout/navbar/page";
+
 
 // Definicja typu produktu
 interface Product {
