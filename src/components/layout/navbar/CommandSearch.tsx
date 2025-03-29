@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Command,
   CommandGroup,
@@ -9,23 +7,24 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-
 import { ChevronRight, Search } from "lucide-react";
 import Image from 'next/image';
+
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
 }
 
 interface SearchResult {
-  productphoto: ProductPhoto[];  // Typ zdefiniowany jako tablica obiektów ProductPhoto
+  productphoto: ProductPhoto[];
   title: string;
   id: string;
   nazwa: string;
 }
 
 export default function CommandSearch() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Kontroluje widoczność okna wyników
+  const [backgroundVisible, setBackgroundVisible] = useState(false); // Kontroluje widoczność tła
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
@@ -38,6 +37,7 @@ export default function CommandSearch() {
 
   const handleInputClick = () => {
     setIsOpen(true);
+    setBackgroundVisible(true); // Upewniamy się, że tło jest widoczne
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -55,7 +55,7 @@ export default function CommandSearch() {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value;
-    setQuery(newQuery);  // Aktualizujemy zapytanie
+    setQuery(newQuery);
 
     if (newQuery.length > 2) {
       setResults([]);
@@ -88,8 +88,13 @@ export default function CommandSearch() {
   };
 
   const handleLinkClick = (id: string) => {
-    router.push(`/product/view/${id}/slug`);
+    // Zamykamy okno wyników natychmiast
     setIsOpen(false);
+  
+    // Przekierowanie po 0.5 sekundy
+    setTimeout(() => {
+      router.push(`/product/view/${id}/slug`);
+    }, 500); // Opóźnienie 0.5 sekundy
   };
 
   useEffect(() => {
@@ -111,24 +116,19 @@ export default function CommandSearch() {
     };
   }, []);
 
-  function toggleRowExpansion(id: string) {
-    // Zaloguj lub wykonaj operację na 'id'
-    console.log("Rozwinięcie wiersza dla ID:", id);
-  }
-
   return (
     <>
-      {/* Grey overlay when open */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-slate-600/90 bg-opacity-100 z-40"
-          onClick={(e) => {
-            if (commandRef.current && !commandRef.current.contains(e.target as Node)) {
-              setIsOpen(false);
-            }
-          }}
-        />
-      )}
+      {/* Tło jest zawsze widoczne, nawet po zamknięciu okna wyników */}
+      {backgroundVisible && (
+  <div
+    className={`fixed inset-0 bg-slate-600/90 z-40 transition-opacity duration-500 ${backgroundVisible ? 'opacity-100' : 'opacity-0'}`}
+    onClick={(e) => {
+      if (commandRef.current && !commandRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }}
+  />
+)}
 
       <Command
         ref={commandRef}
@@ -137,17 +137,17 @@ export default function CommandSearch() {
         <div className="relative">
           <input
             className="
-            boder-none
-            relative z-60 
-            bg-slate-100 
-            transition-all 
-            focus:ring-0 
-            focus:ring-offset-none 
-            focus:shadow-none 
-            focus:outline-none 
-            focus:bg-white
-            pl-10 pr-10 block w-full h-10 
-            rounded-none text-sm"
+              boder-none
+              relative z-60 
+              bg-slate-100 
+              transition-all 
+              focus:ring-0 
+              focus:ring-offset-none 
+              focus:shadow-none 
+              focus:outline-none 
+              focus:bg-white
+              pl-10 pr-10 block w-full h-10 
+              rounded-none text-sm"
             placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
             onClick={handleInputClick}
             onChange={handleSearchChange}
@@ -171,26 +171,29 @@ export default function CommandSearch() {
                   ))
                 ) : results.length > 0 ? (
                   results.map((result) => (
-                    <CommandItem
+                    <div
                       key={result.id}
-                      onClick={() => handleLinkClick(result.id)}
-                      className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+                      onClick={() => handleLinkClick(result.id)} // Używamy onClick tutaj w divie
                     >
-                      <div className="flex  w-full">
-                      <Image
-                src={
-                  result.productphoto.length > 0
-                    ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
-                    : "/product_512.png"
-                }
-                width={40}
-                height={40}
-                alt="Zdjęcie produktu"
-                onClick={() => toggleRowExpansion(result.id)} // Przekazujemy onClick
-              />
-                        <span className="text-sm truncate">{result.nazwa}</span>
-                      </div>
-                    </CommandItem>
+                      <CommandItem
+                        onClick={() => handleLinkClick(result.id)}
+                        className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+                      >
+                        <div className="flex  w-full">
+                          <Image
+                            src={
+                              result.productphoto.length > 0
+                                ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
+                                : "/product_512.png"
+                            }
+                            width={40}
+                            height={40}
+                            alt="Zdjęcie produktu"
+                          />
+                          <span className="text-sm truncate">{result.nazwa}</span>
+                        </div>
+                      </CommandItem>
+                    </div>
                   ))
                 ) : (
                   <p className="p-4 text-sm text-gray-500">No results found</p>
