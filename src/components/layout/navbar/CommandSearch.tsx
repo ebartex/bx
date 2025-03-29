@@ -2,6 +2,7 @@
 
 import {
   Command,
+  CommandGroup,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -9,7 +10,8 @@ import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-
+import { ChevronRight, Search } from "lucide-react";
+import Image from 'next/image';
 interface SearchResult {
   title: string;
   id: string;
@@ -20,6 +22,7 @@ export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
   const commandRef = useRef<HTMLDivElement | null>(null);
   const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
@@ -45,9 +48,10 @@ export default function CommandSearch() {
   }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value;
+    const newQuery = event.target.value;
+    setQuery(newQuery);  // Aktualizujemy zapytanie
 
-    if (query.length > 2) {
+    if (newQuery.length > 2) {
       setResults([]);
       setLoading(true);
       if (debounceTimer) {
@@ -55,7 +59,7 @@ export default function CommandSearch() {
       }
 
       const timer = setTimeout(() => {
-        fetchResults(query);
+        fetchResults(newQuery);
       }, 400);
       setDebounceTimer(timer);
     } else {
@@ -66,7 +70,7 @@ export default function CommandSearch() {
 
   const fetchResults = async (query: string) => {
     try {
-      const response = await fetch(`https://fakestoreapi.com/products?search=${query}`);
+      const response = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`);
       const data: SearchResult[] = await response.json();
       setResults(data);
     } catch (error) {
@@ -119,25 +123,26 @@ export default function CommandSearch() {
         ref={commandRef}
         className={`rounded-none border md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
       >
-        <Input
-          className="z-60 transition-all focus:ring-2 focus:ring-sky-600 focus:ring-offset-1 focus:outline-none pl-6 pr-10 block w-full h-10 rounded-md text-sm border border-sky-700 bg-slate-100 hover:bg-white"
-          placeholder="Type a command or search..."
-          onClick={handleInputClick}
-          onChange={handleSearchChange}
-          ref={elementRef}
-        />
+        <div className="relative">
+          <Input
+            className="relative z-60 bg-white transition-all focus:ring-2 focus:ring-sky-600 focus:ring-offset-1 focus:outline-none pl-10 pr-10 block w-full h-10 rounded-md text-sm border border-sky-700"
+            placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
+            onClick={handleInputClick}
+            onChange={handleSearchChange}
+            value={query}
+            ref={elementRef}
+          />
+          {/* Ikona Search */}
+          <Search size={18} className=" z-60 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500" />
+        </div>
 
         {isOpen && (
           <div
-            className="absolute overflow-y-auto z-50 bg-white top-15 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="h-90 overflow-y-auto absolute overflow-y-auto z-50 bg-white top-15 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
-            <CommandList 
-            className="border h-200 max-h-96 overflow-y-auto rounded-md shadow-lg bg-white border-slate-200"
-            
-            
-            >
-              <div>
+            <CommandList className="border bg-white border-slate-200">
+              <CommandGroup className="p-0" heading="Wyniki">
                 {loading ? (
                   [...Array(5)].map((_, index) => (
                     <Skeleton key={index} className="h-12 mb-2 bg-slate-100" />
@@ -147,17 +152,42 @@ export default function CommandSearch() {
                     <CommandItem
                       key={result.id}
                       onClick={() => handleLinkClick(result.id)}
-                      className="flex items-center space-x-4 hover:bg-slate-200 p-2 pl-4 rounded-md cursor-pointer"
+                      className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
                     >
-                      <div className="flex justify-between w-full">
-                        <span className="text-sm truncate">{result.title}</span>
+                      <div className="flex  w-full">
+                      <Image
+                src={
+                  result.productphoto.length > 0
+                    ? `${result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
+                    : "/product_512.png"
+                }
+                width={40}
+                height={40}
+                alt="Zdjęcie produktu"
+                onClick={() => toggleRowExpansion(result.id)} // Przekazujemy onClick
+              />
+                        <span className="text-sm truncate">{result.nazwa}</span>
                       </div>
                     </CommandItem>
                   ))
                 ) : (
                   <p className="p-4 text-sm text-gray-500">No results found</p>
                 )}
-              </div>
+              </CommandGroup>
+
+              {/* Pokaż wyniki tylko jeśli query > 2 */}
+              {query.length > 2 && (
+                <div className="absolute bottom-3 right-0 z-20 w-full">
+                  <div>
+                    <div className="flex">
+                      <button className="w-full text-slate-700 pl-4 pt-2 pb-2 pr-4 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
+                        <span>Przejdź do wyników</span>
+                        <ChevronRight />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CommandList>
           </div>
         )}
