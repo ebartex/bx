@@ -111,8 +111,9 @@ export default function CommandSearch() {
     };
   }, []);
 
-  function toggleRowExpansion() {
-    throw new Error("Function not implemented.");
+  function toggleRowExpansion(id: string) {
+    // Zaloguj lub wykonaj operację na 'id'
+    console.log("Rozwinięcie wiersza dla ID:", id);
   }
 
   return (
