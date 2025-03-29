@@ -28,8 +28,8 @@ export default function CommandSearch() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
+  const [searchHistory, setSearchHistory] = useState<string[]>([]); // Historia wyszukiwania
   const commandRef = useRef<HTMLDivElement | null>(null);
-  const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
 
   const elementRef = useRef<HTMLInputElement | null>(null);
@@ -42,7 +42,7 @@ export default function CommandSearch() {
 
   const handleClickOutside = (event: MouseEvent) => {
     if (commandRef.current && !commandRef.current.contains(event.target as Node)) {
-      setIsOpen(false);
+      setIsOpen(false); // Zamykamy tylko wyniki
     }
   };
 
@@ -60,14 +60,7 @@ export default function CommandSearch() {
     if (newQuery.length > 2) {
       setResults([]);
       setLoading(true);
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-
-      const timer = setTimeout(() => {
-        fetchResults(newQuery);
-      }, 400);
-      setDebounceTimer(timer);
+      fetchResults(newQuery);
     } else {
       setResults([]);
       setLoading(false);
@@ -88,20 +81,42 @@ export default function CommandSearch() {
   };
 
   const handleLinkClick = (id: string) => {
+    // Zapamiętanie zapytania przed przejściem do produktu
+    handleAddToHistory(query);
+
     // Zamykamy okno wyników natychmiast
     setIsOpen(false);
-  
+    setResults([]); // Czyścimy wyniki
+    setQuery('');  // Clear the query state
+    
     // Ukrywamy tło po 0.5 sekundy
     setTimeout(() => {
       setBackgroundVisible(false);
-    }, 300); // Opóźnienie 0.5 sekundy, aby tło zniknęło po kliknięciu
-  
+    }, 500);
+    
     // Przekierowanie po 0.5 sekundy
     setTimeout(() => {
       router.push(`/product/view/${id}/slug`);
-    }, 300); // Opóźnienie 0.5 sekundy
+    }, 500); // Opóźnienie 0.5 sekundy
   };
-  
+
+  const handleSearchHistoryClick = (historyQuery: string) => {
+    setQuery(historyQuery); // Ustawiamy zapytanie na klikniętą frazę
+    fetchResults(historyQuery); // Pobieramy wyniki dla tej frazy
+  };
+
+  const handleAddToHistory = (newQuery: string) => {
+    if (!searchHistory.includes(newQuery)) {
+      setSearchHistory((prevHistory) => [...prevHistory, newQuery]);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Zapisujemy zapytanie, kiedy użytkownik opuszcza input
+    if (query.length > 2) {
+      handleAddToHistory(query);
+    }
+  };
 
   useEffect(() => {
     const updateDistance = () => {
@@ -125,16 +140,17 @@ export default function CommandSearch() {
   return (
     <>
       {/* Tło jest zawsze widoczne, nawet po zamknięciu okna wyników */}
-      {backgroundVisible && (
-  <div
-    className={`fixed inset-0 bg-slate-600/90 z-40 transition-opacity duration-500 ${backgroundVisible ? 'opacity-100' : 'opacity-0'}`}
-    onClick={(e) => {
-      if (commandRef.current && !commandRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    }}
-  />
-)}
+      {backgroundVisible && isOpen && (
+        <div
+          className={`fixed inset-0 bg-slate-600/90 z-40 transition-opacity duration-500 opacity-100`}
+          onClick={(e) => {
+            // Zamknięcie tylko wyników, tło nie znika natychmiast
+            if (commandRef.current && !commandRef.current.contains(e.target as Node)) {
+              setIsOpen(false);
+            }
+          }}
+        />
+      )}
 
       <Command
         ref={commandRef}
@@ -157,6 +173,7 @@ export default function CommandSearch() {
             placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
             onClick={handleInputClick}
             onChange={handleSearchChange}
+            onBlur={handleInputBlur}  // Zapisz zapytanie przy opuszczeniu inputa
             value={query}
             ref={elementRef}
           />
@@ -205,6 +222,23 @@ export default function CommandSearch() {
                   <p className="p-4 text-sm text-gray-500">No results found</p>
                 )}
               </CommandGroup>
+
+              {/* Historia wyszukiwania */}
+              {searchHistory.length > 0 && (
+                <CommandGroup heading="Historia wyszukiwania">
+                  <div className="p-2 flex flex-wrap gap-2">
+                    {searchHistory.map((historyQuery, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSearchHistoryClick(historyQuery)}
+                        className="bg-white border text-slate-700 rounded-full px-4 py-1 text-sm hover:bg-slate-100"
+                      >
+                        {historyQuery}
+                      </button>
+                    ))}
+                  </div>
+                </CommandGroup>
+              )}
 
               {/* Pokaż wyniki tylko jeśli query > 2 */}
               {query.length > 2 && (

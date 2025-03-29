@@ -3,6 +3,7 @@ import { Menu } from "lucide-react";
 import Topbar from "../topbar/page";
 import CommandSearch from "./CommandSearch";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -15,7 +16,7 @@ export default function Navbar() {
         <Menu className="sm:hidden " /> {/* Ikona menu widoczna tylko na urządzeniach mobilnych */}
 
         {/* Obrazek */}
-     
+          <Link href="/" className="hidden sm:block">
           <Image 
             src="/bartex.png" 
             alt="Logo" 
@@ -23,6 +24,7 @@ export default function Navbar() {
             height={100} 
             className="mr-4"
           />
+          </Link>
         </div>
         
         {/* InputSearchBox */}
