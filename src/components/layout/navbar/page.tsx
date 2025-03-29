@@ -16,7 +16,7 @@ export default function Navbar() {
         <Menu className="sm:hidden " /> {/* Ikona menu widoczna tylko na urządzeniach mobilnych */}
 
         {/* Obrazek */}
-          <Link href="/" className="hidden sm:block">
+          <Link href="/">
           <Image 
             src="/bartex.png" 
             alt="Logo" 
