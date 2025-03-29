@@ -106,7 +106,7 @@ export default function CommandSearch() {
     };
   }, []);
 
-  function toggleRowExpansion(id: string): void {
+  function toggleRowExpansion() {
     throw new Error("Function not implemented.");
   }
 
