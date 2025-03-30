@@ -1,7 +1,8 @@
 "use client";
 
 import { Suspense } from "react";
-import SearchResults from "./searchResults";
+import SearchResults from "./SearchResults";
+
 
 
 export default function SearchPage() {
