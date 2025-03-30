@@ -84,9 +84,9 @@ export default function SearchResults() {
                   <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
               
                   {/* Ikona + napis w lewym dolnym rogu */}
-                  <div className="absolute bottom-0 left-0 p-2 flex items-center space-x-2">
-                    <Squircle size={16} className={`${stanColor} fill-current`} />
-                    <span className={`text-xs `}>W magazynie</span>
+                  <div className="absolute bottom-0 left-0 p-2 flex items-center">
+                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                    <span className={`text-sm `}>w magazynie</span>
                   </div>
                 </div>
               );

@@ -56,7 +56,7 @@ export default function CommandSearch() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
+/*
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
@@ -70,7 +70,7 @@ export default function CommandSearch() {
       setLoading(false);
     }
   };
-
+*/
   const fetchResults = async (query: string) => {
     try {
       const response = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`);
