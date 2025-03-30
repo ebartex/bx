@@ -22,6 +22,7 @@ interface SearchResult {
   title: string;
   id: string;
   nazwa: string;
+  sm?: { stanHandl?: string }[]; // Add the 'sm' property with an optional array of objects
 }
 
 export default function CommandSearch() {
@@ -47,7 +48,7 @@ export default function CommandSearch() {
       setIsOpen(false); // Zamykamy tylko wyniki
     }
   };
-
+ 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
@@ -99,7 +100,7 @@ export default function CommandSearch() {
     // Przekierowanie po 0.5 sekundy
     setTimeout(() => {
       router.push(`/product/view/${id}/slug`);
-    }, 500); // Opóźnienie 0.5 sekundy
+    }, 300); // Opóźnienie 0.5 sekundy
   };
 
   const handleSearchHistoryClick = (historyQuery: string) => {
@@ -144,7 +145,7 @@ export default function CommandSearch() {
       {/* Tło jest zawsze widoczne, nawet po zamknięciu okna wyników */}
       {backgroundVisible && isOpen && (
         <div
-          className={`fixed inset-0 bg-slate-600/90 z-40 transition-opacity duration-500 opacity-100`}
+          className={`fixed inset-0 bg-zinc-600/90 z-40 transition-opacity duration-500 opacity-100`}
           onClick={(e) => {
             // Zamknięcie tylko wyników, tło nie znika natychmiast
             if (commandRef.current && !commandRef.current.contains(e.target as Node)) {
@@ -216,8 +217,29 @@ export default function CommandSearch() {
     alt="Zdjęcie produktu"
   />
   <span className="text-sm truncate">{result.nazwa}</span>
-  <Squircle className="text-green-700 ml-auto fill-current" />
+  <div className="ml-auto">
+  {result.sm?.length ?? 0 > 0 ? (
+  result.sm?.map((item, index) => {
+    const stan = Number(item.stanHandl) || 0; // Konwersja na liczbę
+    const colorClass =
+      stan === 0 ? "text-red-700" :
+      stan > 0 && stan <= 2 ? "text-orange-500" :
+      "text-green-700";
 
+    return (
+      <div key={index} className="flex items-center space-x-2">
+        <Squircle className={`${colorClass} fill-current`} />
+ 
+      </div>
+    );
+  })
+) : (
+  <div className="flex items-center space-x-2">
+    <Squircle className="text-red-700 fill-current" />
+    
+  </div>
+)}
+</div>
 </div>
 
                       </CommandItem>
