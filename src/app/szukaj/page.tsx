@@ -51,7 +51,7 @@ export default function SearchResults() {
 console.log(results);
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-4">Wyniki wyszukiwania dla: "{query}"</h1>
+      <h1 className="text-2xl font-bold mb-4">Wyniki wyszukiwania dla: {query}</h1>
 
       {loading && <p className="text-gray-500">Ładowanie...</p>}
       {error && <p className="text-red-500">{error}</p>}
