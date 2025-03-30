@@ -56,7 +56,7 @@ export default function CommandSearch() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-/*
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
@@ -70,7 +70,7 @@ export default function CommandSearch() {
       setLoading(false);
     }
   };
-*/
+
   const fetchResults = async (query: string) => {
     try {
       const response = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`);
@@ -100,13 +100,13 @@ export default function CommandSearch() {
       router.push(url);
     }, 300);
   };
-  
+  /*
 
   const handleSearchHistoryClick = (historyQuery: string) => {
     setQuery(historyQuery); // Ustawiamy zapytanie na klikniętą frazę
     fetchResults(historyQuery); // Pobieramy wyniki dla tej frazy
   };
-
+*/
   const handleAddToHistory = (newQuery: string) => {
     if (!searchHistory.includes(newQuery)) {
       setSearchHistory((prevHistory) => [...prevHistory, newQuery]);
