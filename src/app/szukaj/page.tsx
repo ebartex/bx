@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 interface ProductPhoto {
   main_photo: number;
@@ -76,12 +77,14 @@ console.log(results);
                 return (
                   <tr key={product.id} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">
-                      <img 
+                      <Image
                         src={
                           product.productphoto.length > 0
                             ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
                             : "/product_512.png"
                         }
+                        width={40}
+                        height={40}
                         alt={product.nazwa}
                         className="w-10 h-10 object-cover rounded-md"
                       />
