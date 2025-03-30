@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import Navbar from "@/components/layout/navbar/page";
+import {Roboto} from 'next/font/google';
 
+const roboto = Roboto({
+  weight: ["300", "400", "500", "700", "900"],
+  style: ["normal"],
+  subsets: ["latin"],
+  display: "swap"
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl">
-      <body>
+    <html lang="pl" className={roboto.className}>
+      <body >
         <div className="xl:w-[1200px] mx-auto">
           <Navbar />
         {children}

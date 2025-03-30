@@ -1,3 +1,4 @@
+"use client";
 import {
   Command,
   CommandGroup,
@@ -9,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Search } from "lucide-react";
 import Image from 'next/image';
+import NProgressHandler from "@/components/nprogress/NProgressHandler";
 
 interface ProductPhoto {
   main_photo: number;
@@ -257,6 +259,7 @@ export default function CommandSearch() {
           </div>
         )}
       </Command>
+      <NProgressHandler />
     </>
   );
 }
