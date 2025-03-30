@@ -8,7 +8,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Search } from "lucide-react";
+import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
 
@@ -204,19 +204,22 @@ export default function CommandSearch() {
                         onClick={() => handleLinkClick(result.id)}
                         className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
                       >
-                        <div className="flex  w-full">
-                          <Image
-                            src={
-                              result.productphoto.length > 0
-                                ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
-                                : "/product_512.png"
-                            }
-                            width={40}
-                            height={40}
-                            alt="Zdjęcie produktu"
-                          />
-                          <span className="text-sm truncate">{result.nazwa}</span>
-                        </div>
+<div className="flex w-full">
+  <Image
+    src={
+      result.productphoto.length > 0
+        ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
+        : "/product_512.png"
+    }
+    width={40}
+    height={40}
+    alt="Zdjęcie produktu"
+  />
+  <span className="text-sm truncate">{result.nazwa}</span>
+  <Squircle className="text-green-700 ml-auto fill-current" />
+
+</div>
+
                       </CommandItem>
                     </div>
                   ))
