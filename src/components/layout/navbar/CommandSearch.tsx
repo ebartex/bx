@@ -12,6 +12,7 @@ import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
 
+
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
@@ -83,25 +84,23 @@ export default function CommandSearch() {
     }
   };
 
-  const handleLinkClick = (id: string) => {
-    // Zapamiętanie zapytania przed przejściem do produktu
-    handleAddToHistory(query);
-
-    // Zamykamy okno wyników natychmiast
+  const handleLink = (url: string) => {
+    // Zamykamy okno wyników
     setIsOpen(false);
-    setResults([]); // Czyścimy wyniki
-    setQuery('');  // Clear the query state
-    
+    setResults([]);
+    setQuery("");
+  
     // Ukrywamy tło po 0.5 sekundy
     setTimeout(() => {
       setBackgroundVisible(false);
     }, 500);
-    
-    // Przekierowanie po 0.5 sekundy
+  
+    // Przekierowanie użytkownika
     setTimeout(() => {
-      router.push(`/product/view/${id}/slug`);
-    }, 300); // Opóźnienie 0.5 sekundy
+      router.push(url);
+    }, 300);
   };
+  
 
   const handleSearchHistoryClick = (historyQuery: string) => {
     setQuery(historyQuery); // Ustawiamy zapytanie na klikniętą frazę
@@ -199,10 +198,10 @@ export default function CommandSearch() {
                   results.map((result) => (
                     <div
                       key={result.id}
-                      onClick={() => handleLinkClick(result.id)} // Używamy onClick tutaj w divie
+                      onClick={() => handleLink(`/product/view/${result.id}/slug`)} // Używamy onClick tutaj w divie
                     >
                       <CommandItem
-                        onClick={() => handleLinkClick(result.id)}
+                        onClick={() => handleLink(`/product/view/${result.id}/slug`)}
                         className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
                       >
 <div className="flex w-full">
@@ -271,12 +270,12 @@ export default function CommandSearch() {
               {query.length > 2 && (
                 <div className="absolute bottom-3 right-0 z-20 w-full">
                   <div>
-                    <div className="flex">
-                      <button className="w-full text-slate-700 pl-4 pt-2 pb-2 pr-4 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
-                        <span>Przejdź do wyników</span>
-                        <ChevronRight />
-                      </button>
-                    </div>
+                  <div onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(query)}`)}>
+                  <button className="w-full text-slate-700 pl-4 pt-2 pb-2 pr-4 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
+                    <span>Przejdź do wyników</span>
+                    <ChevronRight />
+                  </button>
+                </div>
                   </div>
                 </div>
               )}
