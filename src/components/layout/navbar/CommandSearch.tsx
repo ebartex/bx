@@ -218,7 +218,7 @@ export default function CommandSearch() {
   <span className="text-sm truncate">{result.nazwa}</span>
   <div className="ml-auto">
   {result.sm?.length ?? 0 > 0 ? (
-  result.sm?.map((item, index) => {
+    result.sm?.map((item, index) => {
     const stan = Number(item.stanHandl) || 0; // Konwersja na liczbę
     const colorClass =
       stan === 0 ? "text-red-700" :
@@ -256,8 +256,8 @@ export default function CommandSearch() {
                     {searchHistory.map((historyQuery, index) => (
                       <button
                         key={index}
-                        onClick={() => handleSearchHistoryClick(historyQuery)}
-                        className="bg-white border text-slate-700 rounded-full px-4 py-1 text-sm hover:bg-slate-100"
+                        onClick={() => handleLink(`/szukaj?q=${historyQuery}`)}
+                        className="cursor-pointer bg-white border text-slate-700 rounded-full px-4 py-1 text-sm hover:bg-slate-100"
                       >
                         {historyQuery}
                       </button>

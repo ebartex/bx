@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { Squircle } from "lucide-react";
 
 interface ProductPhoto {
   main_photo: number;
@@ -65,27 +66,32 @@ export default function SearchResults() {
               stan > 0 && stan <= 2 ? "text-orange-500" :
               "text-green-700";
 
-            return (
-              <div key={product.id} className="border border-gray-300 shadow-lg rounded-lg p-4">
-                <div className="flex justify-center mb-4">
-                  <Image
-                    src={
-                      product.productphoto.length > 0
-                        ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
-                        : "/product_512.png"
-                    }
-                    width={150}
-                    height={150}
-                    alt={product.nazwa}
-                    className="object-cover rounded-md"
-                  />
+              return (
+                <div key={product.id} className="border border-slate-200 rounded-none p-4 relative">
+                  <div className="flex justify-center mb-4">
+                    <Image
+                      src={
+                        product.productphoto.length > 0
+                          ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
+                          : "/product_512.png"
+                      }
+                      width={150}
+                      height={150}
+                      alt={product.nazwa}
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                  <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
+              
+                  {/* Ikona + napis w lewym dolnym rogu */}
+                  <div className="absolute bottom-0 left-0 p-2 flex items-center space-x-2">
+                    <Squircle size={16} className={`${stanColor} fill-current`} />
+                    <span className={`text-xs `}>W magazynie</span>
+                  </div>
                 </div>
-                <h2 className="text-lg font-semibold mb-2">{product.nazwa}</h2>
-                <p className={`text-center font-semibold ${stanColor}`}>
-                  {stan.toFixed(3)}
-                </p>
-              </div>
-            );
+              );
+              
+              
           })}
         </div>
       ) : (
