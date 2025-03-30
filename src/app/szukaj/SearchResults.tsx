@@ -50,54 +50,43 @@ export default function SearchResults() {
   }, [query]);
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Wyniki wyszukiwania dla: {query}</h1>
 
       {loading && <p className="text-gray-500">Ładowanie...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {Array.isArray(results) && results.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-3 px-4 text-left border-b">Zdjęcie</th>
-                <th className="py-3 px-4 text-left border-b">Nazwa</th>
-                <th className="py-3 px-4 text-center border-b">Stan</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((product) => {
-                const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
-                const stanColor =
-                  stan === 0 ? "text-red-700" :
-                  stan > 0 && stan <= 2 ? "text-orange-500" :
-                  "text-green-700";
+        <div className="grid grid-cols-2 xl:grid-cols-4">
+          {results.map((product) => {
+            const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
+            const stanColor =
+              stan === 0 ? "text-red-700" :
+              stan > 0 && stan <= 2 ? "text-orange-500" :
+              "text-green-700";
 
-                return (
-                  <tr key={product.id} className="hover:bg-gray-100">
-                    <td className="py-2 px-4 border-b">
-                      <Image
-                        src={
-                          product.productphoto.length > 0
-                            ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
-                            : "/product_512.png"
-                        }
-                        width={40}
-                        height={40}
-                        alt={product.nazwa}
-                        className="w-10 h-10 object-cover rounded-md"
-                      />
-                    </td>
-                    <td className="py-2 px-4 border-b">{product.nazwa}</td>
-                    <td className={`py-2 px-4 border-b text-center font-semibold ${stanColor}`}>
-                      {stan.toFixed(3)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+            return (
+              <div key={product.id} className="border border-gray-300 shadow-lg rounded-lg p-4">
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src={
+                      product.productphoto.length > 0
+                        ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
+                        : "/product_512.png"
+                    }
+                    width={150}
+                    height={150}
+                    alt={product.nazwa}
+                    className="object-cover rounded-md"
+                  />
+                </div>
+                <h2 className="text-lg font-semibold mb-2">{product.nazwa}</h2>
+                <p className={`text-center font-semibold ${stanColor}`}>
+                  {stan.toFixed(3)}
+                </p>
+              </div>
+            );
+          })}
         </div>
       ) : (
         !loading && !error && <p className="text-gray-500">Brak wyników.</p>
