@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, Square, SquareRoundCorner } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton"; // Importujemy Skeleton z shadcn
@@ -19,9 +19,8 @@ type SubCategory = {
 export default function MenuMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
-  const [subcategories, setSubcategories] = useState<SubCategory[]>([]); // Zmienna do przechowywania podkategorii
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Zmienna do przechowywania wybranej kategorii
-  const [isLoading, setIsLoading] = useState(false); // Zmienna do kontrolowania stanu ładowania podkategorii
+  const [subcategories, setSubcategories] = useState<{ [key: string]: SubCategory[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
+  const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen); // Przełączanie stanu menu
@@ -41,32 +40,36 @@ export default function MenuMobile() {
 
   // Funkcja obsługująca kliknięcie w kategorię
   const handleCategoryClick = (categoryId: string) => {
-    // Jeżeli ta sama kategoria jest kliknięta, zamykamy ją (ustawiamy null)
-    if (selectedCategory === categoryId) {
-      setSelectedCategory(null); // Zamykamy kategorię
-      setSubcategories([]); // Resetujemy podkategorie
-      setIsLoading(false); // Zatrzymujemy ładowanie
-    } else {
-      // Resetujemy stan podkategorii przy każdej zmianie kategorii
-      setSubcategories([]); // Zresetowanie podkategorii, zanim załadujemy nowe dane
-      setSelectedCategory(categoryId); // Ustawiamy wybraną kategorię
-      setIsLoading(true); // Ustawiamy stan ładowania na true
-
-      // Dodanie opóźnienia na skeleton (np. 500ms)
-      setTimeout(() => {
-        // Wysyłamy zapytanie o podkategorie
-        fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setSubcategories(data); // Ustawiamy stan podkategorii
-            setIsLoading(false); // Po załadowaniu ustawiamy stan ładowania na false
-          })
-          .catch((error) => {
-            console.error("Error fetching subcategories:", error);
-            setIsLoading(false); // Jeśli wystąpi błąd, również przestajemy ładować
-          });
-      }, 500); // Opóźnienie na 500ms (0.5 sekundy)
+    // Jeżeli podkategorie dla tej kategorii już zostały pobrane, nie musimy ich ponownie ładować
+    if (subcategories[categoryId]) {
+      return;
     }
+
+    // Ustawiamy kategorię jako ładowaną
+    setLoadingCategory(categoryId);
+
+    // Pobieranie podkategorii dla danej kategorii
+    fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setSubcategories((prev) => ({
+          ...prev,
+          [categoryId]: data, // Dodajemy podkategorie dla danej kategorii
+        }));
+
+        // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy
+        setTimeout(() => {
+          setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
+        }, 500); // Opóźnienie 0.5 sekundy
+      })
+      .catch((error) => {
+        console.error("Error fetching subcategories:", error);
+
+        // Opóźniamy ustawienie stanu ładowania na null, w przypadku błędu
+        setTimeout(() => {
+          setLoadingCategory(null); // Ustawiamy stan ładowania na null po błędzie
+        }, 500);
+      });
   };
 
   return (
@@ -84,21 +87,28 @@ export default function MenuMobile() {
           <div className="p-0 overflow-auto">
             {/* Wyświetlanie kategorii */}
             <div>
-              {categories.map((category, index) => (
-                <Accordion key={index} type="single" collapsible value={selectedCategory || undefined}>
-                  <AccordionItem value={category.id} className="border-b border-slate-200">
-                    <AccordionTrigger
-                      className="pl-4 pr-4 pt-2 flex justify-between items-center"
-                      onClick={() => handleCategoryClick(category.id)} // Obsługujemy kliknięcie w kategorię
-                    >
-                      {category.kod} {/* Wyświetlamy kod kategorii */}
-                    </AccordionTrigger>
+              <Accordion type="single" collapsible>
+                {categories.map((category, index) => (
+                  <>
+                    <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
+                      <AccordionTrigger
+                        className="pr-4 pt-2 flex justify-between items-center font-normal"
+                        onClick={() => handleCategoryClick(category.id)} // Obsługujemy kliknięcie w kategorię
+                      >
+                        {/* Kontener z pozycjonowaniem relative */}
+                        <div className="relative  mb-5">
+                          {/* Ikona Square z pozycjonowaniem absolute */}
+                          <SquareRoundCorner className="absolute left-1" />
+                        </div>
 
-                    {/* Jeżeli wybrano kategorię, wyświetlamy podkategorie */}
-                    {selectedCategory === category.id && (
+                        {/* Tekst z nazwą kategorii */}
+                        <span className="flex-grow pl-5 ">{category.kod}</span>
+                      </AccordionTrigger>
+
+                      {/* Jeżeli wybrano kategorię, wyświetlamy podkategorie */}
                       <AccordionContent>
                         {/* Jeśli dane są ładowane, wyświetlamy Skeleton */}
-                        {isLoading ? (
+                        {loadingCategory === category.id ? (
                           <div>
                             {/* Skeleton w postaci szarego prostokąta */}
                             <Skeleton className="w-full h-6 mb-2" />
@@ -107,17 +117,17 @@ export default function MenuMobile() {
                           </div>
                         ) : (
                           // Wyświetlanie podkategorii po załadowaniu
-                          subcategories.map((subcategory, subIndex) => (
+                          subcategories[category.id]?.map((subcategory, subIndex) => (
                             <div key={subIndex} className="pl-6">
                               <p>{subcategory.kod}</p> {/* Wyświetlamy kod podkategorii */}
                             </div>
                           ))
                         )}
                       </AccordionContent>
-                    )}
-                  </AccordionItem>
-                </Accordion>
-              ))}
+                    </AccordionItem>
+                  </>
+                ))}
+              </Accordion>
             </div>
           </div>
         </SheetContent>
