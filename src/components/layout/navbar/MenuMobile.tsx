@@ -4,12 +4,12 @@ import { Menu } from "lucide-react";
 import { Sheet,  SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-interface Categories {
+type Category = {
     kod: string;
   }
 export default function MenuMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]); // State to store categories
+  const [categories, setCategories] = useState<Category[]>([]); // State to store categories
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen); // Toggle menu state
