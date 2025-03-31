@@ -74,7 +74,7 @@ export default function MenuMobile() {
                   <Accordion type="single" collapsible>
                     <AccordionItem value={`item-${index}`} className="border-b border-slate-200">
                       <AccordionTrigger
-                        className="pl-4 pr-4"
+                        className="pl-4 pr-4 pt-2"
                         onClick={() => handleCategoryClick(category.id)} // Używamy category.id
                       >
                         {category.kod} {/* Wyświetlamy category.id */}
