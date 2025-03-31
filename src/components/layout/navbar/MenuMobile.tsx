@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 import { Menu } from "lucide-react";
-import Link from "next/link";
+
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
@@ -33,7 +33,7 @@ export default function MenuMobile() {
         <SheetHeader>
           <SheetTitle>Edit profile</SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to your profile here. Click save when you
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
