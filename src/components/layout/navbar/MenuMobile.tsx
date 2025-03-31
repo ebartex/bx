@@ -4,7 +4,9 @@ import { Menu } from "lucide-react";
 import { Sheet,  SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
+interface Categories {
+    kod: string;
+  }
 export default function MenuMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<string[]>([]); // State to store categories
@@ -51,7 +53,6 @@ export default function MenuMobile() {
           <AccordionItem value="item-1" className="border-b border-slate-200">
             <AccordionTrigger className="pl-4 pr-4 ">{category.kod}</AccordionTrigger>
             <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.<br/>
             Yes. It adheres to the WAI-ARIA design pattern.<br/>
             Yes. It adheres to the WAI-ARIA design pattern.<br/>
             Yes. It adheres to the WAI-ARIA design pattern.<br/>
