@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import CommandSearch from "./CommandSearch";
 import Image from "next/image";
 import Link from "next/link";
+import MenuMobile from "./MenuMobile";
 
 export default function Navbar() {
   return (
@@ -13,7 +14,7 @@ export default function Navbar() {
         {/* Flex w kolumnie na urządzeniach mobilnych, wiersz na większych ekranach, wyrównanie w poziomie */}
         <div className="pl-5 pr-5 flex items-center gap-2 sm:w-auto w-full mb-4 sm:mb-0">
         {/* Ikona Menu */}
-        <Menu className="sm:hidden " /> {/* Ikona menu widoczna tylko na urządzeniach mobilnych */}
+        <MenuMobile/>
 
         {/* Obrazek */}
           <Link href="/">

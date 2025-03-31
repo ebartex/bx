@@ -162,7 +162,7 @@ export default function CommandSearch() {
           <input
             className="
               boder-none
-              relative z-60 
+              relative z-40 
               bg-slate-100 
               transition-all 
               focus:ring-0 
