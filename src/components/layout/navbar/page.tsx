@@ -1,5 +1,5 @@
 "use client";
-import { Menu } from "lucide-react";
+
 
 import CommandSearch from "./CommandSearch";
 import Image from "next/image";
