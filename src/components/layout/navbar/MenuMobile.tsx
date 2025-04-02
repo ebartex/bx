@@ -4,6 +4,7 @@ import { Menu,  SquareRoundCorner } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton"; // Importujemy Skeleton z shadcn
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Typ dla kategorii
 type Category = {
@@ -85,47 +86,38 @@ export default function MenuMobile() {
           </SheetHeader>
 
           <div className="p-0 overflow-auto">
-            {/* Wyświetlanie kategorii */}
             <div>
               <Accordion type="single" collapsible>
                 {categories.map((category, index) => (
-                  <>
-                    <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
-                      <AccordionTrigger
-                        className="pr-4 pt-2 flex justify-between items-center font-normal"
-                        onClick={() => handleCategoryClick(category.id)} // Obsługujemy kliknięcie w kategorię
-                      >
-                        {/* Kontener z pozycjonowaniem relative */}
-                        <div className="relative  mb-5">
-                          {/* Ikona Square z pozycjonowaniem absolute */}
-                          <SquareRoundCorner className="absolute left-1" />
+                  <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
+                    <AccordionTrigger
+                      className="pr-4 pt-2 flex justify-between items-center font-normal"
+                      onClick={() => handleCategoryClick(category.id)}
+                    >
+                      <div className="relative mb-5">
+                        <SquareRoundCorner className="absolute left-1" />
+                      </div>
+                      <span className="flex-grow pl-5">{category.kod}</span>
+                    </AccordionTrigger>
+
+                    <AccordionContent>
+                      {loadingCategory === category.id ? (
+                        <div>
+                          <Skeleton className="w-full h-6 mb-2" />
+                          <Skeleton className="w-full h-6 mb-2" />
+                          <Skeleton className="w-full h-6 mb-2" />
                         </div>
-
-                        {/* Tekst z nazwą kategorii */}
-                        <span className="flex-grow pl-5">{category.kod}</span>
-                      </AccordionTrigger>
-
-                      {/* Jeżeli wybrano kategorię, wyświetlamy podkategorie */}
-                      <AccordionContent>
-                        {/* Jeśli dane są ładowane, wyświetlamy Skeleton */}
-                        {loadingCategory === category.id ? (
-                          <div>
-                            {/* Skeleton w postaci szarego prostokąta */}
-                            <Skeleton className="w-full h-6 mb-2" />
-                            <Skeleton className="w-full h-6 mb-2" />
-                            <Skeleton className="w-full h-6 mb-2" />
-                          </div>
-                        ) : (
-                          // Wyświetlanie podkategorii po załadowaniu
-                          subcategories[category.id]?.map((subcategory, subIndex) => (
+                      ) : (
+                        <ScrollArea className="h-72">
+                          {subcategories[category.id]?.map((subcategory, subIndex) => (
                             <div key={subIndex} className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer">
-                              <p>{subcategory.kod}</p> {/* Wyświetlamy kod podkategorii */}
+                              <p>{subcategory.kod}</p>
                             </div>
-                          ))
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </>
+                          ))}
+                        </ScrollArea>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
                 ))}
               </Accordion>
             </div>
