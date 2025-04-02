@@ -102,7 +102,7 @@ export default function MenuMobile() {
                         </div>
 
                         {/* Tekst z nazwą kategorii */}
-                        <span className="flex-grow pl-5 ">{category.kod}</span>
+                        <span className="flex-grow pl-5">{category.kod}</span>
                       </AccordionTrigger>
 
                       {/* Jeżeli wybrano kategorię, wyświetlamy podkategorie */}
@@ -118,7 +118,7 @@ export default function MenuMobile() {
                         ) : (
                           // Wyświetlanie podkategorii po załadowaniu
                           subcategories[category.id]?.map((subcategory, subIndex) => (
-                            <div key={subIndex} className="pl-6">
+                            <div key={subIndex} className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer">
                               <p>{subcategory.kod}</p> {/* Wyświetlamy kod podkategorii */}
                             </div>
                           ))
