@@ -1,10 +1,12 @@
-"use client";
+'use client';
+
 import { useState, useEffect } from "react";
-import { Menu,  SquareRoundCorner } from "lucide-react";
+import { Menu, SquareRoundCorner } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton"; // Importujemy Skeleton z shadcn
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useRouter } from "next/navigation"; // Importujemy useRouter z next/navigation
 
 // Typ dla kategorii
 type Category = {
@@ -15,6 +17,7 @@ type Category = {
 // Typ dla podkategorii
 type SubCategory = {
   kod: string;
+  id: string;
 };
 
 export default function MenuMobile() {
@@ -22,6 +25,7 @@ export default function MenuMobile() {
   const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
   const [subcategories, setSubcategories] = useState<{ [key: string]: SubCategory[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
   const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
+  const router = useRouter(); // Inicjujemy useRouter
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen); // Przełączanie stanu menu
@@ -73,6 +77,12 @@ export default function MenuMobile() {
       });
   };
 
+  // Funkcja obsługująca kliknięcie w subkategorię
+  const handleSubCategoryClick = (subCategoryId: string) => {
+    // Przejście do strony z podkategorią
+    router.push(`/categories/view/${subCategoryId}/test`);
+  };
+
   return (
     <>
       <Sheet>
@@ -110,8 +120,12 @@ export default function MenuMobile() {
                       ) : (
                         <ScrollArea className="h-72">
                           {subcategories[category.id]?.map((subcategory, subIndex) => (
-                            <div key={subIndex} className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer">
-                              <p>{subcategory.kod}</p>
+                            <div
+                              key={subIndex}
+                              onClick={() => handleSubCategoryClick(subcategory.id)} // Kliknięcie w subkategorię
+                              className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
+                            >
+                              <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
                             </div>
                           ))}
                         </ScrollArea>
