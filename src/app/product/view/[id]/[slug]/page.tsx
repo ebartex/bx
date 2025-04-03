@@ -95,7 +95,11 @@ const ProductPage = () => {
 
             return (
               <div key={product.id} className="w-full bg-white">
-                <h1 className="text-xl xs:text-xs xs:font-normal xl:font-bold text-gray-900 mb-2">{product.nazwa}</h1>
+              <h1 className="
+                text-sm xs:text-sm sm:text-sm xl:text-xl font-normal xl:font-bold text-gray-900 mb-2
+              ">
+                {product.nazwa}
+              </h1>
                 
                   {/* Left side: Product image (centered on small screens) */}
                   <div className="xs:w-full flex justify-center ">
