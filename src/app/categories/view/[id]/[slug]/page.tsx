@@ -98,10 +98,11 @@ export default function Page() {
   <div className="overflow-x-auto whitespace-nowrap flex space-x-2 p-2 border-b border-slate-300">
     {subCategories.map((subCategory) => (
       <button
-        key={subCategory.id}
-        onClick={() => handleSubCategoryClick(subCategory.id)}
-        className="px-4 py-2 bg-white border border-slate-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex-shrink-0"
-      >
+      key={subCategory.id}
+      onClick={() => handleSubCategoryClick(subCategory.id)}
+      className={`px-4 py-2 border border-slate-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex-shrink-0 
+        ${selectedSubCategory === subCategory.id ? 'bg-slate-100 text-gray-700' : 'bg-white'}`}
+    >
         {subCategory.kod}
       </button>
     ))}
