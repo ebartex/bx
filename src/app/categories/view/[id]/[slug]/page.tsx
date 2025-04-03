@@ -93,7 +93,11 @@ export default function Page() {
       {loading && <p className="text-gray-500"></p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="mb-4 h-55 overflow-auto ">
+      <div
+  className={`mb-4 overflow-auto ${
+    subCategories.length > 2 ? 'h-55' : 'h-auto'
+  }`}
+>
 
 
           {subCategories.map((subCategory) => (
