@@ -87,33 +87,26 @@ export default function Page() {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Produkty w kategorii: {slug}</h1>
+
 
       {/* Wyświetlanie listy podkategorii */}
-      {loading && <p className="text-gray-500">Ładowanie...</p>}
+      {loading && <p className="text-gray-500"></p>}
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Wybierz podkategorię</h2>
-        <div className="space-y-4">
-          {subCategories.map((subCategory) => (
-            <div
-              key={subCategory.id}
-              onClick={() => handleSubCategoryClick(subCategory.id)}
-              className="flex items-center cursor-pointer hover:bg-gray-100 m-0 border rounded-md transition"
-            >
-              {/* Obrazek podkategorii po lewej stronie */}
-              <div className="mr-4">
 
-              </div>
-              {/* Nazwa podkategorii po prawej stronie */}
-              <div>
-                <span className="text-lg font-medium">{subCategory.kod}{subCategory.id}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+  <div className="overflow-x-auto whitespace-nowrap flex space-x-2 p-2 border-b border-slate-300">
+    {subCategories.map((subCategory) => (
+      <button
+        key={subCategory.id}
+        onClick={() => handleSubCategoryClick(subCategory.id)}
+        className="px-4 py-2 bg-white border border-slate-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex-shrink-0"
+      >
+        {subCategory.kod}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* Wyświetlanie produktów po wybraniu podkategorii */}
       {selectedSubCategory && (

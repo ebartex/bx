@@ -79,13 +79,16 @@ export default function MenuMobile() {
 
   // Funkcja obsługująca kliknięcie w subkategorię
   const handleSubCategoryClick = (subCategoryId: string) => {
+    // Zamykamy menu (Sheet)
+    setIsMenuOpen(false);
+
     // Przejście do strony z podkategorią
     router.push(`/categories/view/${subCategoryId}/test`);
   };
 
   return (
     <>
-      <Sheet>
+      <Sheet open={isMenuOpen}>
         <SheetTrigger asChild>
           <Menu className="sm:hidden" onClick={toggleMenu} />
         </SheetTrigger>
