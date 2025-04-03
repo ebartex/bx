@@ -88,12 +88,14 @@ export default function MenuMobile() {
 
   return (
     <>
-      <Sheet open={isMenuOpen}>
+      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <SheetTrigger asChild>
           <Menu className="sm:hidden" onClick={toggleMenu} />
         </SheetTrigger>
 
-        <SheetContent className="p-0">
+        <SheetContent
+          className="p-0"
+        >
           <SheetHeader className="p-0">
             <SheetTitle className="pt-4 pl-2">Kategorie</SheetTitle>
           </SheetHeader>
