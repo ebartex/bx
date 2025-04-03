@@ -33,7 +33,7 @@ export default function Page() {
   // Używamy useParams do pobrania parametrów URL
   const params = useParams();
   const id = params.id; // Pobieramy id kategorii z URL
-  const slug = params.slug; // Pobieramy slug kategorii z URL
+
 
   useEffect(() => {
     if (id) {
