@@ -26,7 +26,7 @@ interface Product {
 export default function Page() {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]); // Lista podkategorii
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null); // Wybrana podkategoria
-  const [products, setProducts] = useState<Product[]>([]); // Lista produktów
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,31 +91,7 @@ export default function Page() {
         ))}
       </div>
 
-      {/* Wyświetlanie produktów po wybraniu podkategorii */}
-      {selectedSubCategory && (
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
-          {products.map((product) => {
-            const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
-            const stanColor =
-              stan === 0 ? "text-red-700" :
-              stan > 0 && stan <= 2 ? "text-orange-500" :
-              "text-green-700";
 
-            return (
-              <div key={product.id} className="border border-slate-200 rounded-lg p-4 relative">
-                <div className="flex justify-center mb-4">
-                  {/* Możesz tu dodać obrazek produktu */}
-                </div>
-                <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
-                <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                  <span className={`text-sm `}>{stan > 0 ? 'W magazynie' : 'Brak w magazynie'}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
