@@ -10,18 +10,9 @@ interface SubCategory {
   photo_512: string; // Dodajemy link do zdjęcia podkategorii
 }
 
-interface ProductPhoto {
-  main_photo: number;
-  photo_512: string;
-}
 
-interface Product {
-  productphoto: ProductPhoto[];
-  title: string;
-  id: string;
-  nazwa: string;
-  sm?: { stanHandl?: string }[];
-}
+
+
 
 export default function Page() {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]); // Lista podkategorii
