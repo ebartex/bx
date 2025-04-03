@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; // Używamy useRouter z next/navigation
-import { ChevronDown, Squircle } from "lucide-react";
+import { ChevronDown} from "lucide-react";
 
 interface SubCategory {
   kod: string;
@@ -25,7 +25,6 @@ interface Product {
 
 export default function Page() {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]); // Lista podkategorii
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null); // Wybrana podkategoria
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +62,7 @@ export default function Page() {
 
   // Funkcja do obsługi kliknięcia w podkategorię (przekierowanie)
   const handleSubCategoryClick = (subCategoryId: string) => {
-    setSelectedSubCategory(subCategoryId);
+ 
     router.push(`/itemcategories/view/${subCategoryId}/test`); // Przekierowanie do nowej strony
   };
 
