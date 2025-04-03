@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation"; // Importujemy useParams z next/navigation
+import { useParams, useRouter } from "next/navigation"; // Importujemy useRouter z next/navigation
 import Image from "next/image";
 import { Squircle } from "lucide-react";
+
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
@@ -18,9 +19,10 @@ interface Product {
 }
 
 export default function Page() {
-  const [products, setproducts] = useState<Product[]>([]); // Lista produktów
+  const [products, setProducts] = useState<Product[]>([]); // Lista produktów
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // Inicjujemy useRouter
 
   // Pobieramy parametr tw-katalog z URL
   const { id } = useParams(); // Zakładając, że parametr w URL to 'id' (np. /itemcategory/view/[id])
@@ -39,7 +41,7 @@ export default function Page() {
           return response.json();
         })
         .then((data) => {
-          setproducts(Array.isArray(data) ? data : []); // Ustawiamy dane produktów
+          setProducts(Array.isArray(data) ? data : []); // Ustawiamy dane produktów
         })
         .catch((error) => {
           console.error('Błąd pobierania produktów:', error);
@@ -51,6 +53,11 @@ export default function Page() {
     }
   }, [id]); // Wykonaj zapytanie, gdy parametr 'id' zmienia się
 
+  const handleProductClick = (productId: string, slug: string) => {
+    // Przejście do strony produktu przy użyciu router.push
+    router.push(`/product/view/${productId}/${slug}`);
+  };
+
   return (
     <div className="container mx-auto">
       {/* Wyświetlanie komunikatu o ładowaniu */}
@@ -58,7 +65,6 @@ export default function Page() {
       {error && <p className="text-red-500">{error}</p>}
 
       {/* Wyświetlanie listy produktów */}
-
       {Array.isArray(products) && products.length > 0 ? (
         <div className="grid grid-cols-2 xl:grid-cols-4">
           {products.map((product) => {
@@ -68,32 +74,34 @@ export default function Page() {
               stan > 0 && stan <= 2 ? "text-orange-500" :
               "text-green-700";
 
-              return (
-                <div key={product.id} className="border border-slate-200 rounded-none p-4 relative">
-                  <div className="flex justify-center mb-4">
-                    <Image
-                      src={
-                        product.productphoto.length > 0
-                          ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
-                          : "/product_512.png"
-                      }
-                      width={150}
-                      height={150}
-                      alt={product.nazwa}
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                  <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
-              
-                  {/* Ikona + napis w lewym dolnym rogu */}
-                  <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                    <span className={`text-sm `}>w magazynie</span>
-                  </div>
+            return (
+              <div
+                key={product.id}
+                className="border cursor-pointer border-slate-200 rounded-none p-4 relative"
+                onClick={() => handleProductClick(product.id, 'test')} // Przechodzi do strony produktu po kliknięciu
+              >
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src={
+                      product.productphoto.length > 0
+                        ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
+                        : "/product_512.png"
+                    }
+                    width={150}
+                    height={150}
+                    alt={product.nazwa}
+                    className="object-cover rounded-md"
+                  />
                 </div>
-              );
-              
-              
+                <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
+
+                {/* Ikona + napis w lewym dolnym rogu */}
+                <div className="absolute bottom-0 left-0 p-2 flex items-center">
+                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                  <span className={`text-sm`}>w magazynie</span>
+                </div>
+              </div>
+            );
           })}
         </div>
       ) : (
