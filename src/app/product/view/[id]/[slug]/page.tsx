@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { Squircle } from "lucide-react";
+
 // Define product type based on the provided API schema
 interface Product {
   id: number;
@@ -14,6 +16,7 @@ interface Product {
   sm: { idtw: number; stanHandl: number }[];
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
 }
+
 type ProductResponse = Product[]; // API returns an array of products
 
 const ProductPage = () => {
@@ -79,42 +82,52 @@ const ProductPage = () => {
   // Render product details when data is available
   return (
     <>
-      <div className="container mx-auto p-6">
+      <div className="mx-auto p-2">
         <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
-          {products.map((product) => (
-            <div key={product.id} className="w-full md:w-1/2 p-6 bg-white shadow-lg rounded-lg">
-              <div className="flex justify-center mb-4">
-                {/* Check if there are any product photos */}
-                {product.productphoto.length > 0 ? (
-                  <Image
-                    src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
-                    alt={product.nazwa}
-                    className="w-full max-w-md h-auto rounded-lg"
-                    width={216}
-                    height={216}
-                  />
-                ) : (
-                  <div className="text-gray-500">Brak zdjęcia produktu</div>
-                )}
+          {products.map((product) => {
+            // Determine stock status color
+            const stanColor =
+              product.sm[0].stanHandl === 0
+                ? "text-red-700"
+                : product.sm[0].stanHandl > 0 && product.sm[0].stanHandl <= 2
+                ? "text-orange-500"
+                : "text-green-700";
+
+            return (
+              <div key={product.id} className="w-full bg-white">
+                <h1 className="text-xl xs:text-xs xs:font-normal xl:font-bold text-gray-900 mb-2">{product.nazwa}</h1>
+                
+                  {/* Left side: Product image (centered on small screens) */}
+                  <div className="xs:w-full flex justify-center ">
+                    {product.productphoto.length > 0 ? (
+                      <Image
+                        src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
+                        alt={product.nazwa}
+             
+                        width={216}
+                        height={216}
+                      />
+                    ) : (
+                      <div className="text-gray-500">Brak zdjęcia produktu</div>
+                    )}
+                  </div>
+
+                  {/* Right side: Product details (left-aligned on small screens) */}
+                  <div className="md:w-1/2 flex flex-col items-start md:items-start">
+                    <p className="text-sm mb-2">Kod: {product.kod}</p>
+                    <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
+                    <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
+
+                    <div className="flex items-center space-x-4 mb-4">
+                      {/* Stock Status */}
+                      <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                      <span className={`text-sm`}>w magazynie</span>
+                    </div>
+                  </div>
+                
               </div>
-
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.nazwa}</h1>
-              <p className="text-xl text-gray-700 mb-2">Kod: {product.kod}</p>
-              <p className="text-xl text-gray-700 mb-2">Kod paskowy: {product.kodpaskowy}</p>
-              <p className="text-lg text-gray-600 mb-4">Jednostka miary: {product.jm}</p>
-
-              <div className="flex items-center space-x-4 mb-4">
-                {/* Stock Status */}
-                <p className="text-lg text-green-600 font-semibold">
-                  {product.sm[0].stanHandl > 0 ? `${product.sm[0].stanHandl} szt. dostępne` : "Brak na stanie"}
-                </p>
-              </div>
-
-              <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
-                Dodaj do koszyka
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </>
