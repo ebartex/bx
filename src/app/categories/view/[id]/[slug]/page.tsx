@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation"; // Używamy useParams z next/navigation
-import { Squircle } from "lucide-react";
+import { ChevronDown, Squircle } from "lucide-react";
 
 interface SubCategory {
   kod: string;
@@ -33,7 +33,7 @@ export default function Page() {
   // Używamy useParams do pobrania parametrów URL
   const params = useParams();
   const id = params.id; // Pobieramy id kategorii z URL
-
+  const slug = params.slug; // Pobieramy slug kategorii z URL
 
   useEffect(() => {
     if (id) {
@@ -93,21 +93,26 @@ export default function Page() {
       {loading && <p className="text-gray-500"></p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="mb-4">
+      <div className="mb-4 h-55 overflow-auto ">
 
-  <div className="overflow-x-auto whitespace-nowrap flex space-x-2 p-2 border-b border-slate-300">
-    {subCategories.map((subCategory) => (
-      <button
-      key={subCategory.id}
-      onClick={() => handleSubCategoryClick(subCategory.id)}
-      className={`px-4 py-2 border border-slate-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex-shrink-0 
-        ${selectedSubCategory === subCategory.id ? 'bg-slate-100 text-gray-700' : 'bg-white'}`}
-    >
-        {subCategory.kod}
-      </button>
-    ))}
-  </div>
+
+          {subCategories.map((subCategory) => (
+            <div
+  key={subCategory.id}
+  onClick={() => handleSubCategoryClick(subCategory.id)}
+  className="rounded-none flex items-center justify-between cursor-pointer hover:bg-gray-100  p-2 border rounded-md transition w-full"
+>
+  {/* Nazwa podkategorii po lewej */}
+  <span className="text-xs text-gray-800">{subCategory.kod}</span>
+
+  {/* Strzałka po prawej */}
+  <ChevronDown className="text-gray-500" />
 </div>
+
+     
+          ))}
+    
+      </div>
 
       {/* Wyświetlanie produktów po wybraniu podkategorii */}
       {selectedSubCategory && (
