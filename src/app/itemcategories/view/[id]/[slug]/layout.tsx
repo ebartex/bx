@@ -4,7 +4,7 @@
 
 import { ReactNode } from 'react';
 
-import { usePathname } from 'next/navigation';
+
 import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
 
 interface LayoutProps {
