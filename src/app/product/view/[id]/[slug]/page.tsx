@@ -1,6 +1,6 @@
 import ProductPage from "./Productpage";
 
-export interface PageProps {
+interface PageProps {
   params: {
     id: string;
     slug: string;
@@ -8,7 +8,7 @@ export interface PageProps {
 }
 
 // (1) Dynamic metadata
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: { params: { id: string; slug: string } }) {
   const res = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-id=${params.id}`);
   const data = await res.json();
 
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-// (2) Strona renderowana serwerowo, ładuje komponent kliencki
+// (2) Renderowanie strony
 export default function Page({ params }: PageProps) {
   return <ProductPage id={params.id} slug={params.slug} />;
 }
