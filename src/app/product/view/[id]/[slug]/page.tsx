@@ -1,11 +1,6 @@
 import ProductPage from "./Productpage";
 
-interface PageProps {
-  params: {
-    id: string;
-    slug: string;
-  };
-}
+
 
 // (1) Dynamic metadata
 export async function generateMetadata({ params }: { params: { id: string; slug: string } }) {
