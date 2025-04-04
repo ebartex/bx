@@ -1,10 +1,11 @@
 import ProductPage from "./Productpage";
-interface PageProps {
-    params: {
-      id: string;
-      slug: string;
-    };
-  }
+
+export interface PageProps {
+  params: {
+    id: string;
+    slug: string;
+  };
+}
 
 // (1) Dynamic metadata
 export async function generateMetadata({ params }: PageProps) {
@@ -23,6 +24,6 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 // (2) Strona renderowana serwerowo, ładuje komponent kliencki
-export default function Page() {
-  return <ProductPage />;
+export default function Page({ params }: PageProps) {
+  return <ProductPage id={params.id} slug={params.slug} />;
 }
