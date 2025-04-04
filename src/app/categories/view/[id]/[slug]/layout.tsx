@@ -12,7 +12,7 @@ interface LayoutProps {
 }
 
 export default function CategoryLayout({ children }: LayoutProps) {
-  const pathname = usePathname(); // Pobieramy bieżący URL
+
 
   return (
     <div className="flex">
