@@ -12,7 +12,7 @@ export default function Home() {
 
         {/* Zdjęcie zajmujące resztę dostępnej przestrzeni */}
         <div className="lg:flex-1">
-          <div className="relative w-full h-1/2"> {/* Zmieniamy wysokość zdjęcia na górę */}
+          <div className="relative w-full"> {/* Zmieniamy wysokość zdjęcia na górę */}
             <Image
               alt="Zdjęcie"
               src="/pl_11736_20230905_114759.jpg"
