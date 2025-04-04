@@ -3,13 +3,14 @@
 import { Suspense } from "react";
 
 import SearchResults from "./SearchResults";
-import Sidebar from "@/components/layout/sidebar/page";
+
+import MenuDesktop from "@/components/layout/sidebar/MenuDesktop";
 
 export default function SearchPage() {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <Sidebar />
+      <MenuDesktop />
 
       {/* Main content */}
       <div className="flex-1">

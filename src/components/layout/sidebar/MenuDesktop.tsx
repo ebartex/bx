@@ -82,9 +82,9 @@ export default function MenuDesktop() {
 
       <Accordion type="single" collapsible>
         {categories.map((category, index) => (
-          <AccordionItem key={index} value={category.id} className="cursor-pointer border-b border-slate-200">
+          <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
             <AccordionTrigger
-              className="pr-4 pt-2 flex justify-between items-center font-normal"
+              className="hover:bg-slate-100 hover:rounded-none cursor-pointer pr-4 pt-2 flex justify-between items-center font-normal"
               onClick={() => handleCategoryClick(category.id)}
             >
               <span>{category.kod}</span>
