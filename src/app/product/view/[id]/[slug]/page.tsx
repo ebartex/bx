@@ -24,6 +24,6 @@ export async function generateMetadata({ params }: { params: { id: string; slug:
 }
 
 // (2) Renderowanie strony
-export default function Page({ params }: PageProps) {
+export default function Page() {
   return <ProductPage/>;
 }
