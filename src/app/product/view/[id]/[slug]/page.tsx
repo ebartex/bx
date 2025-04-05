@@ -1,7 +1,7 @@
 import ProductPage from "./Productpage";
 
 // (1) Dynamic metadata
-export async function generateMetadata(params: { id: string; slug: string }) {
+export async function generateMetadata({ params }: { params: { id: string; slug: string } }) {
   const res = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-id=${params.id}`);
   const data = await res.json();
 
