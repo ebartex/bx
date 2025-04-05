@@ -5,12 +5,11 @@ import ProductPage from './Productpage';
 
 type Props = {
   params: Promise<{ id: string; slug: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 // Funkcja generująca metadane
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // Rozwiązujemy params (ponieważ jest to obiekt Promise)
@@ -33,6 +32,6 @@ export async function generateMetadata(
 // Importujemy nasz komponent ProductPage
 
 
-export default function Page({ params, searchParams }: Props) {
+export default function Page() {
   return <ProductPage />;
 }
