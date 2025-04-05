@@ -106,6 +106,7 @@ export default function CommandSearch() {
     // Zamykamy okno wyników
     setIsOpen(false);
     setResults([]);
+    setCategoryResults([]);
     setQuery("");
   
     // Ukrywamy tło po 0.5 sekundy
