@@ -97,7 +97,7 @@ export default function SearchResults() {
                 </div>
                 <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
                 
-                {/* Wstawiamy cenę po lewej stronie */}
+                {/* Wstawiamy cenę po lewej stronie, upewniając się, że cena jest liczbą */}
                 {cena > 0 && (
                   <div className="text-sm text-zinc-700 mb-2">
                     Cena: <span className="font-bold">{cena} PLN</span>
@@ -117,5 +117,5 @@ export default function SearchResults() {
         !loading && !error && <p className="text-gray-500">Brak wyników.</p>
       )}
     </div>
-  );
+  ); 
 }
