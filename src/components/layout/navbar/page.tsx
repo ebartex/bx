@@ -18,7 +18,7 @@ export default function Navbar() {
         <div className="block lg:hidden">
         <MenuMobile/>
       </div>
-
+  
      
       
 

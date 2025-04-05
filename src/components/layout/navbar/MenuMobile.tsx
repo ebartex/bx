@@ -90,7 +90,7 @@ export default function MenuMobile() {
     <>
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <SheetTrigger asChild>
-          <Menu className="sm:hidden" onClick={toggleMenu} />
+          <Menu className="lg:hidden" onClick={toggleMenu} />
         </SheetTrigger>
 
         <SheetContent

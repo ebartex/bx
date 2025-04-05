@@ -1,3 +1,4 @@
+import MenuMobile from "@/components/layout/navbar/MenuMobile";
 import MenuDesktop from "@/components/layout/sidebar/MenuDesktop";
 import Image from "next/image";
 
@@ -5,9 +6,11 @@ export default function Home() {
   return (
     <>
       <div className="flex h-screen">
+      
         {/* Komponent MenuDesktop widoczny na urządzeniach LG */}
         <div className="hidden lg:block w-1/4">
           <MenuDesktop />
+
         </div>
 
         {/* Zdjęcie zajmujące resztę dostępnej przestrzeni */}
