@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";  // Dodajemy useRouter
 import Image from "next/image";
 import { Squircle } from "lucide-react";
 
@@ -26,6 +26,8 @@ export default function SearchResults() {
 
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
+  
+  const router = useRouter(); // Hook do routingu
 
   useEffect(() => {
     if (query) {
@@ -51,6 +53,11 @@ export default function SearchResults() {
     }
   }, [query]);
 
+  const handleProductClick = (productId: string) => {
+    // Nawigacja do strony szczegółów produktu
+    router.push(`/product/view/${productId}/test`);
+  };
+
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Wyniki wyszukiwania dla: {query}</h1>
@@ -70,7 +77,11 @@ export default function SearchResults() {
             const cena = product.cn?.[0]?.cena || 0; // Pobieramy cenę, jeśli dostępna
 
             return (
-              <div key={product.id} className="border border-slate-200 rounded-none p-4 relative">
+              <div 
+                key={product.id} 
+                className="border border-slate-200 rounded-none p-4 relative cursor-pointer"
+                onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
+              >
                 <div className="flex justify-center mb-4">
                   <Image
                     src={

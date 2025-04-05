@@ -1,5 +1,4 @@
-// src/app/product/view/[id]/[slug]/productPage.tsx
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -14,7 +13,7 @@ interface Product {
   kodpaskowy: string;
   jm: string;
   katalog: number;
-  sm: { idtw: number; stanHandl: number }[]; // Tablica sm
+  sm: { idtw: number; stanHandl?: number }[]; // Dodanie stanHandl jako opcjonalnego
   cn: { cena: number;}[];  // Tablica cn
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
 }
@@ -87,16 +86,15 @@ const ProductPage = () => {
       <div className="mx-auto p-2">
         <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
           {products.map((product) => {
-            // Sprawdzamy, czy `product.sm` nie jest puste
-            const stanHandl = product.sm && product.sm[0] ? product.sm[0].stanHandl : null;
+            // Sprawdzamy, czy `product.sm` nie jest puste i przypisujemy domyślną wartość
+            const stanHandl = product.sm?.[0]?.stanHandl ?? 0; // Ustawiamy wartość domyślną na 0, jeśli stanHandl jest null lub undefined
 
             // Określenie koloru statusu zapasów
             const stanColor =
               stanHandl === 0
                 ? "text-red-700"
-                : stanHandl > 0 && stanHandl <= 2
-                ? "text-orange-500"
-                : "text-green-700";
+                : stanHandl > 0 
+                 "text-green-700";
 
             return (
               <div key={product.id} className="w-full bg-white">
@@ -127,9 +125,7 @@ const ProductPage = () => {
                   <p className="text-sm mb-4">Cena: {product.cn[0]?.cena}</p>
                   <div className="flex items-center space-x-4 mb-4">
                     {/* Status zapasów */}
-                    {stanHandl !== null && (
-                      <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                    )}
+                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
                     <span className={`text-sm`}>w magazynie</span>
                   </div>
                 </div>
