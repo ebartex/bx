@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Squircle } from "lucide-react";
+import { useRouter } from "next/navigation"; // Używamy nowej wersji useRouter z next/navigation
 
 // Typy danych o produkcie
 interface Product {
@@ -15,6 +16,7 @@ interface Product {
   katalog: number;
   sm: { idtw: number; stanHandl?: number }[]; // Dodanie stanHandl jako opcjonalnego
   cn: { cena: number;}[];  // Tablica cn
+  xt: { id:number; kod: string;}  // Tablica xt
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
 }
 
@@ -27,6 +29,7 @@ const ProductPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // Inicjalizujemy router
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -80,6 +83,11 @@ const ProductPage = () => {
     );
   }
 
+  // Funkcja do obsługi kliknięcia w nazwę kategorii
+  const handleCategoryClick = (categoryId: number) => {
+    router.push(`/itemcategories/view/${categoryId}/test`); // Przekierowujemy do nowego URL
+  };
+
   // Renderowanie szczegółów produktu, gdy dane są dostępne
   return (
     <>
@@ -95,7 +103,10 @@ const ProductPage = () => {
 
             return (
               <div key={product.id} className="w-full bg-white">
-                <h1 className="text-md xs:text-sm sm:text-sm xl:text-xl font-normal xl:font-normal text-gray-900 mb-2">
+                <h1 
+                  // Obsługuje kliknięcie w nazwę kategorii
+                  className="text-md xs:text-sm sm:text-sm xl:text-xl font-normal xl:font-normal text-gray-900 mb-2"
+                >
                   {product.nazwa}
                 </h1>
 
@@ -120,6 +131,7 @@ const ProductPage = () => {
                   <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
                   <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
                   <p className="text-sm mb-4">Cena: {product.cn[0]?.cena}</p>
+                  <p className="text-sm mb-4 cursor-pointer" onClick={() => handleCategoryClick(product.xt?.id)} >Katalog: {product.xt?.kod}</p>
                   <div className="flex items-center space-x-4 mb-4">
                     {/* Status zapasów */}
                     <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
