@@ -116,8 +116,8 @@ const ProductPage = () => {
                     <Image
                       src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
                       alt={product.nazwa}
-                      width={256} // Domyślny rozmiar dla małych ekranów
-                      height={256} // Domyślny rozmiar dla małych ekranów
+                      width={512} // Domyślny rozmiar dla małych ekranów
+                      height={512} // Domyślny rozmiar dla małych ekranów
                       className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
                     />
                   ) : (

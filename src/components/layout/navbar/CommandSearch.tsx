@@ -25,7 +25,11 @@ interface SearchResult {
   nazwa: string;
   sm?: { stanHandl?: string }[]; // Add the 'sm' property with an optional array of objects
 }
+interface CategoryResult {
+  id: string;
+  kod: string;
 
+}
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false); // Kontroluje widoczność okna wyników
   const [backgroundVisible, setBackgroundVisible] = useState(false); // Kontroluje widoczność tła
@@ -33,6 +37,7 @@ export default function CommandSearch() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
   const [searchHistory, setSearchHistory] = useState<string[]>([]); // Historia wyszukiwania
+  const [categoryResults, setCategoryResults] = useState<CategoryResult[]>([]);
   const commandRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -73,16 +78,27 @@ export default function CommandSearch() {
 
   const fetchResults = async (query: string) => {
     try {
-      const response = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`);
-      const data: SearchResult[] = await response.json();
-      setResults(data);
+      setLoading(true);
+      
+      const [productRes, categoryRes] = await Promise.all([
+        fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`),
+        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-kod=?${query}?`)
+      ]);
+  
+      const productData: SearchResult[] = await productRes.json();
+      const categoryData: CategoryResult[] = await categoryRes.json();
+  
+      setResults(productData);
+      setCategoryResults(categoryData);
     } catch (error) {
       console.error("Błąd podczas pobierania wyników:", error);
       setResults([]);
+      setCategoryResults([]);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleLink = (url: string) => {
     // Zamykamy okno wyników
@@ -248,7 +264,22 @@ export default function CommandSearch() {
                   <p className="p-4 text-sm text-gray-500">No results found</p>
                 )}
               </CommandGroup>
-
+              {categoryResults.length > 0 && (
+  <CommandGroup heading="Kategorie">
+    {categoryResults.map((category) => (
+      <CommandItem
+        key={category.id}
+        onClick={() => handleLink(`/category/view/${category.id}/slug`)}
+        className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+      >
+        <div className="flex w-full">
+          <span onClick={() => handleLink(`/itemcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+     
+        </div>
+      </CommandItem>
+    ))}
+  </CommandGroup>
+)}
               {/* Historia wyszukiwania */}
               {searchHistory.length > 0 && (
                 <CommandGroup heading="Historia wyszukiwania">
