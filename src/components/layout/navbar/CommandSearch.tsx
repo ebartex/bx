@@ -157,6 +157,7 @@ export default function CommandSearch() {
 
   return (
     <>
+   
       {/* Tło jest zawsze widoczne, nawet po zamknięciu okna wyników */}
       {backgroundVisible && isOpen && (
         <div
@@ -168,26 +169,30 @@ export default function CommandSearch() {
             }
           }}
         />
+    
       )}
 
       <Command
         ref={commandRef}
         className={`rounded-none md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
       >
-        <div className="relative">
-          <input
-            className="
-              boder-none
-              relative z-40 
-              bg-slate-100 
-              transition-all 
-              focus:ring-0 
-              focus:ring-offset-none 
-              focus:shadow-none 
-              focus:outline-none 
-              focus:bg-white
-              pl-10 pr-10 block w-full h-10 
-              rounded-none text-sm"
+<div className={`${isOpen ? "xs:absolute xs:top-0 xs:left-0 z-50 w-full" : "relative"}`}>
+  <input
+    className={`
+      border-none
+      z-40
+      bg-slate-100
+      transition-all
+      focus:ring-0
+      focus:ring-offset-none
+      focus:shadow-none
+      focus:outline-none
+      focus:bg-white
+      pl-10 pr-10 block w-full h-10
+      rounded-none text-sm
+      ${isOpen ? "absolute top-0" : "relative"}
+      sm:top-0 sm:relative
+    `}
             placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
             onClick={handleInputClick}
             onChange={handleSearchChange}
@@ -201,7 +206,7 @@ export default function CommandSearch() {
 
         {isOpen && (
           <div
-            className="xl:h-90 h-65 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-24 top-33 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="xl:h-90 h-65 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-24 top-13 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
@@ -313,6 +318,7 @@ export default function CommandSearch() {
         )}
       </Command>
       <NProgressHandler />
+    
     </>
   );
 }
