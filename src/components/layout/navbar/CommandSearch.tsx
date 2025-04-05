@@ -201,7 +201,7 @@ export default function CommandSearch() {
 
         {isOpen && (
           <div
-            className="xl:h-90 h-70 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-24 top-33 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="xl:h-90 h-65 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-24 top-33 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
