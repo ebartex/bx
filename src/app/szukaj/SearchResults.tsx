@@ -70,9 +70,7 @@ export default function SearchResults() {
           {results.map((product) => {
             const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
             const stanColor =
-              stan === 0 ? "text-red-700" :
-              stan > 0 && stan <= 2 ? "text-orange-500" :
-              "text-green-700";
+            stan === 0 ? "text-red-700" : "text-green-700";
 
             const cena = product.cn?.[0]?.cena || 0; // Pobieramy cenę, jeśli dostępna
 

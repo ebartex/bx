@@ -70,9 +70,7 @@ export default function Page() {
           {products.map((product) => {
             const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
             const stanColor =
-              stan === 0 ? "text-red-700" :
-              stan > 0 && stan <= 2 ? "text-orange-500" :
-              "text-green-700";
+              stan === 0 ? "text-red-700" : "text-green-700";
 
             return (
               <div
