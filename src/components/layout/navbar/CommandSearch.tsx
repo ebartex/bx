@@ -176,7 +176,7 @@ export default function CommandSearch() {
         ref={commandRef}
         className={`rounded-none md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
       >
-<div className={`${isOpen ? "xs:absolute xs:top-0 xs:left-0 z-50 w-full" : "relative"}`}>
+<div className={`${isOpen ? "sm:absolute xs:top-0 sm:top-0 sm:left-0 z-50 w-full" : "relative"}`}>
   <input
     className={`
       border-none
@@ -206,7 +206,7 @@ export default function CommandSearch() {
 
         {isOpen && (
           <div
-            className="xl:h-90 h-65 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-24 top-13 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
+            className="xl:h-90 h-65 overflow-y-auto absolute overflow-y-auto z-50 bg-white xl:top-24 top-12 right-0 xl:w-3/4 pr-0 p-0 xl:p-0"
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
@@ -264,7 +264,7 @@ export default function CommandSearch() {
                     </div>
                   ))
                 ) : (
-                  <p className="p-4 text-sm text-gray-500">No results found</p>
+                  <p className="p-4 text-sm text-gray-500">Brak wyników wpisz nazwę produktu..</p>
                 )}
               </CommandGroup>
               {categoryResults.length > 0 && (
