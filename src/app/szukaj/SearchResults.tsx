@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";  // Dodajemy useRouter
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Squircle } from "lucide-react";
 
@@ -26,8 +26,6 @@ export default function SearchResults() {
 
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
-  
-  const router = useRouter(); // Hook do routingu
 
   useEffect(() => {
     if (query) {
@@ -53,11 +51,6 @@ export default function SearchResults() {
     }
   }, [query]);
 
-  const handleProductClick = (productId: string) => {
-    // Nawigacja do strony szczegółów produktu
-    router.push(`/product/view/${productId}/test`);
-  };
-
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Wyniki wyszukiwania dla: {query}</h1>
@@ -77,11 +70,7 @@ export default function SearchResults() {
             const cena = product.cn?.[0]?.cena || 0; // Pobieramy cenę, jeśli dostępna
 
             return (
-              <div 
-                key={product.id} 
-                className="border border-slate-200 rounded-none p-4 relative cursor-pointer"
-                onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
-              >
+              <div key={product.id} className="border border-slate-200 rounded-none p-4 relative">
                 <div className="flex justify-center mb-4">
                   <Image
                     src={
@@ -98,11 +87,11 @@ export default function SearchResults() {
                 <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
                 
                 {/* Wstawiamy cenę po lewej stronie */}
-                {cena > 0 ? (
+                {cena > 0 && (
                   <div className="text-sm text-zinc-700 mb-2">
                     Cena: <span className="font-bold">{cena} PLN</span>
                   </div>
-                ) : null}
+                )}
 
                 {/* Ikona + napis w lewym dolnym rogu */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
@@ -117,5 +106,5 @@ export default function SearchResults() {
         !loading && !error && <p className="text-gray-500">Brak wyników.</p>
       )}
     </div>
-  ); 
+  );
 }

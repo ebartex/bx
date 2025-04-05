@@ -91,10 +91,7 @@ const ProductPage = () => {
 
             // Określenie koloru statusu zapasów
             const stanColor =
-              stanHandl === 0
-                ? "text-red-700"
-                : stanHandl > 0 
-                 "text-green-700";
+              stanHandl === 0 ? "text-red-700" : "text-green-700"; // Kolor czerwony, gdy stanHandl === 0, w przeciwnym razie zielony
 
             return (
               <div key={product.id} className="w-full bg-white">
