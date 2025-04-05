@@ -16,6 +16,7 @@ interface Product {
   id: string;
   nazwa: string;
   sm?: { stanHandl?: string }[];
+  cn?: { cena: number }[];  // Cena produktu
 }
 
 export default function SearchResults() {
@@ -66,32 +67,39 @@ export default function SearchResults() {
               stan > 0 && stan <= 2 ? "text-orange-500" :
               "text-green-700";
 
-              return (
-                <div key={product.id} className="border border-slate-200 rounded-none p-4 relative">
-                  <div className="flex justify-center mb-4">
-                    <Image
-                      src={
-                        product.productphoto.length > 0
-                          ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
-                          : "/product_512.png"
-                      }
-                      width={150}
-                      height={150}
-                      alt={product.nazwa}
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                  <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
-              
-                  {/* Ikona + napis w lewym dolnym rogu */}
-                  <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                    <span className={`text-sm `}>w magazynie</span>
-                  </div>
+            const cena = product.cn?.[0]?.cena || 0; // Pobieramy cenę, jeśli dostępna
+
+            return (
+              <div key={product.id} className="border border-slate-200 rounded-none p-4 relative">
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src={
+                      product.productphoto.length > 0
+                        ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
+                        : "/product_512.png"
+                    }
+                    width={150}
+                    height={150}
+                    alt={product.nazwa}
+                    className="object-cover rounded-md"
+                  />
                 </div>
-              );
-              
-              
+                <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
+                
+                {/* Wstawiamy cenę po lewej stronie */}
+                {cena > 0 && (
+                  <div className="text-sm text-zinc-700 mb-2">
+                    Cena: <span className="font-bold">{cena} PLN</span>
+                  </div>
+                )}
+
+                {/* Ikona + napis w lewym dolnym rogu */}
+                <div className="absolute bottom-0 left-0 p-2 flex items-center">
+                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                  <span className={`text-sm `}>w magazynie</span>
+                </div>
+              </div>
+            );
           })}
         </div>
       ) : (
