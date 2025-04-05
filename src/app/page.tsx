@@ -1,4 +1,3 @@
-import MenuMobile from "@/components/layout/navbar/MenuMobile";
 import MenuDesktop from "@/components/layout/sidebar/MenuDesktop";
 import Image from "next/image";
 
