@@ -72,8 +72,7 @@ export default function SearchResults() {
             const stanColor =
             stan === 0 ? "text-red-700" : "text-green-700";
 
-            const cena = product.cn?.[0]?.cena || 0; // Pobieramy cenę, jeśli dostępna
-
+ 
             return (
               <div 
               key={product.id} 
