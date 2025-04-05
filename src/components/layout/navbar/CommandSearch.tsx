@@ -201,7 +201,7 @@ export default function CommandSearch() {
             ref={elementRef}
           />
           {/* Ikona Search */}
-          <Search size={18} className=" z-60 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500" />
+          <Search size={18} className={`z-60 absolute left-3  ${isOpen ? "top-5" : "top-1/2"}  transform -translate-y-1/2 text-slate-500`} />
         </div>
 
         {isOpen && (
@@ -210,6 +210,25 @@ export default function CommandSearch() {
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
+
+            {categoryResults.length > 0 && (
+  <CommandGroup heading="Kategorie">
+    {categoryResults.map((category) => (
+      <CommandItem
+        key={category.id}
+        onClick={() => handleLink(`/category/view/${category.id}/slug`)}
+        className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+      >
+        <div className="flex w-full">
+          <span onClick={() => handleLink(`/itemcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+     
+        </div>
+      </CommandItem>
+    ))}
+  </CommandGroup>
+)}
+
+
               <CommandGroup className="p-0" heading="Wyniki">
                 {loading ? (
                   [...Array(5)].map((_, index) => (
@@ -267,22 +286,7 @@ export default function CommandSearch() {
                   <p className="p-4 text-sm text-gray-500">Brak wyników wpisz nazwę produktu..</p>
                 )}
               </CommandGroup>
-              {categoryResults.length > 0 && (
-  <CommandGroup heading="Kategorie">
-    {categoryResults.map((category) => (
-      <CommandItem
-        key={category.id}
-        onClick={() => handleLink(`/category/view/${category.id}/slug`)}
-        className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
-      >
-        <div className="flex w-full">
-          <span onClick={() => handleLink(`/itemcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
-     
-        </div>
-      </CommandItem>
-    ))}
-  </CommandGroup>
-)}
+
               {/* Historia wyszukiwania */}
               {searchHistory.length > 0 && (
                 <CommandGroup heading="Historia wyszukiwania">
