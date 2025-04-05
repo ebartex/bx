@@ -237,9 +237,7 @@ export default function CommandSearch() {
     result.sm?.map((item, index) => {
     const stan = Number(item.stanHandl) || 0; // Konwersja na liczbę
     const colorClass =
-      stan === 0 ? "text-red-700" :
-      stan > 0 && stan <= 2 ? "text-orange-500" :
-      "text-green-700";
+      stan === 0 ? "text-red-700" : "text-green-700";
 
     return (
       <div key={index} className="flex items-center space-x-2">
