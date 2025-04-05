@@ -1,3 +1,4 @@
+// src/app/product/view/[id]/[slug]/productPage.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Squircle } from "lucide-react";
 
-// Define product type based on the provided API schema
+// Typy danych o produkcie
 interface Product {
   id: number;
   nazwa: string;
@@ -17,7 +18,7 @@ interface Product {
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
 }
 
-type ProductResponse = Product[]; // API returns an array of products
+type ProductResponse = Product[]; // API zwraca tablicę produktów
 
 const ProductPage = () => {
   const params = useParams<{ id: string; slug: string }>();
@@ -52,7 +53,7 @@ const ProductPage = () => {
     fetchProduct();
   }, [id]);
 
-  // Display loading spinner while fetching data
+  // Wyświetlanie spinnera ładowania
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -61,7 +62,7 @@ const ProductPage = () => {
     );
   }
 
-  // Display error message if there's an issue fetching data
+  // Wyświetlanie komunikatu o błędzie, jeśli nie udało się pobrać danych
   if (error) {
     return (
       <div className="text-center text-red-500">
@@ -70,7 +71,7 @@ const ProductPage = () => {
     );
   }
 
-  // Display message if no products are found
+  // Wyświetlanie komunikatu, jeśli brak produktów
   if (products.length === 0) {
     return (
       <div className="text-center">
@@ -79,13 +80,13 @@ const ProductPage = () => {
     );
   }
 
-  // Render product details when data is available
+  // Renderowanie szczegółów produktu, gdy dane są dostępne
   return (
     <>
       <div className="mx-auto p-2">
         <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
           {products.map((product) => {
-            // Determine stock status color
+            // Określenie koloru statusu zapasów
             const stanColor =
               product.sm[0].stanHandl === 0
                 ? "text-red-700"
@@ -99,14 +100,14 @@ const ProductPage = () => {
                   {product.nazwa}
                 </h1>
 
-                {/* Left side: Product image (centered on small screens) */}
+                {/* Lewa strona: Obrazek produktu (wyśrodkowany na małych ekranach) */}
                 <div className="xs:w-full flex justify-center">
                   {product.productphoto.length > 0 ? (
                     <Image
                       src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
                       alt={product.nazwa}
-                      width={256} // Default size for small screens
-                      height={256} // Default size for small screens
+                      width={256} // Domyślny rozmiar dla małych ekranów
+                      height={256} // Domyślny rozmiar dla małych ekranów
                       className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
                     />
                   ) : (
@@ -114,14 +115,14 @@ const ProductPage = () => {
                   )}
                 </div>
 
-                {/* Right side: Product details (left-aligned on small screens) */}
+                {/* Prawa strona: Szczegóły produktu (wyrównane do lewej na małych ekranach) */}
                 <div className="md:w-1/2 flex flex-col items-start md:items-start">
                   <p className="text-sm mb-2">Kod: {product.kod}</p>
                   <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
                   <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
 
                   <div className="flex items-center space-x-4 mb-4">
-                    {/* Stock Status */}
+                    {/* Status zapasów */}
                     <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
                     <span className={`text-sm`}>w magazynie</span>
                   </div>
