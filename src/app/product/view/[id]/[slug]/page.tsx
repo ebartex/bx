@@ -1,26 +1,38 @@
 // src/app/product/view/[id]/[slug]/page.tsx
 
-import ProductPage from "./Productpage";
+import type { Metadata, ResolvingMetadata } from 'next'
+import ProductPage from './Productpage';
 
-// Funkcja generująca metadane (w tym tytuł strony)
-export async function generateMetadata({ params }: { params: { id: string; slug: string } }) {
-  const res = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-id=${params.id}`);
-  const data = await res.json();
+type Props = {
+  params: Promise<{ id: string; slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-  if (data && data.length > 0) {
-    return {
-      title: data[0].nazwa,  // Dynamiczny tytuł na podstawie danych z API
-    };
-  }
+// Funkcja generująca metadane
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Rozwiązujemy params (ponieważ jest to obiekt Promise)
+  const { id } = await params
+  
+  // Pobieramy dane produktu z API
+  const product = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`).then((res) => res.json())
 
+  // Opcjonalnie - rozszerzamy metadane (np. openGraph) z metadanych rodzica
+  const previousImages = (await parent).openGraph?.images || []
+  
   return {
-    title: "Produkt nie znaleziony",  // Tytuł w przypadku braku produktu
-  };
+    title: product.nazwa,  // Dynamiczny tytuł na podstawie danych z API
+    openGraph: {
+      images: ['/some-specific-page-image.jpg', ...previousImages],
+    },
+  }
 }
 
 // Importujemy nasz komponent ProductPage
 
 
-export default function Page() {
+export default function Page({ params, searchParams }: Props) {
   return <ProductPage />;
 }
