@@ -62,7 +62,7 @@ export default function SearchResults() {
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Wyniki wyszukiwania dla: {query}</h1>
 
-      {loading && <p className="text-gray-500">Ładowanie...</p>}
+      {loading && <p className="text-gray-500"></p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {Array.isArray(results) && results.length > 0 ? (

@@ -21,7 +21,7 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
         <MenuDesktop />
       </div>
 
-      <div className="flex-1 p-4">
+      <div className="flex-1 sm:p-4">
         {/* Zawartość strony (np. lista produktów) */}
         <div className="mb-4">
 
