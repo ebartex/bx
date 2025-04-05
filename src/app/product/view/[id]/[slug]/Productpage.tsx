@@ -95,43 +95,37 @@ const ProductPage = () => {
 
             return (
               <div key={product.id} className="w-full bg-white">
-              <h1 className="
-                text-md xs:text-sm sm:text-sm xl:text-xl font-normal xl:font-normal text-gray-900 mb-2
-              ">
-                {product.nazwa}
-              </h1>
-                
-                  {/* Left side: Product image (centered on small screens) */}
-                  {/* Left side: Product image (centered on small screens) */}
-                  <div className="xs:w-full flex justify-center">
-                    {product.productphoto.length > 0 ? (
-                      <Image
-                        src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
-                        alt={product.nazwa}
-                        // Setting different sizes for different screen sizes
-                        width={256}  // Default size for small screens
-                        height={256} // Default size for small screens
-                        className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
-                      />
-                    ) : (
-                      <div className="text-gray-500">Brak zdjęcia produktu</div>
-                    )}
+                <h1 className="text-md xs:text-sm sm:text-sm xl:text-xl font-normal xl:font-normal text-gray-900 mb-2">
+                  {product.nazwa}
+                </h1>
+
+                {/* Left side: Product image (centered on small screens) */}
+                <div className="xs:w-full flex justify-center">
+                  {product.productphoto.length > 0 ? (
+                    <Image
+                      src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
+                      alt={product.nazwa}
+                      width={256} // Default size for small screens
+                      height={256} // Default size for small screens
+                      className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
+                    />
+                  ) : (
+                    <div className="text-gray-500">Brak zdjęcia produktu</div>
+                  )}
+                </div>
+
+                {/* Right side: Product details (left-aligned on small screens) */}
+                <div className="md:w-1/2 flex flex-col items-start md:items-start">
+                  <p className="text-sm mb-2">Kod: {product.kod}</p>
+                  <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
+                  <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
+
+                  <div className="flex items-center space-x-4 mb-4">
+                    {/* Stock Status */}
+                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                    <span className={`text-sm`}>w magazynie</span>
                   </div>
-
-
-                  {/* Right side: Product details (left-aligned on small screens) */}
-                  <div className="md:w-1/2 flex flex-col items-start md:items-start">
-                    <p className="text-sm mb-2">Kod: {product.kod}</p>
-                    <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
-                    <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
-
-                    <div className="flex items-center space-x-4 mb-4">
-                      {/* Stock Status */}
-                      <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                      <span className={`text-sm`}>w magazynie</span>
-                    </div>
-                  </div>
-                
+                </div>
               </div>
             );
           })}
