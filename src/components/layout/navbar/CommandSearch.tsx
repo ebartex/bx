@@ -68,10 +68,12 @@ export default function CommandSearch() {
 
     if (newQuery.length > 2) {
       setResults([]);
+      setCategoryResults([]);
       setLoading(true);
       fetchResults(newQuery);
     } else {
       setResults([]);
+      setCategoryResults([]);
       setLoading(false);
     }
   };
@@ -176,7 +178,7 @@ export default function CommandSearch() {
         ref={commandRef}
         className={`rounded-none md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
       >
-<div className={`${isOpen ? "sm:absolute xs:top-0 sm:top-0 sm:left-0 z-50 w-full" : "relative"}`}>
+<div className={`${isOpen ? "sm:absolute xl:relative xs:top-0 sm:top-0 sm:left-0 z-50 w-full" : "relative"}`}>
   <input
     className={`
       border-none
