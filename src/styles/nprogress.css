@@ -4,7 +4,7 @@
 }
 
 #nprogress .bar {
-  background: var(--color-blue-600);
+  background: rgb(32, 47, 255);
 
   position: fixed;
   z-index: 1031;
@@ -71,4 +71,3 @@
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
