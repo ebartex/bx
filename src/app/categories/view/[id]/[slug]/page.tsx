@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; // Używamy useRouter z next/navigation
 import { ChevronDown} from "lucide-react";
 
+
+
 interface SubCategory {
   kod: string;
   id: string;
   photo_512: string; // Dodajemy link do zdjęcia podkategorii
 }
-
 
 
 

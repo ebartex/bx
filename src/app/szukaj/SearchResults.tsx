@@ -16,7 +16,7 @@ interface Product {
   id: string;
   nazwa: string;
   sm?: { stanHandl?: string }[];
-  cn?: { cena: number }[];  // Cena produktu
+  cn?: { cena: string }[];  // Cena produktu
 }
 
 export default function SearchResults() {
@@ -76,38 +76,53 @@ export default function SearchResults() {
 
             return (
               <div 
-                key={product.id} 
-                className="border border-slate-200 rounded-none p-4 relative cursor-pointer"
-                onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
-              >
-                <div className="flex justify-center mb-4">
-                  <Image
-                    src={
-                      product.productphoto.length > 0
-                        ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
-                        : "/product_512.png"
-                    }
-                    width={150}
-                    height={150}
-                    alt={product.nazwa}
-                    className="object-cover rounded-md"
-                  />
-                </div>
-                <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
-                
-                {/* Wstawiamy cenę po lewej stronie */}
-                {cena > 0 && (
-                  <div className="text-sm text-zinc-700 mb-2">
-                    Cena: <span className="font-bold">{cena} PLN</span>
-                  </div>
-                )}
-
-                {/* Ikona + napis w lewym dolnym rogu */}
-                <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                  <span className={`text-sm `}>w magazynie</span>
-                </div>
+              key={product.id} 
+              className="border border-slate-200 rounded-none p-4 relative cursor-pointer flex flex-col justify-between" // Flexbox + justify-between
+              onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
+            >
+              <div className="flex justify-center mb-4">
+                <Image
+                  src={
+                    product.productphoto.length > 0
+                      ? `https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || ""}`
+                      : "/product_512.png"
+                  }
+                  width={150}
+                  height={150}
+                  alt={product.nazwa}
+                  className="object-cover rounded-md"
+                />
               </div>
+              
+              <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
+              
+              {/* Wstawiamy cenę po prawej stronie */}
+              {product.cn && product.cn.length > 0 && product.cn[0].cena ? (
+                <div className="text-lg text-zinc-700 mb-2 text-right">
+                  <span className="font-bold text-2xl">
+                    {Number(product.cn[0].cena.replace(',', '.')).toFixed(0).replace('.', ',')}
+                    <sup className="text-sm custom-sup">
+                      ,{Number(product.cn[0].cena.replace(',', '.')).toFixed(2).split('.')[1]}zł
+                    </sup>
+                  </span>
+                </div>
+              ) : (
+                <div className="text-lg text-zinc-700 mb-2 text-right">
+                  <span className="font-bold text-2xl">
+                    0
+                    <sup className="text-sm font-bold custom-sup">,00</sup>
+                    zł
+                  </span>
+                </div>
+              )}
+            
+              {/* Ikona + napis w lewym dolnym rogu */}
+              <div className="absolute bottom-0 left-0 p-2 flex items-center">
+                <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                <span className={`text-sm `}>w magazynie</span>
+              </div>
+            </div>
+            
             );
           })}
         </div>
