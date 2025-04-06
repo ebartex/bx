@@ -17,7 +17,7 @@ export default function CategoryLayout({ children }: LayoutProps) {
   return (
     <div className="flex">
       {/* Menu boczne (widoczne tylko na większych ekranach) */}
-      <div className="hidden sm:block">
+      <div className="hidden lg:block">
         <MenuDesktop />
       </div>
 
