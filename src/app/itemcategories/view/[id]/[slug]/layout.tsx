@@ -44,7 +44,7 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
    
     <div className="flex">
       
-      <div className="hidden sm:block">
+      <div className="hidden lg:block">
         <MenuDesktop />
       </div>
 
