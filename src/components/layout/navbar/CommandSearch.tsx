@@ -158,6 +158,11 @@ export default function CommandSearch() {
     };
   }, []);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && query.length > 2) {
+      handleLink(`/szukaj?q=${encodeURIComponent(query)}`);
+    }
+  };
   return (
     <>
    
@@ -202,6 +207,7 @@ export default function CommandSearch() {
             onBlur={handleInputBlur}  // Zapisz zapytanie przy opuszczeniu inputa
             value={query}
             ref={elementRef}
+            onKeyDown={handleKeyDown} // Dodajemy naszą obsługę zdarzenia
           />
           {/* Ikona Search */}
           <Search size={18} className={`z-60 absolute left-3  ${isOpen ? "top-5" : "top-1/2"}  transform -translate-y-1/2 text-slate-500`} />
