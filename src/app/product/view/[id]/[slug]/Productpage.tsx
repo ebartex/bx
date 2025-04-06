@@ -112,25 +112,50 @@ const ProductPage = () => {
 
                 {/* Lewa strona: Obrazek produktu (wyśrodkowany na małych ekranach) */}
                 <div className="xs:w-full flex justify-center">
-                  {product.productphoto.length > 0 ? (
-                    <Image
-                      src={`https://www.imgstatic.ebartex.pl/${product.productphoto[0].photo_512}`}
-                      alt={product.nazwa}
-                      width={512} // Domyślny rozmiar dla małych ekranów
-                      height={512} // Domyślny rozmiar dla małych ekranów
-                      className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
-                    />
-                  ) : (
-                    <div className="text-gray-500">Brak zdjęcia produktu</div>
-                  )}
+                {product.productphoto.length > 0 ? (
+                        <Image
+                          src={
+                            `https://www.imgstatic.ebartex.pl/${
+                              product.productphoto.find(photo => photo.main_photo === 1)?.photo_512
+                              || product.productphoto[0]?.photo_512
+                              || "product_512.png"
+                            }`
+                          }
+                          alt={product.nazwa}
+                          width={512}
+                          height={512}
+                          className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
+                        />
+                      ) : (
+                        <Image
+                          src="/product_512.png"
+                          alt="Brak zdjęcia produktu"
+                          width={512}
+                          height={512}
+                          className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
+                        />
+                      )}
+
                 </div>
 
                 {/* Prawa strona: Szczegóły produktu (wyrównane do lewej na małych ekranach) */}
                 <div className="md:w-1/2 flex flex-col items-start md:items-start">
-                  <p className="text-sm mb-2">Kod: {product.kod}</p>
-                  <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
-                  <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
-                  <p className="text-sm mb-4">Cena: {product.cn[0]?.cena}</p>
+                        {product.kod && (
+                          <p className="text-sm mb-2">Kod: {product.kod}</p>
+                        )}
+
+                        {product.kodpaskowy && (
+                          <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>
+                        )}
+
+                        {product.jm && (
+                          <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>
+                        )}
+
+                        {product.cn && product.cn[0]?.cena && (
+                          <p className="text-sm mb-4">Cena: {product.cn[0].cena}</p>
+                        )}
+
                   <p className="text-sm mb-4 cursor-pointer" onClick={() => handleCategoryClick(product.xt?.id)} >Katalog: {product.xt?.kod}</p>
                   <div className="flex items-center space-x-4 mb-4">
                     {/* Status zapasów */}

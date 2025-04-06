@@ -67,7 +67,7 @@ export default function Page() {
 
       <div
         className={`mb-4 overflow-auto ${
-          subCategories.length > 2 ? 'h-55' : 'h-auto'
+          subCategories.length > 2 ? 'h-100' : 'h-auto'
         }`}
       >
         {subCategories.map((subCategory) => (
