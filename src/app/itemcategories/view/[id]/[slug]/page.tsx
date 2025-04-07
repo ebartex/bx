@@ -22,6 +22,7 @@ export default function Page() {
   const [products, setProducts] = useState<Product[]>([]); // Lista produktów
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [categoryName, setCategoryName] = useState<string | null>(null);
   const router = useRouter(); // Inicjujemy useRouter
 
   // Pobieramy parametr tw-katalog z URL
@@ -50,8 +51,20 @@ export default function Page() {
         .finally(() => {
           setLoading(false);
         });
+
+      // Pobieramy nazwę kategorii
+      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`)
+        .then((res) => res.json())
+        .then((data: Category[]) => {
+          if (Array.isArray(data) && data.length > 0) {
+            setCategoryName(data[0].kod);
+          }
+        })
+        .catch((err) => {
+          console.error("Błąd pobierania kategorii:", err);
+        });
     }
-  }, [id]); // Wykonaj zapytanie, gdy parametr 'id' zmienia się
+  }, [id]);
 
   const handleProductClick = (productId: string, slug: string) => {
     // Przejście do strony produktu przy użyciu router.push
