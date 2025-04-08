@@ -37,7 +37,7 @@ export default function CategoryLayout({ children }: LayoutProps) {
   const metadata = categoryName
     ? { title: `${categoryName} - Moja Strona` }
     : { title: "Ładowanie..." };
-      return (
+  return (
     <>
           {/* Dodajemy meta dane do head */}
           <head>
@@ -59,6 +59,5 @@ export default function CategoryLayout({ children }: LayoutProps) {
         </div>
       </div>
     </div>
-    </>
   );
 }
