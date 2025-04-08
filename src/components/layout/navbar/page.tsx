@@ -11,9 +11,9 @@ export default function Navbar() {
   return (
     <>
       
-      <nav className="bg-white flex flex-col sm:flex-row items-center justify-between py-3 xl:py-4 xl:px-6"> 
+      <nav className="bg-white flex flex-col sm:flex-row items-center justify-between py-3 xl:py-4 xl:pr-6"> 
         {/* Flex w kolumnie na urządzeniach mobilnych, wiersz na większych ekranach, wyrównanie w poziomie */}
-        <div className="pl-5 pr-5 flex items-center gap-2 sm:w-auto w-full mb-4 sm:mb-0">
+        <div className="pr-5 flex items-center gap-2 sm:w-auto w-full mb-4 sm:mb-0">
         {/* Ikona Menu */}
         <div className="block lg:hidden">
         <MenuMobile/>
