@@ -59,5 +59,6 @@ export default function CategoryLayout({ children }: LayoutProps) {
         </div>
       </div>
     </div>
+       </>
   );
 }
