@@ -57,7 +57,7 @@ export default function CategoryLayout({ children }: LayoutProps) {
     { label: 'Strona główna', href: '/' },
     parentCategory ? { label: parentCategory, href: `/category/${parentCategory}` } : null, // Kategoria nadrzędna
     { label: categoryName || '', href: undefined }, // Ostatni element bez linku (aktywny)
-  ].filter(Boolean); // Filtrujemy null (jeśli brak kategorii nadrzędnej)
+  ].filter((breadcrumb): breadcrumb is { label: string; href: string | undefined } => breadcrumb !== null); // Filtrujemy null (jeśli brak kategorii nadrzędnej)
 
   const metadata = categoryName
     ? { title: `${categoryName} - Moja Strona` }
