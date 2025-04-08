@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
+import Breadcrumbs from '@/components/layout/breadcrumbs/page';
 
 interface LayoutProps {
   children: ReactNode;
@@ -35,9 +36,18 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
   const metadata = categoryName
     ? { title: `${categoryName} - Moja Strona` }
     : { title: "Ładowanie..." };
-
+    const breadcrumbs = [
+        { label: 'Strona główna', href: '/' },
+        { label: 'Blacha', href: '/category' },
+        { label: 'Blacha czarna łez', href: undefined }, // Ostatni element nie ma linku
+      ];
   return (
     <>
+    
+    <div>
+      
+    <Breadcrumbs breadcrumbs={breadcrumbs} />
+    </div>
       {/* Dodajemy meta dane do head */}
       <head>
         <meta name="description" content={categoryName ? `${categoryName} - Kategoria produktów` : "Ładowanie kategorii"} />
@@ -52,12 +62,15 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
       )}
 
       <div className="flex">
+        
         <div className="hidden lg:block">
+          
           <MenuDesktop />
         </div>
 
         <div className="flex-1 sm:p-4">
           <div className="mb-4">
+            
             {children}
           </div>
         </div>
