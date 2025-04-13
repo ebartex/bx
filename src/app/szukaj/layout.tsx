@@ -15,7 +15,7 @@ export default function SearchLayout({
             {/* Dodajemy meta dane do head */}
             <head>
                 <meta name="description" content={query} />
-                <title>Wyniki wyszukiwania dla: {query}</title>
+                <title>{query}</title>
             </head>
 
             <main>{children}</main>
