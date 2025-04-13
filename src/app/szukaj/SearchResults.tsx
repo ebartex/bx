@@ -97,7 +97,7 @@ export default function SearchResults() {
               
 {/* Wstawiamy cenę po prawej stronie */}
           {product.cn && product.cn.length > 0 && product.cn[0].cena ? (
-            <div className="text-lg text-zinc-700 mb-2 text-right">
+            <div className="text-lg text-slate-700 mb-2 text-right">
               <span className="font-bold text-xl">
                 {/* Konwertujemy cenę na string, zamieniamy przecinek na kropkę, konwertujemy na liczbę */}
                 {Number(String(product.cn[0].cena).replace(',', '.')).toFixed(0).replace('.', ',')}

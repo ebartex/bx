@@ -74,7 +74,7 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
   ].filter((breadcrumb): breadcrumb is { label: string; href: string | undefined } => breadcrumb !== null); // Filtrujemy null (jeśli brak jakiejkolwiek kategorii)
 
   const metadata = categoryName
-    ? { title: `${categoryName} - Moja Strona` }
+    ? { title: `${categoryName} - Bartex Gorzkowice Sklep budowlany` }
     : { title: "Ładowanie..." };
 
   return (
