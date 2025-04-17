@@ -55,7 +55,7 @@ export default function SearchResults() {
 
   const handleProductClick = (productId: string) => {
     // Nawigacja do strony szczegółów produktu
-    router.push(`/product/view/${productId}/test`);
+    router.push(`/products/view/${productId}/test`);
   };
 
   return (

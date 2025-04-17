@@ -64,7 +64,7 @@ export default function Page() {
 
   const handleProductClick = (productId: string, slug: string) => {
     // Przejście do strony produktu przy użyciu router.push
-    router.push(`/product/view/${productId}/${slug}`);
+    router.push(`/products/view/${productId}/${slug}`);
   };
 
   return (
