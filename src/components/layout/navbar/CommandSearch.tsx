@@ -247,10 +247,10 @@ export default function CommandSearch() {
                   results.map((result) => (
                     <div
                       key={result.id}
-                      onClick={() => handleLink(`/product/view/${result.id}/slug`)} // Używamy onClick tutaj w divie
+                      onClick={() => handleLink(`/products/view/${result.id}/slug`)} // Używamy onClick tutaj w divie
                     >
                       <CommandItem
-                        onClick={() => handleLink(`/product/view/${result.id}/slug`)}
+                        onClick={() => handleLink(`/products/view/${result.id}/slug`)}
                         className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
                       >
 <div className="flex w-full">

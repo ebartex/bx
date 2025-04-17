@@ -3,6 +3,7 @@
 import type { Metadata } from 'next'
 import ProductPage from './Productpage';
 
+
 type Props = {
   params: Promise<{ id: string; slug: string }>
 }
