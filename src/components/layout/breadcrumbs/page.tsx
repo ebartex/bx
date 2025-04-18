@@ -9,7 +9,8 @@ interface Breadcrumb {
 }
 
 const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
-  const breadcrumbsRef = useRef<HTMLDivElement>(null);
+  // Zmieniamy typ referencji na HTMLOListElement
+  const breadcrumbsRef = useRef<HTMLOListElement>(null);
 
   useEffect(() => {
     if (breadcrumbsRef.current) {
@@ -21,7 +22,7 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
   return (
     <nav aria-label="breadcrumb">
       <ol
-        ref={breadcrumbsRef}
+        ref={breadcrumbsRef} // Typowanie ref do HTMLOListElement
         className="flex space-x-2 pb-4 text-sm overflow-x-auto whitespace-nowrap"
       >
         {breadcrumbs.map((breadcrumb, index) => (
