@@ -77,7 +77,8 @@ export default function MenuDesktop() {
   };
 
   return (
-    <div className="hidden sm:flex sm:flex-col sm:w-64 p-4">
+    <div className="hidden xl:block lg:flex lg:flex-col lg:w-64 p-4">
+      
       <h2 className="text-md font-semibold mb-4">Kategorie</h2>
 
       <Accordion type="single" collapsible>
