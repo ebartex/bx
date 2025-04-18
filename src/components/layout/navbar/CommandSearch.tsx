@@ -229,7 +229,7 @@ export default function CommandSearch() {
         className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
       >
         <div className="flex w-full">
-          <span onClick={() => handleLink(`/itemcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+          <span onClick={() => handleLink(`/categories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
      
         </div>
       </CommandItem>

@@ -73,7 +73,7 @@ export default function MenuDesktop() {
   // Funkcja obsługująca kliknięcie w subkategorię
   const handleSubCategoryClick = (subCategoryId: string) => {
     // Przejście do strony z podkategorią
-    router.push(`/categories/view/${subCategoryId}/test`);
+    router.push(`/parentcategories/view/${subCategoryId}/test`);
   };
 
   return (

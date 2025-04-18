@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+
 import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
 import Breadcrumbs from '@/components/layout/breadcrumbs/page';
 
@@ -14,13 +15,13 @@ interface Category {
   super: string | null;
 }
 
-export default function ItemCategoryLayout({ children }: LayoutProps) {
+export default function CategoryLayout({ children }: LayoutProps) {
   const { id } = useParams();
   const [categoryName, setCategoryName] = useState<string | null>(null);
-  const [parentCategory, setParentCategory] = useState<string | null>(null);
-  const [grandparentCategory, setGrandparentCategory] = useState<string | null>(null); // Kategoria nadkategorii
+  const [parentCategory, setParentCategory] = useState<string | null>(null); // Kategoria nadrzędna
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Funkcja metadata do dynamicznego ustawiania tytułu
   useEffect(() => {
     if (id) {
       fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`)
@@ -29,28 +30,14 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
           if (Array.isArray(data) && data.length > 0) {
             const currentCategory = data[0];
             setCategoryName(currentCategory.kod);
-
-            // Jeśli istnieje kategoria nadrzędna, zapytaj o nią
+            
+            // Jeżeli istnieje kategoria nadrzędna, zapytaj o nią
             if (currentCategory.super) {
               fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`)
                 .then((res) => res.json())
                 .then((parentData: Category[]) => {
                   if (Array.isArray(parentData) && parentData.length > 0) {
                     setParentCategory(parentData[0].kod);
-
-                    // Jeśli istnieje kategoria nadkategorii, zapytaj o nią
-                    if (parentData[0].super) {
-                      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${parentData[0].super}`)
-                        .then((res) => res.json())
-                        .then((grandparentData: Category[]) => {
-                          if (Array.isArray(grandparentData) && grandparentData.length > 0) {
-                            setGrandparentCategory(grandparentData[0].kod);
-                          }
-                        })
-                        .catch((err) => {
-                          console.error("Błąd pobierania kategorii nadkategorii:", err);
-                        });
-                    }
                   }
                 })
                 .catch((err) => {
@@ -62,19 +49,18 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
         .catch((err) => {
           console.error("Błąd pobierania kategorii:", err);
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsLoading(false)); // Zakończenie ładowania
     }
   }, [id]);
 
   const breadcrumbs = [
     { label: 'Strona główna', href: '/' },
-    grandparentCategory ? { label: grandparentCategory, href: `/category/${grandparentCategory}` } : null, // Kategoria nadkategorii
-    parentCategory ? { label: parentCategory, href: `/category/${parentCategory}` } : null, // Kategoria nadrzędna
+    parentCategory ? { label: parentCategory, href: `/parentcategory/${parentCategory}` } : null, // Kategoria nadrzędna
     { label: categoryName || '', href: undefined }, // Ostatni element bez linku (aktywny)
-  ].filter((breadcrumb): breadcrumb is { label: string; href: string | undefined } => breadcrumb !== null); // Filtrujemy null (jeśli brak jakiejkolwiek kategorii)
+  ].filter((breadcrumb): breadcrumb is { label: string; href: string | undefined } => breadcrumb !== null); // Filtrujemy null (jeśli brak kategorii nadrzędnej)
 
   const metadata = categoryName
-    ? { title: `${categoryName} - Bartex Gorzkowice Sklep budowlany` }
+    ? { title: `${categoryName} - Moja Strona` }
     : { title: "Ładowanie..." };
 
   return (
@@ -86,13 +72,6 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
       </head>
 
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      
-      {/* Tytuł kategorii */}
-      {categoryName && (
-        <h1 className="text-xl font-semibold text-zinc-800 mb-6">
-          {categoryName}
-        </h1>
-      )}
 
       <div className="flex">
         {/* Menu boczne (widoczne tylko na większych ekranach) */}
@@ -100,7 +79,8 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
           <MenuDesktop />
         </div>
 
-        <div className="flex-1 sm:p-4">
+        <div className="flex-1 p-4">
+          {/* Zawartość strony (np. lista podkategorii) */}
           <div className="mb-4">
             {isLoading ? <p>Ładowanie...</p> : children}
           </div>
