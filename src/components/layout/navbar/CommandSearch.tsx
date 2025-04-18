@@ -160,6 +160,7 @@ export default function CommandSearch() {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && query.length > 2) {
+      elementRef.current?.blur();  // Usuwamy fokus z inputa
       handleLink(`/szukaj?q=${encodeURIComponent(query)}`);
     }
   };
