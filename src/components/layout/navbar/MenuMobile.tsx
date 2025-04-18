@@ -83,7 +83,7 @@ export default function MenuMobile() {
     setIsMenuOpen(false);
 
     // Przejście do strony z podkategorią
-    router.push(`/categories/view/${subCategoryId}/test`);
+    router.push(`/parentcategories/view/${subCategoryId}/test`);
   };
 
   return (
