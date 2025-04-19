@@ -11,6 +11,7 @@ const Footer = () => {
     <img src="/visa.svg" alt="Visa" className="h-4"/>
     <img src="/mastercard.svg" alt="MasterCard" className="h-4"/>
     <img src="/blik.svg" alt="BLIK" className="h-4"/>
+    <img src="/gotowka.svg" alt="Gotówka" className="h-6"/>
   </div>
 </div>
 <div className="text-neutral-900 text-xs py-4">
