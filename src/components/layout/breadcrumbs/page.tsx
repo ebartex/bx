@@ -28,7 +28,7 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
         {breadcrumbs.map((breadcrumb, index) => (
           <li
             key={index}
-            className={`flex items-center ${index === breadcrumbs.length - 1 ? 'pr-2' : ''}`}
+            className={`flex items-center ${index === 0 ? 'ml-3' : ''} ${index === breadcrumbs.length - 1 ? 'pr-2' : ''}`}
           >
             {index > 0 && <span className="mx-2 text-slate-200">/</span>}
             {breadcrumb.href ? (

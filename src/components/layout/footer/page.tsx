@@ -8,9 +8,9 @@ const Footer = () => {
         <div className="text-neutral-900 text-xs py-4">
   <p className="text-neutral-700 text-xs py-4">Akceptujemy płatności</p>
   <div className="flex space-x-8">
-    <img src="/visa.svg" alt="Visa" className="h-6"/>
-    <img src="/mastercard.svg" alt="MasterCard" className="h-6"/>
-    <img src="/blik.svg" alt="BLIK" className="h-6"/>
+    <img src="/visa.svg" alt="Visa" className="h-4"/>
+    <img src="/mastercard.svg" alt="MasterCard" className="h-4"/>
+    <img src="/blik.svg" alt="BLIK" className="h-4"/>
   </div>
 </div>
 <div className="text-neutral-900 text-xs py-4">
