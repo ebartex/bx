@@ -27,6 +27,7 @@ interface Product {
 }
 
 export default function SearchResults() {
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,35 +92,48 @@ export default function SearchResults() {
             >
               {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
                 <div className="absolute top-0 right-0 p-2">
-    <Popover>
-      <PopoverTrigger onClick={(e) => e.stopPropagation()} asChild>
-        <PackageCheck
-          className="ml-20 text-green-800 cursor-pointer"
-          size={32} // większa ikona
-        />
-      </PopoverTrigger>
-      <PopoverContent side="top" className="text-sm space-y-2 max-w-xs">
-        {/* Nagłówek */}
-        <div className="flex items-center gap-2 font-semibold text-gray-800">
-          <Info className="text-blue-600" size={18} />
-          <span>Produkt w zamówieniu</span>
-        </div>
+<Popover
+  open={openPopoverId === product.id}
+  onOpenChange={(isOpen) =>
+    setOpenPopoverId(isOpen ? product.id : null)
+  }
+>
+  <PopoverTrigger onClick={(e) => e.stopPropagation()} asChild>
+    <PackageCheck
+      className="ml-20 text-green-800 cursor-pointer"
+      size={32}
+    />
+  </PopoverTrigger>
 
-        {/* Data */}
-        <div className="flex items-center gap-2 text-gray-700">
-          <Clock size={16} className="text-gray-600" />
-          <span>Data zamówienia: {product.zp[0].data}</span>
-        </div>
+  <PopoverContent
+    side="top"
+    className="text-sm space-y-2 max-w-xs"
+    onClick={(e) => {
+      e.stopPropagation();
+      setOpenPopoverId(null); // Zamknij przy kliknięciu w zawartość
+    }}
+  >
+    {/* Nagłówek */}
+    <div className="flex items-center gap-2 font-semibold text-gray-800">
+      <Info className="text-blue-600" size={18} />
+      <span>Produkt w zamówieniu</span>
+    </div>
 
-        {/* Opis */}
-        <div className="flex items-start gap-2 text-gray-600">
-          <Package size={16} className="mt-1 text-yellow-600" />
-          <span>
-            Produkt zostanie uzupełniony o <strong>stan magazynowy</strong> w ciągu kilku dni od daty zamówienia.
-          </span>
-        </div>
-      </PopoverContent>
-    </Popover>
+    {/* Data */}
+    <div className="flex items-center gap-2 text-gray-700">
+      <Clock size={16} className="text-gray-600" />
+      <span>Data zamówienia: {product.zp[0].data}</span>
+    </div>
+
+    {/* Opis */}
+    <div className="flex items-start gap-2 text-gray-600">
+      <Package size={16} className="mt-1 text-yellow-600" />
+      <span>
+        Produkt zostanie uzupełniony o <strong>stan magazynowy</strong> w ciągu kilku dni od daty zamówienia.
+      </span>
+    </div>
+  </PopoverContent>
+</Popover>
                 </div>
               )}
               <div className="flex justify-center mb-4">
