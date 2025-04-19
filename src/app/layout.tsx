@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import Navbar from "@/components/layout/navbar/page";
 import {Roboto} from 'next/font/google';
 import Topbar from "@/components/layout/topbar/page";
-import Footer from "@/components/layout/footer/page";
+
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700", "900"],
@@ -29,7 +29,7 @@ export default function RootLayout({
         <div className="xl:w-[1200px] mx-auto flex-grow">
           <Navbar />
           {children}
-          <Footer />
+        
         </div>
         
       </body>
