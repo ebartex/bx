@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
@@ -13,7 +14,7 @@ const Footer = () => {
   </div>
 </div>
 <div className="text-neutral-900 text-xs py-4">
-<p>&copy; {new Date().getFullYear()} Bartex - Materiały budowlane <span className="mx-2">•</span> <a href="/" className="text-neutral-500 underline">Polityka prywatności</a> <span className="mx-2">•</span> <a href="/" className="text-neutral-500 underline">Adres kontatkowy</a></p>
+<p>&copy; {new Date().getFullYear()} Bartex - Materiały budowlane <span className="mx-2">•</span> <Link href="/" className="text-neutral-500 underline">Polityka prywatności</Link> <span className="mx-2">•</span> <Link href="/" className="text-neutral-500 underline">Adres kontatkowy</Link></p>
 </div>
 
     </footer>
