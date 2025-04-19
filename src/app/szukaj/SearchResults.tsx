@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";  // Dodajemy useRouter
 import Image from "next/image";
-import { Squircle } from "lucide-react";
-
+import { Squircle, PackageCheck } from "lucide-react";
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
 }
 
 interface Product {
+  zp: { id?: string }[];
   productphoto: ProductPhoto[];
   title: string;
   id: string;
@@ -68,6 +68,9 @@ export default function SearchResults() {
       {Array.isArray(results) && results.length > 0 ? (
         <div className="grid grid-cols-2 xl:grid-cols-4">
           {results.map((product) => {
+
+
+
             const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
             const stanColor =
             stan === 0 ? "text-red-700" : "text-green-700";
@@ -79,6 +82,11 @@ export default function SearchResults() {
               className="border border-slate-200 rounded-none p-4 relative cursor-pointer flex flex-col justify-between" // Flexbox + justify-between
               onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
             >
+                          {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
+              <div className="absolute top-0 right-0 p-2">
+                <PackageCheck className="text-sky-800" size={30} />
+              </div>
+            )}
               <div className="flex justify-center mb-4">
                 <Image
                   src={
@@ -89,7 +97,7 @@ export default function SearchResults() {
                   width={150}
                   height={150}
                   alt={product.nazwa}
-                  className="object-cover rounded-md"
+                  className="mt-5 object-cover rounded-md"
                 />
               </div>
               
