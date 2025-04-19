@@ -89,7 +89,7 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
       
       {/* Tytuł kategorii */}
       {categoryName && (
-        <h1 className="text-xl font-semibold text-zinc-800 mb-6">
+        <h1 className="text-xl font-semibold text-zinc-800 ml-3 mt-3 mb-6">
           {categoryName}
         </h1>
       )}
