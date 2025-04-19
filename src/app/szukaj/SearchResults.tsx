@@ -3,14 +3,21 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";  // Dodajemy useRouter
 import Image from "next/image";
-import { Squircle, PackageCheck } from "lucide-react";
+import { Squircle, PackageCheck, Clock, Info, Package } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"; 
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
 }
 
 interface Product {
-  zp: { id?: string }[];
+  zp: {
+    data: ReactNode; id?: string 
+}[];
   productphoto: ProductPhoto[];
   title: string;
   id: string;
@@ -79,14 +86,42 @@ export default function SearchResults() {
             return (
               <div 
               key={product.id} 
-              className="border border-slate-200 rounded-none p-4 relative cursor-pointer flex flex-col justify-between" // Flexbox + justify-between
+              className="border border-slate-200 rounded-none p-4 pb-10 relative cursor-pointer flex flex-col justify-between" // Flexbox + justify-between
               onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
             >
-                          {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
-              <div className="absolute top-0 right-0 p-2">
-                <PackageCheck className="text-sky-800" size={30} />
-              </div>
-            )}
+              {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
+                <div className="absolute top-0 right-0 p-2">
+    <Popover>
+      <PopoverTrigger onClick={(e) => e.stopPropagation()} asChild>
+        <PackageCheck
+          className="ml-20 text-green-800 cursor-pointer"
+          size={32} // większa ikona
+        />
+      </PopoverTrigger>
+      <PopoverContent side="top" className="text-sm space-y-2 max-w-xs">
+        {/* Nagłówek */}
+        <div className="flex items-center gap-2 font-semibold text-gray-800">
+          <Info className="text-blue-600" size={18} />
+          <span>Produkt w zamówieniu</span>
+        </div>
+
+        {/* Data */}
+        <div className="flex items-center gap-2 text-gray-700">
+          <Clock size={16} className="text-gray-600" />
+          <span>Data zamówienia: {product.zp[0].data}</span>
+        </div>
+
+        {/* Opis */}
+        <div className="flex items-start gap-2 text-gray-600">
+          <Package size={16} className="mt-1 text-yellow-600" />
+          <span>
+            Produkt zostanie uzupełniony o <strong>stan magazynowy</strong> w ciągu kilku dni od daty zamówienia.
+          </span>
+        </div>
+      </PopoverContent>
+    </Popover>
+                </div>
+              )}
               <div className="flex justify-center mb-4">
                 <Image
                   src={
@@ -130,6 +165,8 @@ export default function SearchResults() {
               <div className="absolute bottom-0 left-0 p-2 flex items-center">
                 <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
                 <span className={`text-sm `}>w magazynie</span>
+
+     
               </div>
             </div>
             
