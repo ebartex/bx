@@ -16,7 +16,7 @@ interface ProductPhoto {
 
 interface Product {
   zp: {
-    data: ReactNode; id?: string 
+    data: string; id?: string 
 }[];
   productphoto: ProductPhoto[];
   title: string;
