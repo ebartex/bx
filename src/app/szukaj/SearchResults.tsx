@@ -47,6 +47,32 @@ export default function SearchResults() {
       window.removeEventListener('scroll', handleScroll, true);
     };
   }, []);
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setOpenPopoverId(null); // Zamknij popover przy scrollu
+    };
+  
+    window.addEventListener('scroll', handleScroll, true); // true = nasłuchuje też wewnętrznych elementów (np. div z overflow)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, []);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpenPopoverId(null); // Zamknij popover po naciśnięciu Escape
+      }
+    };
+  
+    window.addEventListener('keydown', handleKeyDown);
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
   useEffect(() => {
     if (query) {
       setLoading(true);
