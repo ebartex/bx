@@ -36,7 +36,17 @@ export default function SearchResults() {
   const query = searchParams.get('q') || '';
   
   const router = useRouter(); // Hook do routingu
-
+  useEffect(() => {
+    const handleScroll = () => {
+      setOpenPopoverId(null); // Zamknij popover przy scrollu
+    };
+  
+    window.addEventListener('scroll', handleScroll, true); // true = nasłuchuje też wewnętrznych elementów (np. div z overflow)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, []);
   useEffect(() => {
     if (query) {
       setLoading(true);
