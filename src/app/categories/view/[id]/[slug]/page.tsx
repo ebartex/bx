@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; // Importujemy useRouter z next/navigation
 import Image from "next/image";
-import { Squircle } from "lucide-react";
+import { Squircle, PackageCheck, Clock, Info, Package } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface ProductPhoto {
   main_photo: number;
@@ -11,6 +16,9 @@ interface ProductPhoto {
 }
 
 interface Product {
+  zp: {
+    data: string; id?: string 
+  }[];
   productphoto: ProductPhoto[];
   title: string;
   id: string;
@@ -23,6 +31,7 @@ export default function Page() {
   const [products, setProducts] = useState<Product[]>([]); // Lista produktów
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
 
   const router = useRouter(); // Inicjujemy useRouter
 
@@ -52,13 +61,6 @@ export default function Page() {
         .finally(() => {
           setLoading(false);
         });
-
-      // Pobieramy nazwę kategorii
-      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("Błąd pobierania kategorii:", err);
-        });
     }
   }, [id]);
 
@@ -87,6 +89,52 @@ export default function Page() {
                 className="border cursor-pointer border-slate-200 rounded-none p-4 relative"
                 onClick={() => handleProductClick(product.id, 'test')} // Przechodzi do strony produktu po kliknięciu
               >
+                {/* Sprawdzamy, czy stan magazynowy wynosi 0 i wyświetlamy popover */}
+                {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
+                  <div className="absolute top-0 right-0 p-2">
+                    <Popover
+                      open={openPopoverId === product.id}
+                      onOpenChange={(isOpen) => setOpenPopoverId(isOpen ? product.id : null)}
+                    >
+                      <PopoverTrigger onClick={(e) => e.stopPropagation()} asChild>
+                        <PackageCheck
+                          className="ml-20 text-green-800 cursor-pointer"
+                          size={32}
+                        />
+                      </PopoverTrigger>
+
+                      <PopoverContent
+                        side="top"
+                        className="text-sm space-y-2 max-w-xs"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenPopoverId(null); // Zamknij przy kliknięciu w zawartość
+                        }}
+                      >
+                        {/* Nagłówek */}
+                        <div className="flex items-center gap-2 font-semibold text-gray-800">
+                          <Info className="text-blue-600" size={18} />
+                          <span>Produkt w zamówieniu</span>
+                        </div>
+
+                        {/* Data */}
+                        <div className="flex items-center gap-2 text-gray-700">
+                          <Clock size={16} className="text-gray-600" />
+                          <span>Data zamówienia: {product.zp[0].data}</span>
+                        </div>
+
+                        {/* Opis */}
+                        <div className="flex items-start gap-2 text-gray-600">
+                          <Package size={16} className="mt-1 text-yellow-600" />
+                          <span>
+                            Produkt zostanie uzupełniony o <strong>stan magazynowy</strong> w ciągu kilku dni od daty zamówienia.
+                          </span>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                )}
+
                 <div className="flex justify-center mb-4">
                   <Image
                     src={
