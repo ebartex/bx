@@ -84,7 +84,7 @@ export default function CommandSearch() {
       
       const [productRes, categoryRes] = await Promise.all([
         fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`),
-        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-kod=?${query}?`)
+        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`)
       ]);
   
       const productData: SearchResult[] = await productRes.json();

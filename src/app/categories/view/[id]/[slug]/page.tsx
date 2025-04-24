@@ -37,7 +37,30 @@ export default function Page() {
 
   // Pobieramy parametr tw-katalog z URL
   const { id } = useParams(); // Zakładając, że parametr w URL to 'id' (np. /itemcategory/view/[id])
-
+  useEffect(() => {
+    const handleScroll = () => {
+      setOpenPopoverId(null); // Zamknij popover przy scrollu
+    };
+  
+    window.addEventListener('scroll', handleScroll, true); // true = nasłuchuje też wewnętrznych elementów (np. div z overflow)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, []);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpenPopoverId(null); // Zamknij popover po naciśnięciu Escape
+      }
+    };
+  
+    window.addEventListener('keydown', handleKeyDown);
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
   useEffect(() => {
     if (id) {
       setLoading(true);
