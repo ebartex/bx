@@ -227,8 +227,11 @@ export default function CommandSearch() {
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
 
+                      {(parentCategoryResults.length > 0 || categoryResults.length > 0) && (
+            <CommandGroup heading="Kategorie">
+              {/* Pokaż kategorie nadrzędne */}
               {parentCategoryResults.length > 0 && (
-                <CommandGroup heading="Kategorie nadrzędne">
+                <>
                   {parentCategoryResults.map((category) => (
                     <CommandItem
                       key={category.id}
@@ -240,11 +243,12 @@ export default function CommandSearch() {
                       </div>
                     </CommandItem>
                   ))}
-                </CommandGroup>
+                </>
               )}
 
+              {/* Pokaż kategorie */}
               {categoryResults.length > 0 && (
-                <CommandGroup heading="Kategorie">
+                <>
                   {categoryResults.map((category) => (
                     <CommandItem
                       key={category.id}
@@ -256,8 +260,11 @@ export default function CommandSearch() {
                       </div>
                     </CommandItem>
                   ))}
-                </CommandGroup>
+                </>
               )}
+            </CommandGroup>
+          )}
+
 
               <CommandGroup className="p-0" heading="Wyniki">
                 {loading ? (
