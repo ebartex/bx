@@ -25,11 +25,17 @@ interface SearchResult {
   nazwa: string;
   sm?: { stanHandl?: string }[]; // Add the 'sm' property with an optional array of objects
 }
+
 interface CategoryResult {
   id: string;
   kod: string;
-
 }
+
+interface ParentCategoryResult {
+  id: string;
+  kod: string;
+}
+
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false); // Kontroluje widoczność okna wyników
   const [backgroundVisible, setBackgroundVisible] = useState(false); // Kontroluje widoczność tła
@@ -38,6 +44,7 @@ export default function CommandSearch() {
   const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
   const [searchHistory, setSearchHistory] = useState<string[]>([]); // Historia wyszukiwania
   const [categoryResults, setCategoryResults] = useState<CategoryResult[]>([]);
+  const [parentCategoryResults, setParentCategoryResults] = useState<ParentCategoryResult[]>([]);
   const commandRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -69,11 +76,13 @@ export default function CommandSearch() {
     if (newQuery.length > 2) {
       setResults([]);
       setCategoryResults([]);
+      setParentCategoryResults([]);
       setLoading(true);
       fetchResults(newQuery);
     } else {
       setResults([]);
       setCategoryResults([]);
+      setParentCategoryResults([]);
       setLoading(false);
     }
   };
@@ -82,31 +91,35 @@ export default function CommandSearch() {
     try {
       setLoading(true);
       
-      const [productRes, categoryRes] = await Promise.all([
+      const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
         fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`),
-        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`)
+        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
+        fetch(`https://www.bapi2.ebartex.pl/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)
       ]);
   
       const productData: SearchResult[] = await productRes.json();
       const categoryData: CategoryResult[] = await categoryRes.json();
+      const parentCategoryData: ParentCategoryResult[] = await parentCategoryRes.json();
   
       setResults(productData);
       setCategoryResults(categoryData);
+      setParentCategoryResults(parentCategoryData);
     } catch (error) {
       console.error("Błąd podczas pobierania wyników:", error);
       setResults([]);
       setCategoryResults([]);
+      setParentCategoryResults([]);
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleLink = (url: string) => {
     // Zamykamy okno wyników
     setIsOpen(false);
     setResults([]);
     setCategoryResults([]);
+    setParentCategoryResults([]);
     setQuery("");
   
     // Ukrywamy tło po 0.5 sekundy
@@ -119,13 +132,7 @@ export default function CommandSearch() {
       router.push(url);
     }, 300);
   };
-  /*
 
-  const handleSearchHistoryClick = (historyQuery: string) => {
-    setQuery(historyQuery); // Ustawiamy zapytanie na klikniętą frazę
-    fetchResults(historyQuery); // Pobieramy wyniki dla tej frazy
-  };
-*/
   const handleAddToHistory = (newQuery: string) => {
     if (!searchHistory.includes(newQuery)) {
       setSearchHistory((prevHistory) => [...prevHistory, newQuery]);
@@ -164,9 +171,9 @@ export default function CommandSearch() {
       handleLink(`/szukaj?q=${encodeURIComponent(query)}`);
     }
   };
+
   return (
     <>
-   
       {/* Tło jest zawsze widoczne, nawet po zamknięciu okna wyników */}
       {backgroundVisible && isOpen && (
         <div
@@ -178,30 +185,29 @@ export default function CommandSearch() {
             }
           }}
         />
-    
       )}
 
       <Command
         ref={commandRef}
         className={`rounded-none md:min-w-[450px] ${isOpen ? "h-12" : "h-12"}`}
       >
-<div className={`${isOpen ? "sm:absolute xl:relative xs:top-0 sm:top-0 sm:left-0 z-50 w-full" : "relative"}`}>
-  <input
-    className={`
-      border-none
-      z-40
-      bg-slate-100
-      transition-all
-      focus:ring-0
-      focus:ring-offset-none
-      focus:shadow-none
-      focus:outline-none
-      focus:bg-white
-      pl-10 pr-10 block w-full h-10
-      rounded-none text-sm
-      ${isOpen ? "absolute top-0" : "relative"}
-      sm:top-0 sm:relative
-    `}
+        <div className={`${isOpen ? "sm:absolute xl:relative xs:top-0 sm:top-0 sm:left-0 z-50 w-full" : "relative"}`}>
+          <input
+            className={`
+              border-none
+              z-40
+              bg-slate-100
+              transition-all
+              focus:ring-0
+              focus:ring-offset-none
+              focus:shadow-none
+              focus:outline-none
+              focus:bg-white
+              pl-10 pr-10 block w-full h-10
+              rounded-none text-sm
+              ${isOpen ? "absolute top-0" : "relative"}
+              sm:top-0 sm:relative
+            `}
             placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
             onClick={handleInputClick}
             onChange={handleSearchChange}
@@ -221,23 +227,37 @@ export default function CommandSearch() {
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
 
-            {categoryResults.length > 0 && (
-  <CommandGroup heading="Kategorie">
-    {categoryResults.map((category) => (
-      <CommandItem
-        key={category.id}
-        onClick={() => handleLink(`/category/view/${category.id}/slug`)}
-        className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
-      >
-        <div className="flex w-full">
-          <span onClick={() => handleLink(`/categories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
-     
-        </div>
-      </CommandItem>
-    ))}
-  </CommandGroup>
-)}
+              {parentCategoryResults.length > 0 && (
+                <CommandGroup heading="Kategorie nadrzędne">
+                  {parentCategoryResults.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      onClick={() => handleLink(`/category/view/${category.id}/slug`)}
+                      className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+                    >
+                      <div className="flex w-full">
+                        <span onClick={() => handleLink(`/parentcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
 
+              {categoryResults.length > 0 && (
+                <CommandGroup heading="Kategorie">
+                  {categoryResults.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      onClick={() => handleLink(`/category/view/${category.id}/slug`)}
+                      className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+                    >
+                      <div className="flex w-full">
+                        <span onClick={() => handleLink(`/categories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
 
               <CommandGroup className="p-0" heading="Wyniki">
                 {loading ? (
@@ -254,41 +274,38 @@ export default function CommandSearch() {
                         onClick={() => handleLink(`/products/view/${result.id}/slug`)}
                         className="flex hover:rounded-none items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
                       >
-<div className="flex w-full">
-  <Image
-    src={
-      result.productphoto.length > 0
-        ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
-        : "/product_512.png"
-    }
-    width={40}
-    height={40}
-    alt="Zdjęcie produktu"
-  />
-  <span className="text-sm truncate">{result.nazwa}</span>
-  <div className="ml-auto">
-  {result.sm?.length ?? 0 > 0 ? (
-    result.sm?.map((item, index) => {
-    const stan = Number(item.stanHandl) || 0; // Konwersja na liczbę
-    const colorClass =
-      stan === 0 ? "text-red-700" :"text-green-700";
+                        <div className="flex w-full">
+                          <Image
+                            src={
+                              result.productphoto.length > 0
+                                ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
+                                : "/product_512.png"
+                            }
+                            width={40}
+                            height={40}
+                            alt="Zdjęcie produktu"
+                          />
+                          <span className="text-sm truncate">{result.nazwa}</span>
+                          <div className="ml-auto">
+                            {result.sm?.length ?? 0 > 0 ? (
+                              result.sm?.map((item, index) => {
+                                const stan = Number(item.stanHandl) || 0; // Konwersja na liczbę
+                                const colorClass =
+                                  stan === 0 ? "text-red-700" : "text-green-700";
 
-    return (
-      <div key={index} className="flex items-center space-x-2">
-        <Squircle className={`${colorClass} fill-current`} />
- 
-      </div>
-    );
-  })
-) : (
-  <div className="flex items-center space-x-2">
-    <Squircle className="text-red-700 fill-current" />
-    
-  </div>
-)}
-</div>
-</div>
-
+                                return (
+                                  <div key={index} className="flex items-center space-x-2">
+                                    <Squircle className={`${colorClass} fill-current`} />
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <div className="flex items-center space-x-2">
+                                <Squircle className="text-red-700 fill-current" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </CommandItem>
                     </div>
                   ))
@@ -318,12 +335,12 @@ export default function CommandSearch() {
               {query.length > 2 && (
                 <div className="absolute bottom-3 right-0 z-20 w-full">
                   <div>
-                  <div onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(query)}`)}>
-                  <button className="w-full text-slate-700 pl-4 pt-2 pb-2 pr-4 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
-                    <span>Przejdź do wyników</span>
-                    <ChevronRight />
-                  </button>
-                </div>
+                    <div onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(query)}`)}>
+                      <button className="w-full text-slate-700 pl-4 pt-2 pb-2 pr-4 flex justify-between items-center hover:bg-gray-100 cursor-pointer">
+                        <span>Przejdź do wyników</span>
+                        <ChevronRight />
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -332,7 +349,6 @@ export default function CommandSearch() {
         )}
       </Command>
       <NProgressHandler />
-    
     </>
   );
 }
