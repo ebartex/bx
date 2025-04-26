@@ -31,16 +31,27 @@ export default function MenuMobile() {
     setIsMenuOpen(!isMenuOpen); // Przełączanie stanu menu
   };
 
+  // Funkcja do pobierania tokena (np. z localStorage lub zmiennej)
+
+
   useEffect(() => {
     // Pobieranie kategorii z API
-    fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200", {
+          method: "GET",
+          headers: {
+            Authorization: `rampam`, // Dodajemy token w nagłówku
+          },
+        });
+        const data = await response.json();
         setCategories(data); // Ustawiamy stan kategorii
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching categories:", error);
-      });
+      }
+    };
+
+    fetchCategories(); // Uruchamiamy funkcję pobierającą kategorie
   }, []);
 
   // Funkcja obsługująca kliknięcie w kategorię
@@ -54,27 +65,29 @@ export default function MenuMobile() {
     setLoadingCategory(categoryId);
 
     // Pobieranie podkategorii dla danej kategorii
-    fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchSubcategories = async () => {
+      try {
+        const response = await fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `rampam`, // Dodajemy token w nagłówku
+          },
+        });
+        const data = await response.json();
         setSubcategories((prev) => ({
           ...prev,
           [categoryId]: data, // Dodajemy podkategorie dla danej kategorii
         }));
-
-        // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+      } finally {
         setTimeout(() => {
           setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
         }, 500); // Opóźnienie 0.5 sekundy
-      })
-      .catch((error) => {
-        console.error("Error fetching subcategories:", error);
+      }
+    };
 
-        // Opóźniamy ustawienie stanu ładowania na null, w przypadku błędu
-        setTimeout(() => {
-          setLoadingCategory(null); // Ustawiamy stan ładowania na null po błędzie
-        }, 500);
-      });
+    fetchSubcategories(); // Uruchamiamy funkcję pobierającą podkategorie
   };
 
   // Funkcja obsługująca kliknięcie w subkategorię
@@ -93,9 +106,7 @@ export default function MenuMobile() {
           <Menu className="ml-3 lg:hidden" onClick={toggleMenu} />
         </SheetTrigger>
 
-        <SheetContent
-          className="p-0"
-        >
+        <SheetContent className="p-0">
           <SheetHeader className="p-0">
             <SheetTitle className="pt-4 pl-2">Kategorie</SheetTitle>
           </SheetHeader>

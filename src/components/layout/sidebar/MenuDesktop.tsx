@@ -26,7 +26,12 @@ export default function MenuDesktop() {
 
   useEffect(() => {
     // Pobieranie kategorii z API
-    fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200")
+    fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+          },
+        })
       .then((response) => response.json())
       .then((data) => {
         setCategories(data); // Ustawiamy stan kategorii
