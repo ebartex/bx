@@ -77,7 +77,12 @@ export default function SearchResults() {
     if (query) {
       setLoading(true);
       setError(null);
-      fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${encodeURIComponent(query)}?`)
+      fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${encodeURIComponent(query)}?`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error('Błąd podczas pobierania danych');
