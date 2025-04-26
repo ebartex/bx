@@ -17,7 +17,8 @@ interface ProductPhoto {
 
 interface Product {
   zp: {
-    data: string; id?: string 
+    data: string;
+    id?: string;
   }[];
   productphoto: ProductPhoto[];
   title: string;
@@ -37,6 +38,7 @@ export default function Page() {
 
   // Pobieramy parametr tw-katalog z URL
   const { id } = useParams(); // Zakładając, że parametr w URL to 'id' (np. /itemcategory/view/[id])
+  
   useEffect(() => {
     const handleScroll = () => {
       setOpenPopoverId(null); // Zamknij popover przy scrollu
@@ -48,6 +50,7 @@ export default function Page() {
       window.removeEventListener('scroll', handleScroll, true);
     };
   }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -61,17 +64,18 @@ export default function Page() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
   useEffect(() => {
     if (id) {
       setLoading(true);
       setError(null);
 
-      // Tworzymy dynamiczne zapytanie do API z parametrem tw-katalog
-      fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-katalog=${id}`, {
+      // Tworzymy pełny URL zapytania do API proxy
+      const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-katalog=${id}`;
+
+      // Wysyłamy zapytanie do API proxy
+      fetch(`/api/proxy?url=${encodeURIComponent(productUrl)}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-        },
       })
         .then((response) => {
           if (!response.ok) {

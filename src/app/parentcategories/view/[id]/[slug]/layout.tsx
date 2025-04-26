@@ -24,25 +24,26 @@ export default function CategoryLayout({ children }: LayoutProps) {
   // Funkcja metadata do dynamicznego ustawiania tytułu
   useEffect(() => {
     if (id) {
-      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`, {
+      setIsLoading(true);
+      // Tworzymy pełny URL zapytania do API proxy
+      const categoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`;
+
+      fetch(`/api/proxy?url=${encodeURIComponent(categoryUrl)}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-        },
       })
         .then((res) => res.json())
         .then((data: Category[]) => {
           if (Array.isArray(data) && data.length > 0) {
             const currentCategory = data[0];
             setCategoryName(currentCategory.kod);
-            
+
             // Jeżeli istnieje kategoria nadrzędna, zapytaj o nią
             if (currentCategory.super) {
-              fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`, {
+              const parentCategoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`;
+              
+              // Zapytanie do API proxy dla kategorii nadrzędnej
+              fetch(`/api/proxy?url=${encodeURIComponent(parentCategoryUrl)}`, {
                 method: "GET",
-                headers: {
-                  Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-                },
               })
                 .then((res) => res.json())
                 .then((parentData: Category[]) => {

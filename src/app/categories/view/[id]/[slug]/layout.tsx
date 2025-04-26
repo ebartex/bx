@@ -23,11 +23,14 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (id) {
-      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`, {
+      setIsLoading(true);
+
+      // Tworzymy pełny URL zapytania do API proxy
+      const categoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`;
+
+      // Wysyłamy zapytanie do API proxy
+      fetch(`/api/proxy?url=${encodeURIComponent(categoryUrl)}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-        },
       })
         .then((res) => res.json())
         .then((data: Category[]) => {
@@ -37,11 +40,11 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
 
             // Jeśli istnieje kategoria nadrzędna, zapytaj o nią
             if (currentCategory.super) {
-              fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`, {
+              const parentCategoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`;
+
+              // Zapytanie do API proxy dla kategorii nadrzędnej
+              fetch(`/api/proxy?url=${encodeURIComponent(parentCategoryUrl)}`, {
                 method: "GET",
-                headers: {
-                  Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-                },
               })
                 .then((res) => res.json())
                 .then((parentData: Category[]) => {
@@ -50,11 +53,11 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
 
                     // Jeśli istnieje kategoria nadkategorii, zapytaj o nią
                     if (parentData[0].super) {
-                      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${parentData[0].super}`, {
+                      const grandparentCategoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${parentData[0].super}`;
+                      
+                      // Zapytanie do API proxy dla kategorii nadkategorii
+                      fetch(`/api/proxy?url=${encodeURIComponent(grandparentCategoryUrl)}`, {
                         method: "GET",
-                        headers: {
-                          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-                        },
                       })
                         .then((res) => res.json())
                         .then((grandparentData: Category[]) => {
@@ -77,7 +80,7 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
         .catch((err) => {
           console.error("Błąd pobierania kategorii:", err);
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsLoading(false)); // Zakończenie ładowania
     }
   }, [id]);
 
