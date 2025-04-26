@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const apiResponse = await fetch(fullUrl, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer rampam`,  // Dodajemy token Bearer
+        'Authorization': `Bearer HESuhfk!@kj4c3#$*&dsa:""|(Gf==gasddsaf^hjads+++hds232J12!@`,  // Dodajemy token Bearer
       },
     });
 
