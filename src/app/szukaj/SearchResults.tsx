@@ -71,7 +71,7 @@ export default function SearchResults() {
       setError(null);
 
       // Tworzymy pełny URL zapytania do API proxy
-      const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=${encodeURIComponent(query)}`;
+      const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${encodeURIComponent(query)}?`;
 
       // Wysyłamy zapytanie do API proxy
       fetch(`/api/proxy?url=${encodeURIComponent(productUrl)}`, {
