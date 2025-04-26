@@ -25,20 +25,20 @@ export default function MenuDesktop() {
   const router = useRouter(); // Inicjujemy useRouter
 
   useEffect(() => {
-    // Pobieranie kategorii z API
-    fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200", {
+    // Pobieranie kategorii z API proxy
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`/api/proxy?url=${encodeURIComponent('https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200')}`, {
           method: "GET",
-          headers: {
-            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-          },
-        })
-      .then((response) => response.json())
-      .then((data) => {
+        });
+        const data = await response.json();
         setCategories(data); // Ustawiamy stan kategorii
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching categories:", error);
-      });
+      }
+    };
+
+    fetchCategories(); // Uruchamiamy funkcję pobierającą kategorie
   }, []);
 
   // Funkcja obsługująca kliknięcie w kategorię
@@ -51,10 +51,13 @@ export default function MenuDesktop() {
     // Ustawiamy kategorię jako ładowaną
     setLoadingCategory(categoryId);
 
-    // Pobieranie podkategorii dla danej kategorii
-    fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)
-      .then((response) => response.json())
-      .then((data) => {
+    // Pobieranie podkategorii dla danej kategorii z API proxy
+    const fetchSubcategories = async () => {
+      try {
+        const response = await fetch(`/api/proxy?url=${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)}`, {
+          method: "GET",
+        });
+        const data = await response.json();
         setSubcategories((prev) => ({
           ...prev,
           [categoryId]: data, // Dodajemy podkategorie dla danej kategorii
@@ -64,15 +67,17 @@ export default function MenuDesktop() {
         setTimeout(() => {
           setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
         }, 500); // Opóźnienie 0.5 sekundy
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching subcategories:", error);
 
         // Opóźniamy ustawienie stanu ładowania na null, w przypadku błędu
         setTimeout(() => {
           setLoadingCategory(null); // Ustawiamy stan ładowania na null po błędzie
         }, 500);
-      });
+      }
+    };
+
+    fetchSubcategories(); // Uruchamiamy funkcję pobierającą podkategorie
   };
 
   // Funkcja obsługująca kliknięcie w subkategorię
@@ -83,7 +88,6 @@ export default function MenuDesktop() {
 
   return (
     <div className="hidden xl:block lg:flex lg:flex-col lg:w-64 p-4">
-      
       <h2 className="text-md font-semibold mb-4">Kategorie</h2>
 
       <Accordion type="single" collapsible>

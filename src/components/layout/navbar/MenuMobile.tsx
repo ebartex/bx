@@ -31,18 +31,12 @@ export default function MenuMobile() {
     setIsMenuOpen(!isMenuOpen); // Przełączanie stanu menu
   };
 
-  // Funkcja do pobierania tokena (np. z localStorage lub zmiennej)
-
-
   useEffect(() => {
-    // Pobieranie kategorii z API
+    // Pobieranie kategorii z API proxy
     const fetchCategories = async () => {
       try {
-        const response = await fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200", {
+        const response = await fetch(`/api/proxy?url=${encodeURIComponent('https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200')}`, {
           method: "GET",
-          headers: {
-            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-          },
         });
         const data = await response.json();
         setCategories(data); // Ustawiamy stan kategorii
@@ -64,14 +58,11 @@ export default function MenuMobile() {
     // Ustawiamy kategorię jako ładowaną
     setLoadingCategory(categoryId);
 
-    // Pobieranie podkategorii dla danej kategorii
+    // Pobieranie podkategorii dla danej kategorii z API proxy
     const fetchSubcategories = async () => {
       try {
-        const response = await fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`, {
+        const response = await fetch(`/api/proxy?url=${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)}`, {
           method: "GET",
-          headers: {
-            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
-          },
         });
         const data = await response.json();
         setSubcategories((prev) => ({
