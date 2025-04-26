@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: 'Missing URL parameter' }, { status: 400 });
   }
 
-  const token = 'rampam';  // Twój token Bearer
+
 
   try {
     // Wykonanie zapytania do zewnętrznego API z pełnym URL
