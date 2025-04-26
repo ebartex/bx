@@ -32,7 +32,12 @@ export default function Page() {
       setLoading(true);
       setError(null);
       // Pobieramy podkategorie na podstawie `id` kategorii
-      fetch(`https://www.bapi2.ebartex.pl/xt/index?Xt-super=${id}`)
+      fetch(`https://www.bapi2.ebartex.pl/xt/index?Xt-super=${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error('Błąd podczas pobierania danych');
