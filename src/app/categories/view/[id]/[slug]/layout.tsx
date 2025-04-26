@@ -23,7 +23,12 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (id) {
-      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`)
+      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+        },
+      })
         .then((res) => res.json())
         .then((data: Category[]) => {
           if (Array.isArray(data) && data.length > 0) {
@@ -32,7 +37,12 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
 
             // Jeśli istnieje kategoria nadrzędna, zapytaj o nią
             if (currentCategory.super) {
-              fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`)
+              fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+                },
+              })
                 .then((res) => res.json())
                 .then((parentData: Category[]) => {
                   if (Array.isArray(parentData) && parentData.length > 0) {
@@ -40,7 +50,12 @@ export default function ItemCategoryLayout({ children }: LayoutProps) {
 
                     // Jeśli istnieje kategoria nadkategorii, zapytaj o nią
                     if (parentData[0].super) {
-                      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${parentData[0].super}`)
+                      fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-id=${parentData[0].super}`, {
+                        method: "GET",
+                        headers: {
+                          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+                        },
+                      })
                         .then((res) => res.json())
                         .then((grandparentData: Category[]) => {
                           if (Array.isArray(grandparentData) && grandparentData.length > 0) {

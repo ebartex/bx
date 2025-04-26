@@ -67,7 +67,12 @@ export default function Page() {
       setError(null);
 
       // Tworzymy dynamiczne zapytanie do API z parametrem tw-katalog
-      fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-katalog=${id}`)
+      fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-katalog=${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error('Błąd podczas pobierania produktów');

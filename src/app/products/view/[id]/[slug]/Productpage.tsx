@@ -35,7 +35,12 @@ const ProductPage = () => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`
+          `https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+            },
+          }
         );
         const data: ProductResponse = await response.json();
 

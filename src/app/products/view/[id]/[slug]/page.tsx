@@ -17,7 +17,12 @@ export async function generateMetadata(
   const { id } = await params
   
   // Pobieramy dane produktu z API
-  const product = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`).then((res) => res.json())
+  const product = await fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+    },
+  }).then((res) => res.json())
 
   // Opcjonalnie - rozszerzamy metadane (np. openGraph) z metadanych rodzica
 

@@ -92,9 +92,24 @@ export default function CommandSearch() {
       setLoading(true);
       
       const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
-        fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`),
-        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
-        fetch(`https://www.bapi2.ebartex.pl/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)
+        fetch(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+          },
+        }),
+        fetch(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+          },
+        }),
+        fetch(`https://www.bapi2.ebartex.pl/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
+          },
+        })
       ]);
   
       const productData: SearchResult[] = await productRes.json();

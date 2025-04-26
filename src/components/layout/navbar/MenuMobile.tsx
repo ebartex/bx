@@ -41,7 +41,7 @@ export default function MenuMobile() {
         const response = await fetch("https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200", {
           method: "GET",
           headers: {
-            Authorization: `rampam`, // Dodajemy token w nagłówku
+            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
           },
         });
         const data = await response.json();
@@ -70,7 +70,7 @@ export default function MenuMobile() {
         const response = await fetch(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`, {
           method: "GET",
           headers: {
-            Authorization: `rampam`, // Dodajemy token w nagłówku
+            Authorization: `Bearer rampam`, // Dodajemy token w nagłówku
           },
         });
         const data = await response.json();
