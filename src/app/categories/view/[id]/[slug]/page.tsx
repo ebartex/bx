@@ -104,7 +104,7 @@ export default function Page() {
   return (
     <div className="container mx-auto">
       {/* Wyświetlanie komunikatu o ładowaniu */}
-      {loading && <p className="text-gray-500">Ładowanie...</p>}
+      {loading && <p className="text-gray-500"></p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {/* Wyświetlanie listy produktów */}
