@@ -14,8 +14,20 @@ interface ProductPhoto {
   main_photo: number;
   photo_512: string;
 }
+interface ProductClassification {
+  ElementId: number;
+  CDim_jm_Val: string;
+  CDim_jm_shop: string;
+  CDim_przeljmdod3: string;
+}
 
+interface STElement {
+  ElementId: string;
+  Shortcut: string;
+  product_classification: ProductClassification[]
+}
 interface Product {
+  jm: string;
   zp: {
     data: string;
     id?: string;
@@ -25,7 +37,8 @@ interface Product {
   id: string;
   nazwa: string;
   sm?: { stanHandl?: string }[];
-  cn?: { cena: string }[];  // Cena produktu
+  cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
+  s_t_elements?: STElement[]; 
 }
 
 export default function SearchResults() {
@@ -184,25 +197,34 @@ export default function SearchResults() {
                 <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
                 
                 {/* Wstawiamy cenę po prawej stronie */}
-                {product.cn && product.cn.length > 0 && product.cn[0].cena ? (
-                  <div className="text-lg text-slate-700 mb-2 text-right">
-                    <span className="font-bold text-xl">
-                      {/* Konwertujemy cenę na string, zamieniamy przecinek na kropkę, konwertujemy na liczbę */}
-                      {Number(String(product.cn[0].cena).replace(',', '.')).toFixed(0).replace('.', ',')}
-                      <sup className="text-sm custom-sup">
-                        ,{Number(String(product.cn[0].cena).replace(',', '.')).toFixed(2).split('.')[1]}zł
-                      </sup>
-                    </span> 
-                  </div>
-                ) : (
-                  <div className="text-lg text-zinc-700 mb-2 text-right">
-                    <span className="font-bold text-2xl">
-                      0
-                      <sup className="text-sm font-bold custom-sup">,00</sup>
-                      zł
-                    </span>
-                  </div>
-                )}
+{/* Wyświetlanie ceny */}
+{product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {
+  const cena = String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.');
+  const cenaNumber = Number(cena);
+  const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
+  const jednostka = product.cn[0].cena2
+    ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '')
+    : (product.jm || '');
+
+  return (
+    <div className="text-lg text-slate-700 mb-2 text-right">
+      <span className="font-bold text-xl">
+        {zlote}
+        <sup className="text-sm custom-sup">
+          ,{grosze}zł/{jednostka}
+        </sup>
+      </span>
+    </div>
+  );
+})() : (
+  <div className="text-lg text-zinc-700 mb-2 text-right">
+    <span className="font-bold text-2xl">
+      0
+      <sup className="text-sm font-bold custom-sup">,00 zł</sup>
+    </span>
+  </div>
+)}
+
 
                 {/* Ikona + napis w lewym dolnym rogu */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
