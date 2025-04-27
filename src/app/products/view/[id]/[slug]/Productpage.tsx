@@ -6,6 +6,18 @@ import Image from "next/image";
 import { Squircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+interface ProductClassification {
+  ElementId: number;
+  CDim_jm_Val: string;
+  CDim_jm_shop: string;
+  CDim_przeljmdod3: string;
+}
+
+interface STElement {
+  ElementId: string;
+  Shortcut: string;
+  product_classification: ProductClassification[]
+}
 // Typy danych o produkcie
 interface Product {
   id: number;
@@ -15,7 +27,8 @@ interface Product {
   jm: string;
   katalog: number;
   sm: { idtw: number; stanHandl?: number }[];
-  cn: { cena: number;}[];
+  cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
+  s_t_elements?: STElement[]; 
   xt: { id:number; kod: string;} 
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
 }
@@ -125,8 +138,24 @@ const ProductPage = () => {
                 <div className="md:w-1/2 flex flex-col items-start md:items-start">
                   {product.kod && <p className="text-sm mb-2">Kod: {product.kod}</p>}
                   {product.kodpaskowy && <p className="text-sm mb-2">Kod paskowy: {product.kodpaskowy}</p>}
-                  {product.jm && <p className="text-sm mb-4">Jednostka miary: {product.jm}</p>}
-                  {product.cn && product.cn[0]?.cena && <p className="text-sm mb-4">Cena: {product.cn[0].cena}</p>}
+
+                  {product.cn && product.cn[0] && (() => {
+                    const cenaRaw = product.cn[0].cena2 || product.cn[0].cena;
+                    const cena = String(cenaRaw).replace(',', '.');
+                    const cenaNumber = Number(cena);
+                    const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
+
+                    const jednostka = product.cn[0].cena2 
+                      ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '') 
+                      : (product.jm || '');
+
+                    return (
+                      <p className="text-sm mb-4">
+                        Cena: {zlote},{grosze} zł/{jednostka}
+                      </p>
+                    );
+                  })()}
+
 
                   <p className="text-sm mb-4 cursor-pointer" onClick={() => handleCategoryClick(product.xt?.id)}>
                     Katalog: {product.xt?.kod}
