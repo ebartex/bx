@@ -27,6 +27,7 @@ interface STElement {
   product_classification: ProductClassification[]
 }
   interface Product {
+  jm: string;
   zp: {
     data: string;
     id?: string;
@@ -205,7 +206,11 @@ export default function Page() {
       <sup className="text-sm custom-sup">
         ,{Number(
           String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.')
-        ).toFixed(2).split('.')[1]}zł
+        ).toFixed(2).split('.')[1]}
+        zł
+        {product.cn[0].cena2
+          ? `/${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ''}`
+          : `/${product.jm || ''}`}
       </sup>
     </span>
   </div>
@@ -213,11 +218,11 @@ export default function Page() {
   <div className="text-lg text-zinc-700 mb-2 text-right">
     <span className="font-bold text-2xl">
       0
-      <sup className="text-sm font-bold custom-sup">,00</sup>
-      zł
+      <sup className="text-sm font-bold custom-sup">,00 zł</sup>
     </span>
   </div>
 )}
+
 
 
                 {/* Ikona + napis w lewym dolnym rogu */}
