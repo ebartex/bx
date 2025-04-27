@@ -79,7 +79,7 @@ export default function Page() {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">Brak dostępnych podkategorii.</p>
+          <p className="text-center text-gray-500"></p>
         )}
       </div>
     </div>
