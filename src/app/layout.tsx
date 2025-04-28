@@ -32,6 +32,7 @@ export default function RootLayout({
           id="usercentrics-cmp"
           src="https://web.cmp.usercentrics.eu/ui/loader.js"
           data-settings-id="pxHnWAYp8hC6ur"
+          data-language="pl"   {/* <<< DODANE */}
           async
         ></script>
 
