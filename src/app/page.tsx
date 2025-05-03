@@ -1,7 +1,34 @@
-import MenuDesktop from "@/components/layout/sidebar/MenuDesktop";
-import Image from "next/image";
+'use client';
+
+
+import ClientDialog from '@/components/cookies/ClientDialog';
+import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+
 
 export default function Home() {
+  const [showDialog, setShowDialog] = useState(false);
+
+  useEffect(() => {
+    const cookieConsent = localStorage.getItem('cookieConsent');
+    if (!cookieConsent) {
+      setShowDialog(true); // Pokaż tylko jeśli nie ma zapamiętanej decyzji
+    }
+  }, []);
+
+  const handleAccept = () => {
+    localStorage.setItem('cookieConsent', 'accepted');
+    setShowDialog(false);
+  };
+
+  const handleReject = () => {
+    localStorage.setItem('cookieConsent', 'rejected');
+    setShowDialog(false);
+  };
+
+
+
   return (
     <>
       <div className="flex h-screen">
@@ -26,6 +53,13 @@ export default function Home() {
         </div>
         
       </div>
+      <ClientDialog
+        show={showDialog}
+        onAccept={handleAccept}
+        onReject={handleReject}
+      /> 
     </>
   );
 }
+
+
