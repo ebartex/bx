@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Check, X, Cpu, Globe, Shield } from 'lucide-react'; // Importing additional icons from lucide-react
+import { Cpu, Globe, Shield } from 'lucide-react'; // Importing additional icons from lucide-react
 
 interface ClientDialogProps {
   show: boolean;
