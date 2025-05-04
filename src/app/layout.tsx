@@ -33,6 +33,28 @@ export default function RootLayout({
             `,
           }}
         />
+
+        {/* Google Consent Mode */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              function enableConsentMode() {
+                // Ustawienia Consent Mode: 'denied' oznacza brak zgody na cookies
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                  event: 'consent',
+                  consent: {
+                    'ad_storage': 'denied',
+                    'analytics_storage': 'denied',
+                    'functional_storage': 'denied',
+                    'personalization_storage': 'denied',
+                  }
+                });
+              }
+              enableConsentMode();
+            `,
+          }}
+        />
       </head>
       <body>
         {/* Google Tag Manager (noscript) */}
