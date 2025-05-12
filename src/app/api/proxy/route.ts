@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   
   // Pobieramy pełny URL z parametrów zapytania
-  const fullUrl = searchParams.get('url');
+  const fullUrl = decodeURIComponent(searchParams.get('url') || '');
   if (!fullUrl) {
     return NextResponse.json({ message: 'Missing URL parameter' }, { status: 400 });
   }
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const apiResponse = await fetch(fullUrl, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer HESuhfk!@kj4c3#$*&dsa:""|(Gf==gasddsaf^hjads+++hds232J12!@`,  // Dodajemy token Bearer
+        'Authorization': `Bearer HESuhfk!@kj4c3#$*&dsa`,  // Dodajemy token Bearer
       },
     });
 

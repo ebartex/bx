@@ -9,7 +9,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Rozwiązujemy params (ponieważ jest to obiekt Promise)
   const { id } = await params;
-  
+
   // Tworzymy pełny URL zapytania do API proxy
   const apiUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`;
 
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     // Sprawdzamy, czy odpowiedź jest poprawna
     const product = await response.json();
-
+    console.log(product);
     // Zwracamy metadane na podstawie danych produktu
     if (product && product.length > 0) {
       return {
