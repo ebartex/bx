@@ -7,38 +7,39 @@ type Props = {
 
 // Funkcja generująca metadane
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // Rozwiązujemy params (ponieważ jest to obiekt Promise)
   const { id } = await params;
 
-  // Tworzymy pełny URL zapytania do API proxy
+  // Tworzymy pełny URL zapytania do API proxy (bez dodatkowego kodowania)
   const apiUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`;
 
   try {
-    // Wykonanie zapytania do API proxy
-    const response = await fetch(`/api/proxy?url=${encodeURIComponent(apiUrl)}`, {
+    // Wykonanie zapytania do API proxy z url bez kodowania
+    const response = await fetch(`/api/proxy?url=${apiUrl}`, {
       method: 'GET',
     });
 
-    // Sprawdzamy, czy odpowiedź jest poprawna
     const product = await response.json();
     console.log(product);
-    // Zwracamy metadane na podstawie danych produktu
+
     if (product && product.length > 0) {
       return {
-        title: product[0].nazwa,  // Dynamiczny tytuł na podstawie danych z API
+        title: product[0].nazwa,
       };
     } else {
       return {
-        title: 'Produkt nie znaleziony',  // Tytuł, jeśli produkt nie istnieje
+        title: 'Produkt nie znaleziony',
       };
     }
   } catch (error) {
     console.error('Błąd przy pobieraniu produktu:', error);
     return {
-      title: 'Błąd ładowania produktu',  // Tytuł na wypadek błędu
+      title: 'Błąd ładowania produktu',
     };
   }
 }
+
+
+
 
 export default function Page() {
   return <ProductPage />;
