@@ -32,9 +32,7 @@ export default function ProductLayout({ children, params }: Props) {
     <>
       {/* Only overrides title when product data is available */}
       {product && (
-
           <title>{product.nazwa || 'Produkt nie znaleziony'}</title>
-   
       )}
       <main>{children}</main>
     </>
