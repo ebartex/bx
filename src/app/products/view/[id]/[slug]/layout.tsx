@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from 'react';
 
+// Define the structure of the product
+interface Product {
+  nazwa?: string; // Assuming the API returns a `nazwa` property, adjust if needed
+  title?: string;
+}
+
 type Props = {
   children: React.ReactNode;
   params: Promise<{ id: string; slug: string }>;
 };
 
 export default function ProductLayout({ children, params }: Props) {
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
