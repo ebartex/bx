@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="pl" className={roboto.className}>
       <Head>
-      
+      <title>Bartex Gorzkowice telefon 44 6818 043 Piotr Bartnik Materiały Budowlane</title>
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
