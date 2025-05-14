@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/navbar/page";
 import { Roboto } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
+import Head from "next/head";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700", "900"],
@@ -18,9 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl" className={roboto.className}>
-      <head>
-        <title>Bartex Gorzkowice telefon 44 6818 043 Piotr Bartnik Materiały Budowlane</title>
-        
+      <Head>
+      
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -33,9 +33,8 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
+      </Head>
       <body>
-        {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-53LWG4GN"
