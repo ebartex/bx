@@ -89,7 +89,7 @@ export default function SearchResults() {
       setError(null);
 
       // Tworzymy pełny URL zapytania do API proxy
-      const productUrl = `tw/index?tw-nazwa=${encodeURIComponent(query)}`; // Poprawiamy endpoint
+      const productUrl = `tw/index?tw-nazwa=?${encodeURIComponent(query)}?`; // Poprawiamy endpoint
 
       // Wysyłamy zapytanie do API proxy przy użyciu getXt
       getTw(productUrl) // Zamiast fetch, używamy getXt
