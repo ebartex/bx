@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
+import { getXt } from "../../../../services/api/xt";
 
 
 interface ProductPhoto {
@@ -86,40 +87,39 @@ export default function CommandSearch() {
       setParentCategoryResults([]);
       setLoading(false);
     }
-  }; 
-
-  const fetchResults = async (query: string) => {
-    try {
-      setLoading(true);
-      
-      const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
-        fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`)}`, {
-          method: "GET",
-        }),
-        fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`)}`, {
-          method: "GET",
-        }),
-        fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)}`, {
-          method: "GET",
-        })
-      ]);
-  
-      const productData: SearchResult[] = await productRes.json();
-      const categoryData: CategoryResult[] = await categoryRes.json();
-      const parentCategoryData: ParentCategoryResult[] = await parentCategoryRes.json();
-  
-      setResults(productData);
-      setCategoryResults(categoryData);
-      setParentCategoryResults(parentCategoryData);
-    } catch (error) {
-      console.error("Błąd podczas pobierania wyników:", error);
-      setResults([]);
-      setCategoryResults([]);
-      setParentCategoryResults([]);
-    } finally {
-      setLoading(false);
-    }
   };
+
+const fetchResults = async (query: string) => {
+  try {
+    setLoading(true);
+    
+    // Zamień fetch na getXt
+    const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
+      getXt(`/tw/index?tw-nazwa=?${query}?`),
+      getXt(`/xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
+      getXt(`/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`),
+    ]);
+
+    // Sprawdzamy, czy zwrócone odpowiedzi są obiektami Response, jeśli tak, konwertujemy je na JSON
+    const productData: SearchResult[] = (productRes as any).json ? await (productRes as any).json() : (productRes as SearchResult[]);
+    const categoryData: CategoryResult[] = (categoryRes as any).json ? await (categoryRes as any).json() : (categoryRes as CategoryResult[]);
+    const parentCategoryData: ParentCategoryResult[] = (parentCategoryRes as any).json ? await (parentCategoryRes as any).json() : (parentCategoryRes as ParentCategoryResult[]);
+
+    // Ustawiamy wyniki
+    setResults(productData);
+    setCategoryResults(categoryData);
+    setParentCategoryResults(parentCategoryData);
+  } catch (error) {
+    console.error("Błąd podczas pobierania wyników:", error);
+    setResults([]);
+    setCategoryResults([]);
+    setParentCategoryResults([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const handleLink = (url: string) => {
     // Zamykamy okno wyników
