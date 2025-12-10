@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Skeleton } from "@/components/ui/skeleton"; // Importujemy Skeleton z shadcn
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation"; // Importujemy useRouter z next/navigation
+import { getXt } from "../../../../services/api/xt";
 
 // Typ dla kategorii
 type Category = {
@@ -20,6 +21,7 @@ type SubCategory = {
   id: string;
 };
 
+
 export default function MenuMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
@@ -32,14 +34,11 @@ export default function MenuMobile() {
   };
 
   useEffect(() => {
-    // Pobieranie kategorii z API proxy
+    // Pobieranie kategorii z API przy użyciu getXt
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${encodeURIComponent('xt/index?Xt-super=2200&Xt-root=2200')}`, {
-          method: "GET",
-        });
-        const data = await response.json();
-        setCategories(data); // Ustawiamy stan kategorii
+        const data = await getXt('xt/index?Xt-super=2200&Xt-root=2200'); // Zamieniamy fetch na getXt
+        setCategories(data as Category[]); // Ustawiamy stan kategorii
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -58,16 +57,13 @@ export default function MenuMobile() {
     // Ustawiamy kategorię jako ładowaną
     setLoadingCategory(categoryId);
 
-    // Pobieranie podkategorii dla danej kategorii z API proxy
+    // Pobieranie podkategorii dla danej kategorii z API przy użyciu getXt
     const fetchSubcategories = async () => {
       try {
-        const response = await fetch(`${encodeURIComponent(`xt/subcat?Xt-super=${categoryId}`)}`, {
-          method: "GET",
-        });
-        const data = await response.json();
+        const data = await getXt(`xt/subcat?Xt-super=${categoryId}`); // Zamieniamy fetch na getXt
         setSubcategories((prev) => ({
           ...prev,
-          [categoryId]: data, // Dodajemy podkategorie dla danej kategorii
+          [categoryId]: data as SubCategory[], // Dodajemy podkategorie dla danej kategorii
         }));
       } catch (error) {
         console.error("Error fetching subcategories:", error);
