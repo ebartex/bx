@@ -35,7 +35,7 @@ export default function MenuMobile() {
     // Pobieranie kategorii z API proxy
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${encodeURIComponent('https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200')}`, {
+        const response = await fetch(`${encodeURIComponent('xt/index?Xt-super=2200&Xt-root=2200')}`, {
           method: "GET",
         });
         const data = await response.json();
@@ -61,7 +61,7 @@ export default function MenuMobile() {
     // Pobieranie podkategorii dla danej kategorii z API proxy
     const fetchSubcategories = async () => {
       try {
-        const response = await fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)}`, {
+        const response = await fetch(`${encodeURIComponent(`xt/subcat?Xt-super=${categoryId}`)}`, {
           method: "GET",
         });
         const data = await response.json();
