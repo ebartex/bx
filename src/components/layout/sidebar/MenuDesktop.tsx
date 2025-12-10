@@ -30,7 +30,7 @@ export default function MenuDesktop() {
     // Pobieranie kategorii z API
     const fetchCategories = async () => {
       try {
-        const data = await getXt('xt/index?Xt-super=2200&Xt-root=2200'); // Użycie getXt zamiast fetch
+        const data = await getXt('/xt/index?Xt-super=2200&Xt-root=2200'); // Użycie getXt zamiast fetch
         setCategories(data as Category[]); // Ustawiamy stan kategorii
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -53,7 +53,7 @@ export default function MenuDesktop() {
     // Pobieranie podkategorii dla danej kategorii z API
     const fetchSubcategories = async () => {
       try {
-        const data = await getXt(`xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
+        const data = await getXt(`/xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
         setSubcategories((prev) => ({
           ...prev,
           [categoryId]: data as SubCategory[], // Dodajemy podkategorie dla danej kategorii
