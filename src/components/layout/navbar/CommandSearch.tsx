@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
+import { getTw } from "../../../../services/api/tw";
+import { getXt } from "../../../../services/api/xt";
 
 // Typy danych dla produktów
 interface ProductPhoto {
@@ -109,9 +111,9 @@ export default function CommandSearch() {
           : getXt(`xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)
       ]);
 
-      setResults(productRes);
-      setCategoryResults(categoryRes);
-      setParentCategoryResults(parentCategoryRes);
+      setResults(productRes as SearchResult[]);
+      setCategoryResults(categoryRes as CategoryResult[]);
+      setParentCategoryResults(parentCategoryRes as ParentCategoryResult[]);
     } catch (error) {
       console.error("Błąd podczas pobierania wyników:", error);
       setResults([]);
