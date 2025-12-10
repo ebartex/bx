@@ -99,16 +99,16 @@ export default function CommandSearch() {
       // Sprawdzamy, czy query zaczyna się od 'tw' czy 'xt' i wywołujemy odpowiednią funkcję
       const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
         query.startsWith('tw')
-          ? getTw(`tw/index?tw-nazwa=${query}`)
-          : getXt(`xt/index?xt-podkatalog=0&xt-kod=${query}`),
+          ? getTw(`tw/index?tw-nazwa=?${query}?`)
+          : getXt(`xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
 
         query.startsWith('tw')
           ? getTw(`tw/index?tw-kod=${query}`)
-          : getXt(`xt/index?xt-podkatalog=0&xt-kod=${query}`),
+          : getXt(`xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
 
         query.startsWith('tw')
-          ? getTw(`tw/index?tw-nazwa=${query}`)
-          : getXt(`xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=${query}`)
+          ? getTw(`tw/index?tw-nazwa=?${query}?`)
+          : getXt(`xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)
       ]);
 
       setResults((productRes as SearchResult[]) || []);
