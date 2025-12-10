@@ -12,10 +12,8 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
-import { getTw } from "../../../../services/api/tw";
-import { getXt } from "../../../../services/api/xt";
 
-// Typy dla produktów i kategorii
+// Typy danych dla produktów
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
@@ -42,12 +40,12 @@ interface ParentCategoryResult {
 
 
 export default function CommandSearch() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [backgroundVisible, setBackgroundVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Kontroluje widoczność okna wyników
+  const [backgroundVisible, setBackgroundVisible] = useState(false); // Kontroluje widoczność tła
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [query, setQuery] = useState("");
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
+  const [searchHistory, setSearchHistory] = useState<string[]>([]); // Historia wyszukiwania
   const [categoryResults, setCategoryResults] = useState<CategoryResult[]>([]);
   const [parentCategoryResults, setParentCategoryResults] = useState<ParentCategoryResult[]>([]);
   const commandRef = useRef<HTMLDivElement | null>(null);
@@ -58,15 +56,15 @@ export default function CommandSearch() {
 
   const handleInputClick = () => {
     setIsOpen(true);
-    setBackgroundVisible(true);
+    setBackgroundVisible(true); // Upewniamy się, że tło jest widoczne
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (commandRef.current && !commandRef.current.contains(event.target as Node)) {
-      setIsOpen(false);
+      setIsOpen(false); // Zamykamy tylko wyniki
     }
   };
-
+ 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
@@ -111,9 +109,9 @@ export default function CommandSearch() {
           : getXt(`xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)
       ]);
 
-      setResults((productRes as SearchResult[]) || []);
-      setCategoryResults((categoryRes as CategoryResult[]) || []);
-      setParentCategoryResults((parentCategoryRes as ParentCategoryResult[]) || []);
+      setResults(productRes);
+      setCategoryResults(categoryRes);
+      setParentCategoryResults(parentCategoryRes);
     } catch (error) {
       console.error("Błąd podczas pobierania wyników:", error);
       setResults([]);
