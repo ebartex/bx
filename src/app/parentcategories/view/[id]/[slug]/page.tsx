@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"; // Używamy useRouter z next/navigation
 import { ChevronDown } from "lucide-react";
+import { getXt } from "../../../../../../services/api/xt";
 
+// Typ podkategorii
 interface SubCategory {
   kod: string;
   id: string;
@@ -25,20 +27,12 @@ export default function Page() {
       setError(null);
 
       // Tworzymy pełny URL zapytania
-      const apiUrl = `https://www.bapi2.ebartex.pl/xt/index?Xt-super=${id}`;
+      const apiUrl = `/xt/index?Xt-super=${id}`; // Używamy tylko endpointu, ponieważ getXt() już obsługuje pełny URL
 
-      // Wysyłamy zapytanie do API proxy z pełnym URL
-      fetch(`${encodeURIComponent(apiUrl)}`, {
-        method: 'GET',
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Błąd podczas pobierania danych');
-          }
-          return response.json();
-        })
+      // Wysyłamy zapytanie do API proxy przy użyciu getXt
+      getXt(apiUrl) // Zamiast fetch, używamy getXt
         .then((data) => {
-          setSubCategories(data); // Ustawiamy dane podkategorii
+          setSubCategories(Array.isArray(data) ? data as SubCategory[] : []); // Ustawiamy dane podkategorii
         })
         .catch((error) => {
           console.error('Błąd pobierania podkategorii:', error);
@@ -58,7 +52,7 @@ export default function Page() {
   return (
     <div className="container mx-auto">
       {/* Wyświetlanie ładowania */}
-      {loading && <p className="text-gray-500"></p>}
+      {loading && <p className="text-gray-500">Ładowanie...</p>}
       
       {/* Wyświetlanie komunikatu o błędzie */}
       {error && <p className="text-red-500">{error}</p>}
@@ -79,7 +73,7 @@ export default function Page() {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500"></p>
+          <p className="text-center text-gray-500">Brak podkategorii</p>
         )}
       </div>
     </div>

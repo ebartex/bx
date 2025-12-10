@@ -9,11 +9,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"; 
+import { getTw } from "../../../services/api/tw";
 
+
+// Typy danych produktu
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
 }
+
 interface ProductClassification {
   ElementId: number;
   CDim_jm_Val: string;
@@ -26,6 +30,7 @@ interface STElement {
   Shortcut: string;
   product_classification: ProductClassification[]
 }
+
 interface Product {
   jm: string;
   zp: {
@@ -38,7 +43,7 @@ interface Product {
   nazwa: string;
   sm?: { stanHandl?: string }[];
   cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
-  s_t_elements?: STElement[]; 
+  s_t_elements?: STElement[];
 }
 
 export default function SearchResults() {
@@ -84,20 +89,12 @@ export default function SearchResults() {
       setError(null);
 
       // Tworzymy pełny URL zapytania do API proxy
-      const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${encodeURIComponent(query)}?`;
+      const productUrl = `tw/index?tw-nazwa=${encodeURIComponent(query)}`; // Poprawiamy endpoint
 
-      // Wysyłamy zapytanie do API proxy
-      fetch(`${encodeURIComponent(productUrl)}`, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Błąd podczas pobierania danych');
-          }
-          return response.json();
-        })
+      // Wysyłamy zapytanie do API proxy przy użyciu getXt
+      getTw(productUrl) // Zamiast fetch, używamy getXt
         .then((data) => {
-          setResults(Array.isArray(data) ? data : []);
+          setResults(Array.isArray(data) ? data : []); // Ustawiamy dane produktów
         })
         .catch((error) => {
           console.error('Błąd pobierania danych:', error);
@@ -197,34 +194,32 @@ export default function SearchResults() {
                 <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
                 
                 {/* Wstawiamy cenę po prawej stronie */}
-{/* Wyświetlanie ceny */}
-{product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {
-  const cena = String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.');
-  const cenaNumber = Number(cena);
-  const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
-  const jednostka = product.cn[0].cena2
-    ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '')
-    : (product.jm || '');
+                {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {
+                  const cena = String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.');
+                  const cenaNumber = Number(cena);
+                  const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
+                  const jednostka = product.cn[0].cena2
+                    ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '')
+                    : (product.jm || '');
 
-  return (
-    <div className="text-lg text-slate-700 mb-2 text-right">
-      <span className="font-bold text-xl">
-        {zlote}
-        <sup className="text-sm custom-sup">
-          ,{grosze}zł/{jednostka}
-        </sup>
-      </span>
-    </div>
-  );
-})() : (
-  <div className="text-lg text-zinc-700 mb-2 text-right">
-    <span className="font-bold text-2xl">
-      0
-      <sup className="text-sm font-bold custom-sup">,00 zł</sup>
-    </span>
-  </div>
-)}
-
+                  return (
+                    <div className="text-lg text-slate-700 mb-2 text-right">
+                      <span className="font-bold text-xl">
+                        {zlote}
+                        <sup className="text-sm custom-sup">
+                          ,{grosze}zł/{jednostka}
+                        </sup>
+                      </span>
+                    </div>
+                  );
+                })() : (
+                  <div className="text-lg text-zinc-700 mb-2 text-right">
+                    <span className="font-bold text-2xl">
+                      0
+                      <sup className="text-sm font-bold custom-sup">,00 zł</sup>
+                    </span>
+                  </div>
+                )}
 
                 {/* Ikona + napis w lewym dolnym rogu */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
@@ -241,3 +236,5 @@ export default function SearchResults() {
     </div>
   );
 }
+
+

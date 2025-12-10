@@ -9,11 +9,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { getXt } from "../../../../../../services/api/xt";
 
+// Typy danych produktu
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
 }
+
 interface ProductClassification {
   ElementId: number;
   CDim_jm_Val: string;
@@ -26,7 +29,8 @@ interface STElement {
   Shortcut: string;
   product_classification: ProductClassification[]
 }
-  interface Product {
+
+interface Product {
   jm: string;
   zp: {
     data: string;
@@ -38,7 +42,7 @@ interface STElement {
   nazwa: string;
   sm?: { stanHandl?: string }[];
   cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
-  s_t_elements?: STElement[]; 
+  s_t_elements?: STElement[];
 }
 
 export default function Page() {
@@ -51,14 +55,14 @@ export default function Page() {
 
   // Pobieramy parametr tw-katalog z URL
   const { id } = useParams(); // Zakładając, że parametr w URL to 'id' (np. /itemcategory/view/[id])
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setOpenPopoverId(null); // Zamknij popover przy scrollu
     };
-  
+
     window.addEventListener('scroll', handleScroll, true); // true = nasłuchuje też wewnętrznych elementów (np. div z overflow)
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll, true);
     };
@@ -70,9 +74,9 @@ export default function Page() {
         setOpenPopoverId(null); // Zamknij popover po naciśnięciu Escape
       }
     };
-  
+
     window.addEventListener('keydown', handleKeyDown);
-  
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
@@ -84,18 +88,10 @@ export default function Page() {
       setError(null);
 
       // Tworzymy pełny URL zapytania do API proxy
-      const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-katalog=${id}`;
+      const productUrl = `tw/index?tw-katalog=${id}`; // Zmieniamy na endpoint, ponieważ getXt już obsługuje pełny URL
 
-      // Wysyłamy zapytanie do API proxy
-      fetch(`${encodeURIComponent(productUrl)}`, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Błąd podczas pobierania produktów');
-          }
-          return response.json();
-        })
+      // Wysyłamy zapytanie do API proxy przy użyciu getXt
+      getXt(productUrl) // Zamiast fetch, używamy getXt
         .then((data) => {
           setProducts(Array.isArray(data) ? data : []); // Ustawiamy dane produktów
         })
@@ -117,7 +113,7 @@ export default function Page() {
   return (
     <div className="container mx-auto">
       {/* Wyświetlanie komunikatu o ładowaniu */}
-      {loading && <p className="text-gray-500"></p>}
+      {loading && <p className="text-gray-500">Ładowanie...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {/* Wyświetlanie listy produktów */}
@@ -196,34 +192,31 @@ export default function Page() {
                 <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
 
                 {/* Wyświetlanie ceny */}
-{/* Wyświetlanie ceny */}
-{product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
-  <div className="text-lg text-slate-700 mb-2 text-right">
-    <span className="font-bold text-xl">
-      {Number(
-        String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.')
-      ).toFixed(0).replace('.', ',')}
-      <sup className="text-sm custom-sup">
-        ,{Number(
-          String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.')
-        ).toFixed(2).split('.')[1]}
-        zł
-        {product.cn[0].cena2
-          ? `/${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ''}`
-          : `/${product.jm || ''}`}
-      </sup>
-    </span>
-  </div>
-) : (
-  <div className="text-lg text-zinc-700 mb-2 text-right">
-    <span className="font-bold text-2xl">
-      0
-      <sup className="text-sm font-bold custom-sup">,00 zł</sup>
-    </span>
-  </div>
-)}
-
-
+                {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
+                  <div className="text-lg text-slate-700 mb-2 text-right">
+                    <span className="font-bold text-xl">
+                      {Number(
+                        String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.')
+                      ).toFixed(0).replace('.', ',')}
+                      <sup className="text-sm custom-sup">
+                        ,{Number(
+                          String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.')
+                        ).toFixed(2).split('.')[1]}
+                        zł
+                        {product.cn[0].cena2
+                          ? `/${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ''}`
+                          : `/${product.jm || ''}`}
+                      </sup>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-lg text-zinc-700 mb-2 text-right">
+                    <span className="font-bold text-2xl">
+                      0
+                      <sup className="text-sm font-bold custom-sup">,00 zł</sup>
+                    </span>
+                  </div>
+                )}
 
                 {/* Ikona + napis w lewym dolnym rogu */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
