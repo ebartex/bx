@@ -12,10 +12,8 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
-import { getTw } from "../../../../services/api/tw";
-import { getXt } from "../../../../services/api/xt";
 
-// Typy danych dla produktów
+
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
@@ -26,7 +24,7 @@ interface SearchResult {
   title: string;
   id: string;
   nazwa: string;
-  sm?: { stanHandl?: string }[];
+  sm?: { stanHandl?: string }[]; // Add the 'sm' property with an optional array of objects
 }
 
 interface CategoryResult {
@@ -88,30 +86,31 @@ export default function CommandSearch() {
       setParentCategoryResults([]);
       setLoading(false);
     }
-  };
+  }; 
 
   const fetchResults = async (query: string) => {
     try {
       setLoading(true);
-
-      // Sprawdzamy, czy query zaczyna się od 'tw' czy 'xt' i wywołujemy odpowiednią funkcję
+      
       const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
-        query.startsWith('tw')
-          ? getTw(`tw/index?tw-nazwa=?${query}?`)
-          : getXt(`xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
-
-        query.startsWith('tw')
-          ? getTw(`tw/index?tw-kod=?${query}?`)
-          : getXt(`xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
-
-        query.startsWith('tw')
-          ? getTw(`tw/index?tw-nazwa=?${query}?`)
-          : getXt(`xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)
+        fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${query}?`)}`, {
+          method: "GET",
+        }),
+        fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/index?xt-podkatalog=0&xt-kod=?${query}?`)}`, {
+          method: "GET",
+        }),
+        fetch(`${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`)}`, {
+          method: "GET",
+        })
       ]);
-
-      setResults(productRes as SearchResult[]);
-      setCategoryResults(categoryRes as CategoryResult[]);
-      setParentCategoryResults(parentCategoryRes as ParentCategoryResult[]);
+  
+      const productData: SearchResult[] = await productRes.json();
+      const categoryData: CategoryResult[] = await categoryRes.json();
+      const parentCategoryData: ParentCategoryResult[] = await parentCategoryRes.json();
+  
+      setResults(productData);
+      setCategoryResults(categoryData);
+      setParentCategoryResults(parentCategoryData);
     } catch (error) {
       console.error("Błąd podczas pobierania wyników:", error);
       setResults([]);
@@ -123,16 +122,19 @@ export default function CommandSearch() {
   };
 
   const handleLink = (url: string) => {
+    // Zamykamy okno wyników
     setIsOpen(false);
     setResults([]);
     setCategoryResults([]);
     setParentCategoryResults([]);
     setQuery("");
-
+  
+    // Ukrywamy tło po 0.5 sekundy
     setTimeout(() => {
       setBackgroundVisible(false);
     }, 500);
-
+  
+    // Przekierowanie użytkownika
     setTimeout(() => {
       router.push(url);
     }, 300);
@@ -145,6 +147,7 @@ export default function CommandSearch() {
   };
 
   const handleInputBlur = () => {
+    // Zapisujemy zapytanie, kiedy użytkownik opuszcza input
     if (query.length > 2) {
       handleAddToHistory(query);
     }
@@ -171,17 +174,19 @@ export default function CommandSearch() {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && query.length > 2) {
-      elementRef.current?.blur();
+      elementRef.current?.blur();  // Usuwamy fokus z inputa
       handleLink(`/szukaj?q=${encodeURIComponent(query)}`);
     }
   };
 
   return (
     <>
+      {/* Tło jest zawsze widoczne, nawet po zamknięciu okna wyników */}
       {backgroundVisible && isOpen && (
         <div
           className={`fixed inset-0 bg-zinc-600/90 z-40 transition-opacity duration-500 opacity-100`}
           onClick={(e) => {
+            // Zamknięcie tylko wyników, tło nie znika natychmiast
             if (commandRef.current && !commandRef.current.contains(e.target as Node)) {
               setIsOpen(false);
             }
@@ -213,12 +218,13 @@ export default function CommandSearch() {
             placeholder="Nazwa produktu kod kreskowy numer katalogowy..."
             onClick={handleInputClick}
             onChange={handleSearchChange}
-            onBlur={handleInputBlur}
+            onBlur={handleInputBlur}  // Zapisz zapytanie przy opuszczeniu inputa
             value={query}
             ref={elementRef}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleKeyDown} // Dodajemy naszą obsługę zdarzenia
           />
-          <Search size={18} className={`z-60 absolute left-3 ${isOpen ? "top-5" : "top-1/2"}  transform -translate-y-1/2 text-slate-500`} />
+          {/* Ikona Search */}
+          <Search size={18} className={`z-60 absolute left-3  ${isOpen ? "top-5" : "top-1/2"}  transform -translate-y-1/2 text-slate-500`} />
         </div>
 
         {isOpen && (
@@ -227,40 +233,44 @@ export default function CommandSearch() {
             style={{ left: window.innerWidth >= 1280 ? `${distanceFromLeft}px` : `0px` }}
           >
             <CommandList className="border xl:h-80 h-50 bg-white border-slate-200">
-              {(parentCategoryResults.length > 0 || categoryResults.length > 0) && (
-                <CommandGroup heading="Kategorie">
-                  {parentCategoryResults.length > 0 && (
-                    <>
-                      {parentCategoryResults.map((category) => (
-                        <CommandItem
-                          key={category.id}
-                          onClick={() => handleLink(`/category/view/${category.id}/slug`)}
-                          className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
-                        >
-                          <div className="flex w-full">
-                            <span onClick={() => handleLink(`/parentcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
-                          </div>
-                        </CommandItem>
-                      ))}
-                    </>
-                  )}
-                  {categoryResults.length > 0 && (
-                    <>
-                      {categoryResults.map((category) => (
-                        <CommandItem
-                          key={category.id}
-                          onClick={() => handleLink(`/category/view/${category.id}/slug`)}
-                          className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
-                        >
-                          <div className="flex w-full">
-                            <span onClick={() => handleLink(`/categories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
-                          </div>
-                        </CommandItem>
-                      ))}
-                    </>
-                  )}
-                </CommandGroup>
+
+                      {(parentCategoryResults.length > 0 || categoryResults.length > 0) && (
+            <CommandGroup heading="Kategorie">
+              {/* Pokaż kategorie nadrzędne */}
+              {parentCategoryResults.length > 0 && (
+                <>
+                  {parentCategoryResults.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      onClick={() => handleLink(`/category/view/${category.id}/slug`)}
+                      className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+                    >
+                      <div className="flex w-full">
+                        <span onClick={() => handleLink(`/parentcategories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </>
               )}
+
+              {/* Pokaż kategorie */}
+              {categoryResults.length > 0 && (
+                <>
+                  {categoryResults.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      onClick={() => handleLink(`/category/view/${category.id}/slug`)}
+                      className="flex items-center space-x-4 hover:!bg-gray-100 p-3 cursor-pointer"
+                    >
+                      <div className="flex w-full">
+                        <span onClick={() => handleLink(`/categories/view/${category.id}/test`)} className="text-sm font-medium">{category.kod}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </>
+              )}
+            </CommandGroup>
+          )}
 
               <CommandGroup className="p-0" heading="Wyniki">
                 {loading ? (
@@ -271,7 +281,7 @@ export default function CommandSearch() {
                   results.map((result) => (
                     <div
                       key={result.id}
-                      onClick={() => handleLink(`/products/view/${result.id}/slug`)}
+                      onClick={() => handleLink(`/products/view/${result.id}/slug`)} // Używamy onClick tutaj w divie
                     >
                       <CommandItem
                         onClick={() => handleLink(`/products/view/${result.id}/slug`)}
@@ -280,7 +290,7 @@ export default function CommandSearch() {
                         <div className="flex w-full">
                           <Image
                             src={
-                              result.productphoto?.length > 0
+                              result.productphoto.length > 0
                                 ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
                                 : "/product_512.png"
                             }
@@ -317,6 +327,7 @@ export default function CommandSearch() {
                 )}
               </CommandGroup>
 
+              {/* Historia wyszukiwania */}
               {searchHistory.length > 0 && (
                 <CommandGroup heading="Historia wyszukiwania">
                   <div className="p-2 flex flex-wrap gap-2">
@@ -333,6 +344,7 @@ export default function CommandSearch() {
                 </CommandGroup>
               )}
 
+              {/* Pokaż wyniki tylko jeśli query > 2 */}
               {query.length > 2 && (
                 <div className="absolute bottom-3 right-0 z-20 w-full">
                   <div>
