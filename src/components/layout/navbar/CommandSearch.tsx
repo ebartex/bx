@@ -39,8 +39,6 @@ interface ParentCategoryResult {
   kod: string;
 }
 
-
-
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false); // Kontroluje widoczność okna wyników
   const [backgroundVisible, setBackgroundVisible] = useState(false); // Kontroluje widoczność tła
@@ -103,7 +101,7 @@ export default function CommandSearch() {
           : getXt(`xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
 
         query.startsWith('tw')
-          ? getTw(`tw/index?tw-kod=${query}`)
+          ? getTw(`tw/index?tw-kod=?${query}?`)
           : getXt(`xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
 
         query.startsWith('tw')
@@ -282,7 +280,7 @@ export default function CommandSearch() {
                         <div className="flex w-full">
                           <Image
                             src={
-                              result.productphoto.length > 0
+                              result.productphoto?.length > 0
                                 ? `${result.productphoto.find((photo: { main_photo: number; }) => photo.main_photo === 1)?.photo_512 ? "https://www.imgstatic.ebartex.pl/" + result.productphoto.find(photo => photo.main_photo === 1)?.photo_512 : "/product_512.png"}`
                                 : "/product_512.png"
                             }
