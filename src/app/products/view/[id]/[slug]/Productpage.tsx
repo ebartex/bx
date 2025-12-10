@@ -5,7 +5,9 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Squircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getTw } from "../../../../../../services/api/tw";
 
+// Typy danych o produkcie
 interface ProductClassification {
   ElementId: number;
   CDim_jm_Val: string;
@@ -18,7 +20,7 @@ interface STElement {
   Shortcut: string;
   product_classification: ProductClassification[]
 }
-// Typy danych o produkcie
+
 interface Product {
   id: number;
   nazwa: string;
@@ -48,13 +50,10 @@ const ProductPage = () => {
     const fetchProduct = async () => {
       try {
         // Przygotowujemy pełny URL zapytania do API proxy
-        const fullUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`;
+        const fullUrl = `tw/index?tw-id=${id}`;
 
-        // Wysyłamy zapytanie do API proxy, przekazując pełny URL
-        const response = await fetch(`${encodeURIComponent(fullUrl)}`, {
-          method: "GET",
-        });
-        const data: ProductResponse = await response.json();
+        // Wysyłamy zapytanie do API proxy przy użyciu getTw zamiast fetch
+        const data: ProductResponse = await getTw(fullUrl) as ProductResponse;
 
         if (data.length > 0) {
           setProducts(data);
