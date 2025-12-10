@@ -28,7 +28,7 @@ export default function CategoryLayout({ children }: LayoutProps) {
       // Tworzymy pełny URL zapytania do API proxy
       const categoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${id}`;
 
-      fetch(`/api/proxy?url=${encodeURIComponent(categoryUrl)}`, {
+      fetch(`${encodeURIComponent(categoryUrl)}`, {
         method: "GET",
       })
         .then((res) => res.json())
@@ -42,7 +42,7 @@ export default function CategoryLayout({ children }: LayoutProps) {
               const parentCategoryUrl = `https://www.bapi2.ebartex.pl/xt/index?xt-id=${currentCategory.super}`;
               
               // Zapytanie do API proxy dla kategorii nadrzędnej
-              fetch(`/api/proxy?url=${encodeURIComponent(parentCategoryUrl)}`, {
+              fetch(`${encodeURIComponent(parentCategoryUrl)}`, {
                 method: "GET",
               })
                 .then((res) => res.json())
