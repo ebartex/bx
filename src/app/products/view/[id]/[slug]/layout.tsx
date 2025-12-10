@@ -22,7 +22,7 @@ export default function ProductLayout({ children, params }: Props) {
       const apiUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-id=${resolvedParams.id}`;
 
       try {
-        const response = await fetch(`/api/proxy?url=${apiUrl}`, { method: 'GET' });
+        const response = await fetch(`${apiUrl}`, { method: 'GET' });
         const productData = await response.json();
         setProduct(productData[0] || { title: 'Produkt nie znaleziony' });
       } catch (error) {

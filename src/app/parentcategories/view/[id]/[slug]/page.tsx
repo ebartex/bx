@@ -28,7 +28,7 @@ export default function Page() {
       const apiUrl = `https://www.bapi2.ebartex.pl/xt/index?Xt-super=${id}`;
 
       // Wysyłamy zapytanie do API proxy z pełnym URL
-      fetch(`/api/proxy?url=${encodeURIComponent(apiUrl)}`, {
+      fetch(`${encodeURIComponent(apiUrl)}`, {
         method: 'GET',
       })
         .then((response) => {

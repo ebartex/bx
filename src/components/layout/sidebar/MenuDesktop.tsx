@@ -5,6 +5,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
+import { getXt } from "../../../../services/api/xt";
+
 
 // Typ dla kategorii
 type Category = {
@@ -25,14 +27,11 @@ export default function MenuDesktop() {
   const router = useRouter(); // Inicjujemy useRouter
 
   useEffect(() => {
-    // Pobieranie kategorii z API proxy
+    // Pobieranie kategorii z API
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`/api/proxy?url=${encodeURIComponent('https://www.bapi2.ebartex.pl/xt/index?Xt-super=2200&Xt-root=2200')}`, {
-          method: "GET",
-        });
-        const data = await response.json();
-        setCategories(data); // Ustawiamy stan kategorii
+        const data = await getXt('xt/index?Xt-super=2200&Xt-root=2200'); // Użycie getXt zamiast fetch
+        setCategories(data as Category[]); // Ustawiamy stan kategorii
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -51,16 +50,13 @@ export default function MenuDesktop() {
     // Ustawiamy kategorię jako ładowaną
     setLoadingCategory(categoryId);
 
-    // Pobieranie podkategorii dla danej kategorii z API proxy
+    // Pobieranie podkategorii dla danej kategorii z API
     const fetchSubcategories = async () => {
       try {
-        const response = await fetch(`/api/proxy?url=${encodeURIComponent(`https://www.bapi2.ebartex.pl/xt/subcat?Xt-super=${categoryId}`)}`, {
-          method: "GET",
-        });
-        const data = await response.json();
+        const data = await getXt(`xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
         setSubcategories((prev) => ({
           ...prev,
-          [categoryId]: data, // Dodajemy podkategorie dla danej kategorii
+          [categoryId]: data as SubCategory[], // Dodajemy podkategorie dla danej kategorii
         }));
 
         // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy

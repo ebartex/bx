@@ -51,7 +51,7 @@ const ProductPage = () => {
         const fullUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-id=${id}`;
 
         // Wysyłamy zapytanie do API proxy, przekazując pełny URL
-        const response = await fetch(`/api/proxy?url=${encodeURIComponent(fullUrl)}`, {
+        const response = await fetch(`${encodeURIComponent(fullUrl)}`, {
           method: "GET",
         });
         const data: ProductResponse = await response.json();

@@ -87,7 +87,7 @@ export default function SearchResults() {
       const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-nazwa=?${encodeURIComponent(query)}?`;
 
       // Wysyłamy zapytanie do API proxy
-      fetch(`/api/proxy?url=${encodeURIComponent(productUrl)}`, {
+      fetch(`${encodeURIComponent(productUrl)}`, {
         method: "GET",
       })
         .then((response) => {

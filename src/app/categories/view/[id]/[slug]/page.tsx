@@ -87,7 +87,7 @@ export default function Page() {
       const productUrl = `https://www.bapi2.ebartex.pl/tw/index?tw-katalog=${id}`;
 
       // Wysyłamy zapytanie do API proxy
-      fetch(`/api/proxy?url=${encodeURIComponent(productUrl)}`, {
+      fetch(`${encodeURIComponent(productUrl)}`, {
         method: "GET",
       })
         .then((response) => {
