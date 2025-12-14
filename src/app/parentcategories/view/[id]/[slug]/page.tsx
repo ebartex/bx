@@ -19,7 +19,7 @@ type PageProps = {
 // Funkcja generująca metadane
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
-  const category = await getXt(`xt/index?xt-id=${id}`);
+  const category = await getXt(`xt/index?xt-id=${id}`) as Category[];
 
   if (!category || category.length === 0) {
     return {
