@@ -54,7 +54,7 @@ export default function SearchResults() {
   const [error, setError] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
+  const query = searchParams ? searchParams.get('q') || '' : '';
   
   const router = useRouter(); // Hook do routingu
 
