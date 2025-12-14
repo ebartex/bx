@@ -7,39 +7,12 @@ import { Squircle, PackageCheck, Clock, Info, Package } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; 
 import { getTw } from "../../../services/api/tw";
 import { slugify } from "@/utils/slugify";
+import { Product } from "../../../types/product";
 
-interface ProductPhoto {
-  main_photo: number;
-  photo_512: string;
-}
 
-interface ProductClassification {
-  ElementId: number;
-  CDim_jm_Val: string;
-  CDim_jm_shop: string;
-  CDim_przeljmdod3: string;
-}
 
-interface STElement {
-  ElementId: string;
-  Shortcut: string;
-  product_classification: ProductClassification[]
-}
 
-interface Product {
-  jm: string;
-  zp: {
-    data: string;
-    id?: string;
-  }[];
-  productphoto: ProductPhoto[];
-  title: string;
-  id: string;
-  nazwa: string;
-  sm?: { stanHandl?: string }[];
-  cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
-  s_t_elements?: STElement[];
-}
+
 
 export default function SearchResults() {
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
