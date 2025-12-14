@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { slugify } from '@/utils/slugify';
 import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
 import { Product } from '../../../../../../types/product';
+import PriceLabel from '@/components/product/PriceLabel';
 
 
 
@@ -106,22 +107,20 @@ export default function PageClient({ products }: PageClientProps) {
                     </div>
                     <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
 
-                    {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
-                      <div className="text-lg text-slate-700 mb-2 text-right">
-                        <span className="font-bold text-xl">
-                          {Number(String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.'))
-                            .toFixed(0)
-                            .replace('.', ',')}
-                          <sup className="text-sm custom-sup">
-                            ,{Number(String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.')).toFixed(2).split('.')[1]}
-                            zł
-                            {product.cn[0].cena2
-                              ? `/${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ''}`
-                              : `/${product.jm || ''}`}
-                          </sup>
-                        </span>
-                      </div>
-                    ) : (
+                {/* Wstawiamy cenę po prawej stronie */}
+                {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {
+                  const cena = String(product.cn[0].cena2 || product.cn[0].cena);
+      
+                  const jednostka = product.cn[0].cena2
+                    ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '')
+                    : (product.jm || '');
+
+                  return (
+                 <div className="text-right"> 
+                  <PriceLabel size="medium" price={cena} unit={jednostka}/>
+                  </div>
+                  );
+                })() : (
                       <div className="text-lg text-zinc-700 mb-2 text-right">
                         <span className="font-bold text-2xl">
                           0
