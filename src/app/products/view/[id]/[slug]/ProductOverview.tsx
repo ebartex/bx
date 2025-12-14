@@ -5,6 +5,7 @@ import { Squircle} from 'lucide-react';
 import { RadioGroup } from '@radix-ui/react-radio-group';
 import { RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import PriceLabel from '@/components/product/PriceLabel';
 
 type ProductOverviewProps = {
   product: Product
@@ -46,23 +47,23 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
         <div className=''>
           <div className='space-y-4'>
             <h4 className='text-sm text-muted-foreground font-normal'>{product.xt[0]?.kod}</h4>
-            <h2 className='text-2xl font-medium'>{product.nazwa}</h2>
+            <h2 className='text-2xl font-normal'>{product.nazwa}</h2>
           </div>
           <div className='space-y-4'>
             {product.cn && product.cn[0] && (() => {
-              const cenaRaw = product.cn[0].cena2 || product.cn[0].cena;
-              const cena = String(cenaRaw).replace(',', '.');
-              const cenaNumber = Number(cena);
-              const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
+              const cena = product.cn[0].cena2 || product.cn[0].cena;
+          //    const cena = String(cenaRaw).replace(',', '.');
+           //   const cenaNumber = Number(cena);
+          //   const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
 
               const jednostka = product.cn[0].cena2 
                 ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '') 
                 : (product.jm || '');
-
+      
               return (
-                <p className="text-sm mb-4">
-                  Cena: {zlote},{grosze} zł/{jednostka}
-                </p>
+                <>
+                  <PriceLabel size="xlarge" price={cena} unit={jednostka}/>
+                </>
               );
             })()}
           </div>       

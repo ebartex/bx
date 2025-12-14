@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { getTw } from "../../../services/api/tw";
 import { slugify } from "@/utils/slugify";
 import { Product } from "../../../types/product";
+import PriceLabel from "@/components/product/PriceLabel";
 
 
 
@@ -168,22 +169,16 @@ export default function SearchResults() {
                 
                 {/* Wstawiamy cenę po prawej stronie */}
                 {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {
-                  const cena = String(product.cn[0].cena2 || product.cn[0].cena).replace(',', '.');
-                  const cenaNumber = Number(cena);
-                  const [zlote, grosze] = cenaNumber.toFixed(2).split('.');
+                  const cena = String(product.cn[0].cena2 || product.cn[0].cena);
+      
                   const jednostka = product.cn[0].cena2
                     ? (product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || '')
                     : (product.jm || '');
 
                   return (
-                    <div className="text-lg text-slate-700 mb-2 text-right">
-                      <span className="font-bold text-xl">
-                        {zlote}
-                        <sup className="text-sm custom-sup">
-                          ,{grosze}zł/{jednostka}
-                        </sup>
-                      </span>
-                    </div>
+                 <>
+                  <PriceLabel size="large" price={cena} unit={jednostka}/>
+                </>
                   );
                 })() : (
                   <div className="text-lg text-zinc-700 mb-2 text-right">
