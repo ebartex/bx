@@ -8,7 +8,7 @@ type PageProps = {
 };
 
 
-export async function generateMetadata({ params }: LayoutProps) {
+export async function generateMetadata({ params }: PageProps) {
   const { id } = await params; // Oczekujemy id produktu z params
 
   // Pobieramy dane produktu
