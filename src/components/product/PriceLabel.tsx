@@ -17,13 +17,17 @@ const PriceLabel = ({ price, unit, size = 'medium' }: PriceLabelProps) => {
   // Określamy klasy czcionki na podstawie prop size
   let fontSizeClass = 'text-2xl'; // Domyślny rozmiar
   let alignSize = ''; // Klasa dla elementu sup (poprawiona zmienna)
-
+  let tracking = '';
   if (size === 'small') {
-    fontSizeClass = 'text-xl';
+    fontSizeClass = 'text-md';
     alignSize = 'baseline'; // Dla małego rozmiaru czcionki
+  } else if (size === 'medium') {
+    fontSizeClass = 'text-xl';
+    alignSize = '[2px]'; // Dla dużych rozmiarów czcionki
   } else if (size === 'large') {
-    fontSizeClass = 'text-3xl';
-    alignSize = '[4px]'; // Dla dużych rozmiarów czcionki
+    fontSizeClass = 'text-2xl';
+    tracking = 'tracking-[1.3px]'
+    alignSize = '[2px]'; // Dla dużych rozmiarów czcionki
   } else if (size === 'xlarge') {
     fontSizeClass = 'text-4xl';
     alignSize = '[6px]'; // Dla dużych rozmiarów czcionki    
@@ -33,9 +37,9 @@ const PriceLabel = ({ price, unit, size = 'medium' }: PriceLabelProps) => {
 
   return (
     <div className="text-lg mb-2 mt-2">
-      <span className={`font-medium ${fontSizeClass}`}>
+      <span className={`${tracking ? tracking : ''} font-medium ${fontSizeClass}`}>
         {zlote}
-        <sup className={`text-sm ${alignSize ? `align-${alignSize}` : ''}`}>
+        <sup className={`${tracking ? tracking : ''} text-sm ${alignSize ? `align-${alignSize}` : ''}`}>
           ,{grosze} zł/{unit}
         </sup>
       </span>

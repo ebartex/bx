@@ -47,7 +47,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
         <div className=''>
           <div className='space-y-4'>
             <h4 className='text-sm text-muted-foreground font-normal'>{product.xt[0]?.kod}</h4>
-            <h2 className='text-2xl font-normal'>{product.nazwa}</h2>
+            <h2 className='text-xl font-normal'>{product.nazwa}</h2>
           </div>
           <div className='space-y-4'>
             {product.cn && product.cn[0] && (() => {
@@ -62,7 +62,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
       
               return (
                 <>
-                  <PriceLabel size="xlarge" price={cena} unit={jednostka}/>
+                  <PriceLabel size="large" price={cena} unit={jednostka}/>
                 </>
               );
             })()}

@@ -176,9 +176,9 @@ export default function SearchResults() {
                     : (product.jm || '');
 
                   return (
-                 <>
-                  <PriceLabel size="large" price={cena} unit={jednostka}/>
-                </>
+                 <div className="text-right"> 
+                  <PriceLabel size="medium" price={cena} unit={jednostka}/>
+                  </div>
                   );
                 })() : (
                   <div className="text-lg text-zinc-700 mb-2 text-right">
