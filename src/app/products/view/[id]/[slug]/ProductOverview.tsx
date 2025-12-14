@@ -45,7 +45,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
         {/* Right Side - Product Details */}
         <div className=''>
           <div className='space-y-4'>
-            <h4 className='text-sm text-muted-foreground font-normal'>{product.xt.kod}</h4>
+            <h4 className='text-sm text-muted-foreground font-normal'>{product.xt[0]?.kod}</h4>
             <h2 className='text-2xl font-medium'>{product.nazwa}</h2>
           </div>
           <div className='space-y-4'>
