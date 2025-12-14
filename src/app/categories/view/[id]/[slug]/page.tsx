@@ -39,7 +39,7 @@ export default async function Page({ params }: PageProps) {
 
   // Zapytanie do API o produkty
   const productUrl = `tw/index?tw-katalog=${id}`;
-  const products: Product[] = await getXt(productUrl);
+  const products: Product[] = await getXt(productUrl) as Product[];
 
 
 
