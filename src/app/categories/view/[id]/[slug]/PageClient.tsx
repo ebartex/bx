@@ -7,22 +7,11 @@ import { PackageCheck, Clock, Info, Package, Squircle } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { slugify } from '@/utils/slugify';
 import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
+import { Product } from '../../../../../../types/product';
 
-interface ProductPhoto {
-  main_photo: number;
-  photo_512: string;
-}
 
-interface Product {
-  jm: string;
-  zp: { data: string; id?: string }[];
-  productphoto: ProductPhoto[];
-  title: string;
-  id: string;
-  nazwa: string;
-  sm?: { stanHandl?: string }[];
-  cn?: { cena: string; cena1?: string; cena2?: string }[];
-}
+
+
 
 interface PageClientProps {
   products: Product[];
