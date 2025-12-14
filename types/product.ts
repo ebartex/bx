@@ -21,7 +21,7 @@ export type Product = {
   cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
   s_t_elements?: STElement[];   
 }
-export type ProductClassification {
+export type ProductClassification = {
   ElementId: number;
   CDim_jm_Val: string;
   CDim_jm_shop: string;
