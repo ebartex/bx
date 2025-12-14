@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { getXt } from '../../../../../../services/api/xt'; // Serwis do pobierania danych
 import { notFound } from 'next/navigation'; // Zwraca 404, jeśli dane nie są dostępne
 import PageClient from './PageClient';
+import { Category } from '../../../../../../types/category';
 
 // Typ danych podkategorii
 interface SubCategory {
@@ -40,7 +41,7 @@ export default async function Page({ params }: PageProps) {
 
   // Zapytanie do API o podkategorie
   const apiUrl = `/xt/index?Xt-super=${id}`;
-  const subCategories: SubCategory[] = await getXt(apiUrl);
+  const subCategories: Category[] = await getXt(apiUrl) as Category[];
 
   if (!subCategories || subCategories.length === 0) {
     notFound(); // Jeśli brak wyników, zwróć 404
