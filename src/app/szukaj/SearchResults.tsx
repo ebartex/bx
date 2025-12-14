@@ -1,19 +1,13 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";  // Dodajemy useRouter
 import Image from "next/image";
 import { Squircle, PackageCheck, Clock, Info, Package } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"; 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; 
 import { getTw } from "../../../services/api/tw";
 import { slugify } from "@/utils/slugify";
 
-
-// Typy danych produktu
 interface ProductPhoto {
   main_photo: number;
   photo_512: string;
@@ -92,10 +86,15 @@ export default function SearchResults() {
       // Tworzymy pełny URL zapytania do API proxy
       const productUrl = `tw/index?tw-nazwa=?${encodeURIComponent(query)}?`; // Poprawiamy endpoint
 
-      // Wysyłamy zapytanie do API proxy przy użyciu getXt
-      getTw(productUrl) // Zamiast fetch, używamy getXt
+      // Wysyłamy zapytanie do API proxy przy użyciu getTw
+      getTw(productUrl) // Zamiast fetch, używamy getTw
         .then((data) => {
-          setResults(Array.isArray(data) ? data : []); // Ustawiamy dane produktów
+          // Sprawdzamy, czy dane są typu Product[]
+          if (Array.isArray(data)) {
+            setResults(data as Product[]); // Rzutujemy dane na Product[]
+          } else {
+            setResults([]); // Jeśli dane nie są tablicą, ustawiamy pustą tablicę
+          }
         })
         .catch((error) => {
           console.error('Błąd pobierania danych:', error);
@@ -237,5 +236,3 @@ export default function SearchResults() {
     </div>
   );
 }
-
-
