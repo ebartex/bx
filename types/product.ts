@@ -8,7 +8,7 @@ export type Product = {
   jm: string;
   kodpaskowy?: string;
   photos: any;
-  id: number;
+  id: string;
   nazwa: string; 
   kod: string;
   katalog: string;
