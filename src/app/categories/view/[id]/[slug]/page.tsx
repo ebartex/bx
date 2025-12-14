@@ -1,26 +1,12 @@
 // page.tsx
 import { Suspense } from "react";
 import { getXt } from "../../../../../../services/api/xt"; // Zakładam, że masz odpowiedni serwis do pobierania danych
-import { notFound } from "next/navigation"; // Zwraca 404, jeśli dane nie są dostępne
+
 import PageClient from "./PageClient";
 import { Metadata } from "next";
+import { Product } from "../../../../../../types/product";
 
-// Typ danych produktu
-interface ProductPhoto {
-  main_photo: number;
-  photo_512: string;
-}
 
-interface Product {
-  jm: string;
-  zp: { data: string; id?: string }[];
-  productphoto: ProductPhoto[];
-  title: string;
-  id: string;
-  nazwa: string;
-  sm?: { stanHandl?: string }[];
-  cn?: { cena: string; cena1?: string; cena2?: string }[];
-}
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -29,7 +15,7 @@ type PageProps = {
 // Funkcja generująca metadane
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const category = await getXt(`xt/index?xt-id=${id}`);
+  const category = await getXt(`xt/index?xt-id=${id}`) as Product[];
 
   if (!category || category.length === 0) {
     return {
