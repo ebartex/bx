@@ -1,8 +1,9 @@
+import { Product } from '../../types/product';
 import { fetchJson } from './helper';
 
-export async function getTw(url: string) {
+export async function getTw(url: string): Product[] {
   try {
-    const data = await fetchJson(url); 
+    const data: Product[] = await fetchJson(url); 
     return data; // Zwracamy dane, aby można było je użyć w innych funkcjach
   } catch (error) {
     console.error('Error while fetching data:', error);

@@ -8,7 +8,7 @@ export default function Home() {
       <div className="flex h-screen">
     
         {/* Komponent MenuDesktop widoczny na urządzeniach LG */}
-        <div className="hidden lg:block w-1/4">
+        <div className="hidden lg:block w-1/4 bg-white ">
           <MenuDesktop />
         </div>
         {/* Zdjęcie zajmujące resztę dostępnej przestrzeni */}

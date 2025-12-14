@@ -1,8 +1,16 @@
+// next.config.js
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+ // reactStrictMode: true, // Włączenie trybu "strict" dla React (opcjonalnie)
   images: {
-    domains: ['eerpe.ebartex.pl', 'https://www.imgstatic.ebartex.pl', 'https://imgstatic.ebartex.pl', 'www.imgstatic.ebartex.pl', 'erp.ebartex.pl'], // Corrected domain without protocol or trailing slashes
+    domains: [
+      'eerpe.ebartex.pl',
+      'www.imgstatic.ebartex.pl',
+      'imgstatic.ebartex.pl',
+      'erp.ebartex.pl'
+    ], // Poprawiona konfiguracja domen bez protokołu i ukośników
   },
 };
 

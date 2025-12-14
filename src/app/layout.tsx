@@ -12,6 +12,10 @@ const roboto = Roboto({
   display: "swap",
 });
 
+export const metadata = {
+  title: "Bartex Gorzkowice telefon 44 6818 043 Piotr Bartnik Materiały Budowlane",
+  description: "Bartex Gorzkowice materiały budowlane, chemia budowlana, narzędzia, farby, lakiery, kleje, izolacje, systemy dociepleń, artykuły hydrauliczne i elektryczne.",
+};
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="pl" className={roboto.className}>
       <head>
-      <title>Bartex Gorzkowice telefon 44 6818 043 Piotr Bartnik Materiały Budowlane</title>
+
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -34,7 +38,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body className="bg-stone-100">
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-53LWG4GN"
@@ -45,8 +49,11 @@ export default function RootLayout({
         </noscript>
         
         <Topbar />
-        <div className="xl:w-[1200px] mx-auto">
+        <div className="bg-white">
           <Navbar />
+        </div>
+        <div className="xl:w-[1200px] mx-auto">
+    
           {children}
         </div>
 

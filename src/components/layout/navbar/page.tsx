@@ -10,8 +10,9 @@ import MenuMobile from "./MenuMobile";
 export default function Navbar() {
   return (
     <>
-      
-      <nav className="bg-white flex flex-col sm:flex-row items-center justify-between py-3 xl:py-4 xl:pr-6"> 
+         <div className="xl:w-[1200px] mx-auto">
+
+      <nav className="flex flex-col sm:flex-row items-center justify-between mb-2 py-3 xl:py-4 xl:pr-6"> 
         {/* Flex w kolumnie na urządzeniach mobilnych, wiersz na większych ekranach, wyrównanie w poziomie */}
         <div className="pr-5 flex items-center gap-2 sm:w-auto w-full mb-4 sm:mb-0">
         {/* Ikona Menu */}
@@ -37,6 +38,7 @@ export default function Navbar() {
         {/* InputSearchBox */}
         <CommandSearch /> {/* Wersja mobilna: w pełnej szerokości */}
       </nav>
+      </div>
     </>
   );
 }

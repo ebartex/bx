@@ -10,8 +10,9 @@ export default function SearchPage() {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="bg-white">
       <MenuDesktop />
-
+</div>
       {/* Main content */}
       <div className="flex-1">
         <Suspense fallback={<p className="text-gray-500">Ładowanie wyników...</p>}>

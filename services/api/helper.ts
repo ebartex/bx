@@ -4,8 +4,8 @@ const BASE_URL = 'https://www.bapi2.ebartex.pl/';
 export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   try {
     const fullUrl = `${BASE_URL}${url}`;
-     
-    const res = await fetch(fullUrl, {
+
+    const res = await fetch(fullUrl, {      
       cache: "no-store",
       ...init,
     });

@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"; 
 import { getTw } from "../../../services/api/tw";
+import { slugify } from "@/utils/slugify";
 
 
 // Typy danych produktu
@@ -106,14 +107,14 @@ export default function SearchResults() {
     }
   }, [query]);
 
-  const handleProductClick = (productId: string) => {
+  const handleProductClick = (productId: string, slug: string) => {
     // Nawigacja do strony szczegółów produktu
-    router.push(`/products/view/${productId}/test`);
+    router.push(`/products/view/${productId}/${slug}`);  
   };
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-4 ml-3 mt-3">Wyniki wyszukiwania dla: {query}</h1>
+    <div className="container mx-auto bg-white">
+      <h1 className="text-xl font-normal">Wyniki wyszukiwania dla: {query}</h1>
 
       {loading && <p className="text-gray-500">Ładowanie...</p>}
       {error && <p className="text-red-500">{error}</p>}
@@ -129,7 +130,7 @@ export default function SearchResults() {
               <div 
                 key={product.id} 
                 className="border border-slate-200 rounded-none p-4 pb-10 relative cursor-pointer flex flex-col justify-between" // Flexbox + justify-between
-                onClick={() => handleProductClick(product.id)} // Obsługuje kliknięcie na produkt
+                onClick={() => handleProductClick(product.id, slugify(product.nazwa))} // Obsługuje kliknięcie na produkt
               >
                 {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
                   <div className="absolute top-0 right-0 p-2">

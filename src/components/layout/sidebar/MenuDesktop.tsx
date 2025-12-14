@@ -6,23 +6,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { getXt } from "../../../../services/api/xt";
+import { slugify } from "@/utils/slugify";
+import { Category } from "../../../../types/category";
 
 
-// Typ dla kategorii
-type Category = {
-  id: string;
-  kod: string;
-};
 
-// Typ dla podkategorii
-type SubCategory = {
-  kod: string;
-  id: string;
-};
+
+
 
 export default function MenuDesktop() {
   const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
-  const [subcategories, setSubcategories] = useState<{ [key: string]: SubCategory[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
+  const [subcategories, setSubcategories] = useState<{ [key: string]: Category[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
   const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
   const router = useRouter(); // Inicjujemy useRouter
 
@@ -56,7 +50,7 @@ export default function MenuDesktop() {
         const data = await getXt(`/xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
         setSubcategories((prev) => ({
           ...prev,
-          [categoryId]: data as SubCategory[], // Dodajemy podkategorie dla danej kategorii
+          [categoryId]: data as Category[], // Dodajemy podkategorie dla danej kategorii
         }));
 
         // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy
@@ -77,9 +71,9 @@ export default function MenuDesktop() {
   };
 
   // Funkcja obsługująca kliknięcie w subkategorię
-  const handleSubCategoryClick = (subCategoryId: string) => {
+  const handleSubCategoryClick = (subCategoryId: string, slug: string) => {
     // Przejście do strony z podkategorią
-    router.push(`/parentcategories/view/${subCategoryId}/test`);
+    router.push(`/parentcategories/view/${subCategoryId}/${slug}`);
   };
 
   return (
@@ -108,7 +102,7 @@ export default function MenuDesktop() {
                   {subcategories[category.id]?.map((subcategory, subIndex) => (
                     <div
                       key={subIndex}
-                      onClick={() => handleSubCategoryClick(subcategory.id)} // Kliknięcie w subkategorię
+                      onClick={() => handleSubCategoryClick(subcategory.id, slugify(subcategory.kod))} // Kliknięcie w subkategorię
                       className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
                     >
                       <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
