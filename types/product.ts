@@ -12,6 +12,7 @@ export type Product = {
   nazwa: string; 
   kod: string;
   katalog: string;
+  xt: { id: number; kod: string }[];
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
   zp: {
     data: string;
