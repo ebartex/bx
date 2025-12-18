@@ -13,40 +13,20 @@ import { ChevronRight, Search, Squircle } from "lucide-react";
 import Image from 'next/image';
 import NProgressHandler from "@/components/nprogress/NProgressHandler";
 import { getXt } from "../../../../services/api/xt";
+import { Product } from "../../../../types/product";
+import { Category } from "../../../../types/category";
 
 
-interface ProductPhoto {
-  main_photo: number;
-  photo_512: string;
-}
-
-interface SearchResult {
-  productphoto: ProductPhoto[];
-  title: string;
-  id: string;
-  nazwa: string;
-  sm?: { stanHandl?: string }[]; // Add the 'sm' property with an optional array of objects
-}
-
-interface CategoryResult {
-  id: string;
-  kod: string;
-}
-
-interface ParentCategoryResult {
-  id: string;
-  kod: string;
-}
 
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false); // Kontroluje widoczność okna wyników
   const [backgroundVisible, setBackgroundVisible] = useState(false); // Kontroluje widoczność tła
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [query, setQuery] = useState("");  // Przechowujemy zapytanie użytkownika
   const [searchHistory, setSearchHistory] = useState<string[]>([]); // Historia wyszukiwania
-  const [categoryResults, setCategoryResults] = useState<CategoryResult[]>([]);
-  const [parentCategoryResults, setParentCategoryResults] = useState<ParentCategoryResult[]>([]);
+  const [categoryResults, setCategoryResults] = useState<Category[]>([]);
+  const [parentCategoryResults, setParentCategoryResults] = useState<Category[]>([]);
   const commandRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -101,9 +81,9 @@ const fetchResults = async (query: string) => {
     ]);
 
     // Sprawdzamy, czy zwrócone odpowiedzi są obiektami Response, jeśli tak, konwertujemy je na JSON
-    const productData: SearchResult[] = (productRes as any).json ? await (productRes as any).json() : (productRes as SearchResult[]);
-    const categoryData: CategoryResult[] = (categoryRes as any).json ? await (categoryRes as any).json() : (categoryRes as CategoryResult[]);
-    const parentCategoryData: ParentCategoryResult[] = (parentCategoryRes as any).json ? await (parentCategoryRes as any).json() : (parentCategoryRes as ParentCategoryResult[]);
+    const productData: Product[] = (productRes as any).json ? await (productRes as any).json() : (productRes as Product[]);
+    const categoryData: Category[] = (categoryRes as any).json ? await (categoryRes as any).json() : (categoryRes as Category[]);
+    const parentCategoryData: Category[] = (parentCategoryRes as any).json ? await (parentCategoryRes as any).json() : (parentCategoryRes as Category[]);
 
     // Ustawiamy wyniki
     setResults(productData);
