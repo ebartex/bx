@@ -26,7 +26,7 @@ export type Product = {
 
 export type Sm = {
 
- stanHandl: number;
+ stanHandl: string;
 }
 export type ProductClassification = {
   ElementId: number;
