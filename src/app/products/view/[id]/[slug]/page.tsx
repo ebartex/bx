@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   // Dynamicznie ustawiamy tytuł i opis na podstawie danych produktu
   return {
-    title: product.nazwa, // Tytuł strony będzie nazwą produktu
+    title: `${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa} Bartex Gorzkowice`, // Tytuł strony będzie nazwą produktu
     description: product.kod // Możesz dostosować opis, np. używając kodu produktu
   };
 }

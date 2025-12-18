@@ -95,7 +95,7 @@ const fetchResults = async (query: string) => {
     
     // Zamień fetch na getXt
     const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
-      getXt(`/tw/index?tw-nazwa=?${query}?`),
+      getXt(`/tw/index?ProductClassification-CDim_shop_name=?${query}?`),
       getXt(`/xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
       getXt(`/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`),
     ]);
@@ -298,7 +298,7 @@ const fetchResults = async (query: string) => {
                             height={40}
                             alt="Zdjęcie produktu"
                           />
-                          <span className="text-sm truncate">{result.nazwa}</span>
+                          <span className="text-sm truncate">{result.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || result.nazwa}</span>
                           <div className="ml-auto">
                             {result.sm?.length ?? 0 > 0 ? (
                               result.sm?.map((item, index) => {

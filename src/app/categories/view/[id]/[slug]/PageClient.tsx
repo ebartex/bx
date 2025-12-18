@@ -51,7 +51,7 @@ export default function PageClient({ products }: PageClientProps) {
                   <div
                     key={product.id}
                     className="border cursor-pointer border-slate-200 rounded-none p-4 relative"
-                    onClick={() => handleProductClick(product.id, slugify(product.nazwa))}
+                    onClick={() => handleProductClick(product.id, slugify(product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa))}
                   >
                     {stan === 0 && product.zp.length > 0 && (
                       <div className="absolute top-0 right-0 p-2">
@@ -101,11 +101,11 @@ export default function PageClient({ products }: PageClientProps) {
                         }
                         width={150}
                         height={150}
-                        alt={product.nazwa}
+                        alt={product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}
                         className="object-cover rounded-md"
                       />
                     </div>
-                    <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
+                    <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}</h2>
 
                 {/* Wstawiamy cenę po prawej stronie */}
                 {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {

@@ -58,7 +58,7 @@ export default function SearchResults() {
       setError(null);
 
       // Tworzymy pełny URL zapytania do API proxy
-      const productUrl = `tw/index?tw-nazwa=?${encodeURIComponent(query)}?`; // Poprawiamy endpoint
+      const productUrl = `tw/index?ProductClassification-CDim_shop_name=?${encodeURIComponent(query)}?`; // Poprawiamy endpoint
 
       // Wysyłamy zapytanie do API proxy przy użyciu getTw
       getTw(productUrl) // Zamiast fetch, używamy getTw
@@ -103,7 +103,7 @@ export default function SearchResults() {
               <div 
                 key={product.id} 
                 className="border border-slate-200 rounded-none p-4 pb-10 relative cursor-pointer flex flex-col justify-between" // Flexbox + justify-between
-                onClick={() => handleProductClick(product.id, slugify(product.nazwa))} // Obsługuje kliknięcie na produkt
+                onClick={() => handleProductClick(product.id, slugify(product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa))} // Obsługuje kliknięcie na produkt
               >
                 {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
                   <div className="absolute top-0 right-0 p-2">
@@ -160,12 +160,12 @@ export default function SearchResults() {
                     }
                     width={150}
                     height={150}
-                    alt={product.nazwa}
+                    alt={product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}
                     className="mt-5 object-cover rounded-md"
                   />
                 </div>
                 
-                <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.nazwa}</h2>
+                <h2 className="text-sm text-zinc-800 font-normal mb-2">{product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}</h2>
                 
                 {/* Wstawiamy cenę po prawej stronie */}
                 {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (() => {

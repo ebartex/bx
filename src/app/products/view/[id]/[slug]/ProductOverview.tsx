@@ -22,11 +22,11 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
       <div className='grid md:grid-cols-2 gap-8'>
         {/* Left Side - Image Carousel */}
         <div className=''>
-          <Card className="rounded-xs">
+          <Card className="rounded-xs border-slate-100 shadow-none items-center">
             {product.productphoto.length > 0 ? (
               <Image
                 src={`https://www.imgstatic.ebartex.pl/${product.productphoto.find(photo => photo.main_photo === 1)?.photo_512 || product.productphoto[0]?.photo_512 || "product_512.png"}`}
-                alt={product.nazwa}
+                alt={product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}
                 width={512}
                 height={512}
                 className="xs:w-64 xs:h-64 sm:w-64 sm:h-64 md:w-96 md:h-96"
@@ -45,9 +45,10 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
 
         {/* Right Side - Product Details */}
         <div className=''>
-          <div className='space-y-4'>
-            <h4 className='text-sm text-muted-foreground font-normal'>{product.xt[0]?.kod}</h4>
-            <h2 className='text-xl font-normal tracking-wide'>{product.nazwa}</h2>
+          <div className='space-y-2'>
+            <h4 className='text-sm text-muted-foreground font-normal'>{product.xt?.kod}</h4>
+            <h2 className='text-xl font-normal tracking-wide'>{product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}</h2>
+            <h5 className='text-sm text-muted-foreground font-normal'>{product.kodpaskowy ? product.kodpaskowy : ""}</h5>
           </div>
           <div className='space-y-4'>
             {product.cn && product.cn[0] && (() => {

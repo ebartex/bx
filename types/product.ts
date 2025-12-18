@@ -1,5 +1,7 @@
 // src/types/product.ts
 
+import { Category } from "./category";
+
 // Główny produkt – DOPASUJ POLA do odpowiedzi z cakeapi/tw/index
 export type Product = {
   jm1: string;
@@ -12,7 +14,7 @@ export type Product = {
   nazwa: string; 
   kod: string;
   katalog: string;
-  xt: { id: number; kod: string }[];
+  xt: Category;
   productphoto: { id: number; tw_id: number; photo_512: string; photo_256: string; photo_128: string; main_photo: number }[];
   zp: {
     data: string;
@@ -26,6 +28,7 @@ export type ProductClassification = {
   CDim_jm_Val: string;
   CDim_jm_shop: string;
   CDim_przeljmdod3: string;
+  CDim_shop_name: string;
 }
 export type STElement = {
   ElementId: string;
