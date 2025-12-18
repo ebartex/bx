@@ -6,7 +6,7 @@ import { Category } from "./category";
 export type Product = {
   jm1: string;
   jmdod1: string;
-  sm: any;
+  sm: Sm[];
   jm: string;
   kodpaskowy?: string;
   photos: any;
@@ -22,6 +22,11 @@ export type Product = {
   }[];
   cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
   s_t_elements?: STElement[];   
+}
+
+export type Sm = {
+
+ stanHandl: number;
 }
 export type ProductClassification = {
   ElementId: number;
