@@ -14,7 +14,7 @@ type ProductOverviewProps = {
 const ProductOverview = ({ product }: ProductOverviewProps) => {
   // Pobranie wartości stanHandl, domyślnie 0 jeśli nie ma
   const stanHandl = product.sm?.[0]?.stanHandl ?? 0;
-  const stanColor = stanHandl === 0 ? "text-red-700" : "text-green-700";
+  const stanColor = Number(stanHandl) === 0 ? "text-red-700" : "text-green-700";
 
   return (
     <div className='w-full bg-white'> 
