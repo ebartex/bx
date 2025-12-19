@@ -75,7 +75,7 @@ const fetchResults = async (query: string) => {
     
     // Zamień fetch na getXt
     const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
-      getXt(`/tw/index?ProductClassification-CDim_shop_name=?${query}?`),
+      getXt(`/tw/index?tw-nazwa=?${query}?`),
       getXt(`/xt/index?xt-podkatalog=0&xt-kod=?${query}?`),
       getXt(`/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${query}?`),
     ]);
