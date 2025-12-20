@@ -19,6 +19,7 @@ import NProgressHandler from "@/components/nprogress/NProgressHandler";
 import { getXt } from "../../../../services/api/xt";
 import { Product } from "../../../../types/product";
 import { Category } from "../../../../types/category";
+import { Button } from "@/components/ui/button";
 
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,7 @@ export default function CommandSearch() {
 
   const handleLink = (url: string) => {
     closeSheet();
-    setTimeout(() => router.push(url), 150);
+    router.push(url);
   };
 
   const handleAddToHistory = (newQuery: string) => {
@@ -71,7 +72,9 @@ export default function CommandSearch() {
       const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
         getXt(`/tw/search?q=${q}`),
         getXt(`/xt/index?xt-podkatalog=0&xt-kod=?${q}?`),
-        getXt(`/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${q}?`),
+        getXt(
+          `/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${q}?`
+        ),
       ]);
 
       const productData: Product[] = (productRes as any).json
@@ -136,7 +139,6 @@ export default function CommandSearch() {
     if (!vv) return;
 
     const update = () => {
-      // różnica między layout viewportem a real viewportem (z klawiaturą)
       const inset = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
       setKeyboardInset(inset);
     };
@@ -151,7 +153,7 @@ export default function CommandSearch() {
     };
   }, []);
 
-  // Doscrolluj tak, żeby dół (CTA) był osiągalny przy klawiaturze
+  // Doscrolluj tak, żeby dół był osiągalny przy klawiaturze (zostawiam – przyda się dla historii/CTA itd.)
   const scrollToBottom = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -208,12 +210,11 @@ export default function CommandSearch() {
             overflow-hidden
           "
         >
-          {/* Jeden przewijalny kontener na całą zawartość (włącznie z inputem i CTA) */}
+          {/* Jeden przewijalny kontener na całą zawartość */}
           <div
             ref={scrollRef}
             className="h-full overflow-y-auto bg-white overscroll-contain"
             style={{
-              // miejsce "pod klawiaturę" – dzięki temu da się doscrollować do CTA
               paddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
             }}
           >
@@ -239,12 +240,25 @@ export default function CommandSearch() {
                   value={query}
                   onKeyDown={handleKeyDown}
                 />
-                <Search
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
-                />
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
               </div>
             </SheetHeader>
+
+            {/* ✅ CTA przeniesione POD input (na górę, pod headerem) */}
+            {query.length > 2 && (
+                <div className="border-b bg-white flex justify-center py-3">
+                <Button
+                variant="outline"
+                    onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(query)}`)}
+                    className="cursor-pointer"
+                    type="button"
+                >
+                    <span>Przejdź do wyników</span>
+                    <ChevronRight />
+                </Button>
+                </div>
+
+            )}
 
             {/* Content */}
             <div className="bg-white">
@@ -354,20 +368,6 @@ export default function CommandSearch() {
                 </Section>
               )}
             </div>
-
-            {/* CTA – na samym końcu przewijania */}
-            {query.length > 2 && (
-              <div className="border-t bg-white">
-                <button
-                  onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(query)}`)}
-                  className="w-full text-slate-700 pl-4 pt-3 pb-3 pr-4 flex justify-between items-center hover:bg-gray-100 cursor-pointer"
-                  type="button"
-                >
-                  <span>Przejdź do wyników</span>
-                  <ChevronRight />
-                </button>
-              </div>
-            )}
           </div>
         </SheetContent>
       </Sheet>
