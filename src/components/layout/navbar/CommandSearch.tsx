@@ -194,7 +194,7 @@ export default function CommandSearch() {
         className="w-full h-10 bg-slate-100 text-left text-slate-500 px-10 rounded-none relative"
       >
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-        Szukaj produkty...
+        Szukaj
       </button>
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -236,7 +236,6 @@ export default function CommandSearch() {
                   placeholder="Szukaj produktów..."
                   onChange={handleSearchChange}
                   onBlur={handleInputBlur}
-                  onFocus={scrollToBottom}
                   value={query}
                   onKeyDown={handleKeyDown}
                 />
