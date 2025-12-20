@@ -20,6 +20,7 @@ import { getXt } from "../../../../services/api/xt";
 import { Product } from "../../../../types/product";
 import { Category } from "../../../../types/category";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,18 +29,14 @@ export default function CommandSearch() {
   const [results, setResults] = useState<Product[]>([]);
   const [query, setQuery] = useState("");
 
+  // ✅ przywrócona historia
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
   const [categoryResults, setCategoryResults] = useState<Category[]>([]);
   const [parentCategoryResults, setParentCategoryResults] = useState<Category[]>([]);
 
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  // Scroll wrapper wewnątrz Sheet (żeby sterować paddingiem pod klawiaturę)
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  // Wysokość klawiatury (w px) wyliczona z VisualViewport
-  const [keyboardInset, setKeyboardInset] = useState(0);
 
   const resetResults = () => {
     setResults([]);
@@ -59,10 +56,15 @@ export default function CommandSearch() {
     router.push(url);
   };
 
-  const handleAddToHistory = (newQuery: string) => {
-    if (!searchHistory.includes(newQuery)) {
-      setSearchHistory((prev) => [...prev, newQuery]);
-    }
+  // ✅ dodawanie do historii (unikalne, najnowsze na końcu)
+  const addToHistory = (value: string) => {
+    const v = value.trim();
+    if (v.length < 3) return;
+
+    setSearchHistory((prev) => {
+      const next = prev.filter((x) => x !== v);
+      return [...next, v].slice(-12); // limit np. 12 wpisów
+    });
   };
 
   const fetchResults = async (q: string) => {
@@ -112,55 +114,23 @@ export default function CommandSearch() {
     }
   };
 
-  const handleInputBlur = () => {
-    if (query.length > 2) handleAddToHistory(query);
-  };
-
+  // ✅ zapisuj do historii po Enter (gdy ktoś chce szukać pełnych wyników)
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && query.length > 2) {
-      inputRef.current?.blur();
-      handleLink(`/szukaj?q=${encodeURIComponent(query)}`);
+    if (event.key === "Enter" && query.trim().length > 2) {
+      addToHistory(query);
+      handleLink(`/szukaj?q=${encodeURIComponent(query.trim())}`);
     }
     if (event.key === "Escape") {
       closeSheet();
     }
   };
 
-  // Autofocus input po otwarciu
+  // ✅ autofocus po otwarciu
   useEffect(() => {
     if (isOpen) {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isOpen]);
-
-  // Wykrywanie klawiatury (mobile) przez VisualViewport
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    const update = () => {
-      const inset = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
-      setKeyboardInset(inset);
-    };
-
-    update();
-    vv.addEventListener("resize", update);
-    vv.addEventListener("scroll", update);
-
-    return () => {
-      vv.removeEventListener("resize", update);
-      vv.removeEventListener("scroll", update);
-    };
-  }, []);
-
-  // Doscrolluj tak, żeby dół był osiągalny przy klawiaturze (zostawiam – przyda się dla historii/CTA itd.)
-  const scrollToBottom = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    requestAnimationFrame(() => {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    });
-  };
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="border-b border-slate-100">
@@ -189,7 +159,7 @@ export default function CommandSearch() {
 
   return (
     <>
-      {/* Trigger w headerze/na stronie */}
+      {/* Trigger */}
       <button
         type="button"
         onClick={() => setIsOpen(true)}
@@ -210,21 +180,14 @@ export default function CommandSearch() {
             overflow-hidden
           "
         >
-          {/* Jeden przewijalny kontener na całą zawartość */}
-          <div
-            ref={scrollRef}
-            className="h-full overflow-y-auto bg-white overscroll-contain"
-            style={{
-              paddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
-            }}
-          >
+          <div className="h-full overflow-y-auto bg-white overscroll-contain">
             <SheetHeader className="flex-row items-center gap-2 px-4 pt-4 pb-3 border-b bg-white">
               <SheetTitle className="sr-only">Szukaj</SheetTitle>
 
               <SheetBackButton />
 
               <div className="relative flex-1">
-                <input
+                <Input
                   ref={inputRef}
                   className="
                     border border-slate-200
@@ -236,7 +199,6 @@ export default function CommandSearch() {
                   "
                   placeholder="Szukaj produktów..."
                   onChange={handleSearchChange}
-                  onBlur={handleInputBlur}
                   value={query}
                   onKeyDown={handleKeyDown}
                 />
@@ -244,20 +206,22 @@ export default function CommandSearch() {
               </div>
             </SheetHeader>
 
-            {/* ✅ CTA przeniesione POD input (na górę, pod headerem) */}
-            {query.length > 2 && (
-                <div className="border-b bg-white flex justify-center py-3">
+            {/* CTA pod input */}
+            {query.trim().length > 2 && (
+              <div className="border-b bg-white flex justify-center py-3">
                 <Button
-                variant="outline"
-                    onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(query)}`)}
-                    className="cursor-pointer"
-                    type="button"
+                  variant="outline"
+                  onClick={() => {
+                    addToHistory(query);
+                    handleLink(`/szukaj?q=${encodeURIComponent(query.trim())}`);
+                  }}
+                  className="cursor-pointer gap-2"
+                  type="button"
                 >
-                    <span>Przejdź do wyników</span>
-                    <ChevronRight />
+                  <span>Przejdź do wyników</span>
+                  <ChevronRight />
                 </Button>
-                </div>
-
+              </div>
             )}
 
             {/* Content */}
@@ -350,13 +314,13 @@ export default function CommandSearch() {
                 )}
               </Section>
 
-              {/* Historia */}
+              {/* ✅ Historia wyszukiwania (pokazuj gdy query puste/krótkie albo zawsze – jak wolisz) */}
               {searchHistory.length > 0 && (
                 <Section title="Historia wyszukiwania">
                   <div className="px-4 flex flex-wrap gap-2">
-                    {searchHistory.map((historyQuery, index) => (
+                    {[...searchHistory].reverse().map((historyQuery, index) => (
                       <button
-                        key={index}
+                        key={`${historyQuery}-${index}`}
                         onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(historyQuery)}`)}
                         className="cursor-pointer bg-white border text-slate-700 rounded-full px-4 py-1 text-sm hover:bg-slate-100"
                         type="button"
