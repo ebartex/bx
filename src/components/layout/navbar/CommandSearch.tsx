@@ -29,14 +29,18 @@ export default function CommandSearch() {
   const [results, setResults] = useState<Product[]>([]);
   const [query, setQuery] = useState("");
 
-  // ✅ przywrócona historia
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-
   const [categoryResults, setCategoryResults] = useState<Category[]>([]);
   const [parentCategoryResults, setParentCategoryResults] = useState<Category[]>([]);
 
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // ✅ wrapper scrollowalny w sheet
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // ✅ ile px “zjada” klawiatura
+  const [keyboardInset, setKeyboardInset] = useState(0);
 
   const resetResults = () => {
     setResults([]);
@@ -56,14 +60,13 @@ export default function CommandSearch() {
     router.push(url);
   };
 
-  // ✅ dodawanie do historii (unikalne, najnowsze na końcu)
   const addToHistory = (value: string) => {
     const v = value.trim();
     if (v.length < 3) return;
 
     setSearchHistory((prev) => {
       const next = prev.filter((x) => x !== v);
-      return [...next, v].slice(-12); // limit np. 12 wpisów
+      return [...next, v].slice(-12);
     });
   };
 
@@ -114,7 +117,6 @@ export default function CommandSearch() {
     }
   };
 
-  // ✅ zapisuj do historii po Enter (gdy ktoś chce szukać pełnych wyników)
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && query.trim().length > 2) {
       addToHistory(query);
@@ -130,6 +132,33 @@ export default function CommandSearch() {
     if (isOpen) {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
+  }, [isOpen]);
+
+  // ✅ wykrywanie klawiatury przez VisualViewport + ustawianie paddingu na dole scrolla
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const vv = window.visualViewport;
+    if (!vv) {
+      setKeyboardInset(0);
+      return;
+    }
+
+    const update = () => {
+      // W praktyce najlepsze jest: innerHeight - vv.height - vv.offsetTop
+      const inset = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
+      setKeyboardInset(inset);
+    };
+
+    update();
+
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
   }, [isOpen]);
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -180,7 +209,21 @@ export default function CommandSearch() {
             overflow-hidden
           "
         >
-          <div className="h-full overflow-y-auto bg-white overscroll-contain">
+          {/* ✅ TO JEST JEDYNY SCROLL — dajemy mu padding na klawiaturę */}
+          <div
+            ref={scrollRef}
+            className="h-full overflow-y-auto bg-white overscroll-contain"
+            style={{
+              // dzięki temu ostatnie elementy NIE siedzą pod klawiaturą
+              paddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
+
+              // pomaga przy focus/scrollIntoView na mobile
+              scrollPaddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
+
+              // czasem stabilizuje na iOS
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
             <SheetHeader className="flex-row items-center gap-2 px-4 pt-4 pb-3 border-b bg-white">
               <SheetTitle className="sr-only">Szukaj</SheetTitle>
 
@@ -314,7 +357,7 @@ export default function CommandSearch() {
                 )}
               </Section>
 
-              {/* ✅ Historia wyszukiwania (pokazuj gdy query puste/krótkie albo zawsze – jak wolisz) */}
+              {/* Historia */}
               {searchHistory.length > 0 && (
                 <Section title="Historia wyszukiwania">
                   <div className="px-4 flex flex-wrap gap-2">
