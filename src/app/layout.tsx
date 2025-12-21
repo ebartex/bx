@@ -1,9 +1,8 @@
 import "@/styles/globals.css";
 import Navbar from "@/components/layout/navbar/page";
 import { Poppins } from "next/font/google";
-
+import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
-
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "700", "900"],
@@ -52,7 +51,8 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           ></iframe>
         </noscript>
-    
+        
+        <Topbar />
         <div className="bg-white">
           <Navbar />
         </div>
