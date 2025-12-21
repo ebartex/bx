@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/navbar/page";
 import { Poppins } from "next/font/google";
 
 import Footer from "@/components/layout/footer/page";
-import ChristmasTopbar from "@/components/layout/topbar/ChristmasTopbar";
+
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "700", "900"],
@@ -52,8 +52,7 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           ></iframe>
         </noscript>
-        
-        <ChristmasTopbar />
+    
         <div className="bg-white">
           <Navbar />
         </div>
