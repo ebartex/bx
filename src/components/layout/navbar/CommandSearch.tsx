@@ -189,6 +189,7 @@ export default function CommandSearch() {
   return (
     <>
       {/* Trigger */}
+      
       <button
         type="button"
         onClick={() => setIsOpen(true)}

@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/navbar/page";
 import { Poppins } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
-
+import Script from "next/script";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "700", "900"],
@@ -24,7 +24,13 @@ export default function RootLayout({
   return (
     <html lang="pl" className={poppins.className}>
       <head>
-
+        <Script
+          id="adsense-script"
+          async
+          strategy="afterInteractive"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6585756983159019"
+          crossOrigin="anonymous"
+        />
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -52,7 +58,7 @@ export default function RootLayout({
         <div className="bg-white">
           <Navbar />
         </div>
-        <div className="xl:w-[1200px] mx-auto">
+        <div className="xl:w-[1200px] mx-auto p-2">
     
           {children}
         </div>
