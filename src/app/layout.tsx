@@ -54,6 +54,7 @@ export default function RootLayout({
         </noscript>
         
         <ChristmasTopbar />
+        <Topbar />
         <div className="bg-white">
           <Navbar />
         </div>
