@@ -48,18 +48,10 @@ export default function PageClient({ products }: PageClientProps) {
                 >
                   {/* Badge - Najtańszy (żółto-pomarańczowy) */}
                   {(product as any).is_cheapest && (
-                    <Badge
-                      className="
-                        absolute top-2 left-2
-                        bg-amber-500 text-white
-                        border border-amber-600
-                        hover:bg-amber-500
-                        text-xs font-semibold
-                        shadow-sm
-                      "
-                    >
-                      Najtańszy
-                    </Badge>
+        <Badge
+          className="absolute top-2 right-2 h-5 min-w-5 rounded-full px-1 bg-orange-500 text-white dark:bg-orange-600 tabular-nums"
+          variant="secondary"
+        >Najtańszy</Badge>
                   )}
 
                   {stan === 0 && product.zp.length > 0 && (

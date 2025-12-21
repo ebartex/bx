@@ -21,6 +21,7 @@ import { Product } from "../../../../types/product";
 import { Category } from "../../../../types/category";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export default function CommandSearch() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,10 +37,7 @@ export default function CommandSearch() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // ✅ wrapper scrollowalny w sheet
   const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  // ✅ ile px “zjada” klawiatura
   const [keyboardInset, setKeyboardInset] = useState(0);
 
   const resetResults = () => {
@@ -127,14 +125,12 @@ export default function CommandSearch() {
     }
   };
 
-  // ✅ autofocus po otwarciu
   useEffect(() => {
     if (isOpen) {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isOpen]);
 
-  // ✅ wykrywanie klawiatury przez VisualViewport + ustawianie paddingu na dole scrolla
   useEffect(() => {
     if (!isOpen) return;
 
@@ -145,7 +141,6 @@ export default function CommandSearch() {
     }
 
     const update = () => {
-      // W praktyce najlepsze jest: innerHeight - vv.height - vv.offsetTop
       const inset = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
       setKeyboardInset(inset);
     };
@@ -188,8 +183,6 @@ export default function CommandSearch() {
 
   return (
     <>
-      {/* Trigger */}
-      
       <button
         type="button"
         onClick={() => setIsOpen(true)}
@@ -210,18 +203,12 @@ export default function CommandSearch() {
             overflow-hidden
           "
         >
-          {/* ✅ TO JEST JEDYNY SCROLL — dajemy mu padding na klawiaturę */}
           <div
             ref={scrollRef}
             className="h-full overflow-y-auto bg-white overscroll-contain"
             style={{
-              // dzięki temu ostatnie elementy NIE siedzą pod klawiaturą
               paddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
-
-              // pomaga przy focus/scrollIntoView na mobile
               scrollPaddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
-
-              // czasem stabilizuje na iOS
               WebkitOverflowScrolling: "touch",
             }}
           >
@@ -251,7 +238,6 @@ export default function CommandSearch() {
               </div>
             </SheetHeader>
 
-            {/* CTA pod input */}
             {query.trim().length > 2 && (
               <div className="border-b bg-white flex justify-center py-3">
                 <Button
@@ -269,9 +255,7 @@ export default function CommandSearch() {
               </div>
             )}
 
-            {/* Content */}
             <div className="bg-white">
-              {/* Kategorie */}
               {(parentCategoryResults.length > 0 || categoryResults.length > 0) && (
                 <Section title="Kategorie">
                   <div className="flex flex-col">
@@ -296,7 +280,6 @@ export default function CommandSearch() {
                 </Section>
               )}
 
-              {/* Wyniki */}
               <Section title="Wyniki">
                 {loading ? (
                   <div className="px-4 pb-2">
@@ -311,6 +294,7 @@ export default function CommandSearch() {
                         key={result.id}
                         onClick={() => handleLink(`/products/view/${result.id}/slug`)}
                       >
+                        {/* miniatura */}
                         <Image
                           src={
                             result.productphoto?.length > 0
@@ -327,11 +311,22 @@ export default function CommandSearch() {
                           alt="Zdjęcie produktu"
                         />
 
-                        <span className="text-sm truncate">
-                          {result.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
-                            result.nazwa}
-                        </span>
+                        {/* nazwa + badge */}
+                        <div className="min-w-0 flex-1 flex items-center gap-2">
+                          <span className="text-sm truncate">
+                            {result.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
+                              result.nazwa}
+                          </span>
 
+                          {(result as any).is_cheapest && (
+                <Badge
+          className=" h-5 min-w-5 rounded-full px-1 bg-orange-500 text-white dark:bg-orange-600 tabular-nums"
+          variant="secondary"
+        >Najtańszy</Badge>
+                          )}
+                        </div>
+
+                        {/* stan */}
                         <div className="ml-auto">
                           {result.sm?.length ? (
                             result.sm.map((item: any, idx: number) => {
@@ -359,7 +354,6 @@ export default function CommandSearch() {
                 )}
               </Section>
 
-              {/* Historia */}
               {searchHistory.length > 0 && (
                 <Section title="Historia wyszukiwania">
                   <div className="px-4 flex flex-wrap gap-2">
