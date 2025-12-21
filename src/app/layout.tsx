@@ -24,10 +24,10 @@ export default function RootLayout({
   return (
     <html lang="pl" className={poppins.className}>
       <head>
-        <Script
+        <script
           id="adsense-script"
           async
-          strategy="afterInteractive"
+     
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6585756983159019"
           crossOrigin="anonymous"
         />
