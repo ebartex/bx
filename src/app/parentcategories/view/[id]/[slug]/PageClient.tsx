@@ -24,14 +24,7 @@ export default function PageClient({ subCategories }: PageClientProps) {
   };
 
   return (
-    <div className="container mx-auto bg-white">
-            <div className="flex">
-        {/* Menu boczne (widoczne tylko na większych ekranach) */}
-        <div className="hidden lg:block">
-          <MenuDesktop />
-        </div>
 
-      {/* Wyświetlanie listy podkategorii */}
       <div className="flex-1 p-4">
       <div className={`mb-4 overflow-auto ${subCategories.length > 2 ? 'h-100' : 'h-auto'}`}>
         {subCategories.length > 0 ? (
@@ -50,7 +43,6 @@ export default function PageClient({ subCategories }: PageClientProps) {
         )}
       </div>
       </div>
-    </div>
-    </div>
+
   );
 }

@@ -26,15 +26,9 @@ export default function PageClient({ products }: PageClientProps) {
     router.push(`/products/view/${productId}/${slug}`);
   };
 
-  return (
-    <div className="container mx-auto bg-white">
-      <div className="flex">
-        {/* Menu boczne (widoczne tylko na większych ekranach) */}
-        <div className="hidden lg:block">
-          <MenuDesktop />
-        </div>
-
-        <div className="flex-1 p-4">
+return (
+  <>
+    <div className="flex-1 p-4">
           {/* Sprawdzanie, czy lista produktów jest pusta */}
           {products.length === 0 ? (
             <div className="text-center mt-10">
@@ -138,8 +132,7 @@ export default function PageClient({ products }: PageClientProps) {
               })}
             </div>
           )}
-        </div>
       </div>
-    </div>
+    </>
   );
 }
