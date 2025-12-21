@@ -14,7 +14,7 @@ export default function ParentcategoriesLayout({
         </div>
 
         {/* Zawartość dynamiczna */}
-        <div className="flex-1 p-4">
+        <div className="flex-1">
           {children}
         </div>
       </div>

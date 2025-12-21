@@ -19,7 +19,7 @@ export default function Home() {
               src="/pl_11736_20230905_114759.jpg"
               width={1146}
               height={430}
-              className="object-contain w-full h-full" // Dopasowanie obrazu, zachowanie proporcji
+              className="p-4 object-contain w-full h-full" // Dopasowanie obrazu, zachowanie proporcji
             />
           </div>
         </div>
