@@ -192,7 +192,7 @@ export default function CommandSearch() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="w-full h-10 bg-slate-100 text-left text-slate-500 px-10 rounded-none relative"
+        className="cursor-pointer w-full h-10 bg-muted text-left text-muted-foreground text-sm px-10 rounded-3xl relative"
       >
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
         Szukaj
@@ -233,12 +233,13 @@ export default function CommandSearch() {
                 <Input
                   ref={inputRef}
                   className="
+                  rounded-3xl
                     border border-slate-200
-                    bg-white
-                    focus:ring-0 focus:outline-none
+              focus:ring-sky-600 focus:ring-offset-2 focus:outline-none
+                    bg-muted border-transparent shadow-none
                     pl-10 pr-3
                     block w-full h-10
-                    rounded-none text-sm
+                     text-sm
                   "
                   placeholder="Szukaj produktów..."
                   onChange={handleSearchChange}
