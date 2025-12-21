@@ -15,7 +15,7 @@ export default function SearchPage() {
 </div>
       {/* Main content */}
       <div className="flex-1">
-        <Suspense fallback={<p className="text-gray-500">Ładowanie wyników...</p>}>
+        <Suspense fallback={<p className="text-gray-500"></p>}>
           <SearchResults />
         </Suspense>
       </div>

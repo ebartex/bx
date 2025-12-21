@@ -87,7 +87,7 @@ export default function SearchResults() {
 
   return (
     <div className="container mx-auto bg-white">
-      <h1 className="text-xl font-normal">Wyniki wyszukiwania dla: {query}</h1>
+      <h1 className="text-xl font-normal pl-4">Wyniki wyszukiwania dla <span className="font-medium">"{query}</span>"</h1>
 
 
       {error && <p className="text-red-500">{error}</p>}
