@@ -22,7 +22,7 @@ export default function ChristmasTopbar() {
         <Snowflake className="h-4 w-4 text-white/80" />
 
         <span className="text-white/80">
-          Zapraszamy po produkty na świąteczny stół 🎄
+          Życzymy spokojnych, rodzinnych chwil 🎄
         </span>
 
         <Trees className="h-4 w-4 text-green-300 drop-shadow" />
