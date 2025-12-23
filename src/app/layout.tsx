@@ -4,7 +4,7 @@ import { Poppins } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
 import ChristmasTopbar from "@/components/layout/topbar/ChristmasTopbar";
-import CookiesConsent from "@/components/cookies/CookiesConset";
+
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "700", "900"],
