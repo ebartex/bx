@@ -5,6 +5,7 @@ import CommandSearch from "./CommandSearch";
 import Image from "next/image";
 import Link from "next/link";
 import MenuMobile from "./MenuMobile";
+import { Trees } from "lucide-react";
 
 
 export default function Navbar() {
@@ -33,6 +34,7 @@ export default function Navbar() {
             className="mr-4"
           />
           </Link>
+          
         </div>
         
         {/* InputSearchBox */}

@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
 import ChristmasTopbar from "@/components/layout/topbar/ChristmasTopbar";
+import CookiesConsent from "@/components/cookies/CookiesConset";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "700", "900"],
@@ -21,6 +22,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
+  
   return (
     <html lang="pl" className={poppins.className}>
       <head>
@@ -31,6 +36,12 @@ export default function RootLayout({
         />
 
         {/* Google Tag Manager */}
+        
+    
+    <script 
+    id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" 
+    data-settings-id="pxHnWAYp8hC6ur" 
+    async />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -58,6 +69,7 @@ export default function RootLayout({
         <div className="bg-white">
           <Navbar />
         </div>
+
         <div className="xl:w-[1200px] mx-auto">
     
           {children}
