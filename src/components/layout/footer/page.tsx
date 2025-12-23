@@ -102,7 +102,7 @@ const Footer = () => {
  
 
         <div className="text-neutral-900 text-xs mx-auto flex max-w-7xl justify-center px-4 py-6 sm:px-6 lg:px-8">
-<p>&copy; {new Date().getFullYear()} Bartex - Materiały budowlane <span className="mx-2">•</span> <Link href="/" className="text-neutral-500 underline">Polityka prywatności</Link> <span className="mx-2">•</span> <Link href="/" className="text-neutral-500 underline">Adres kontaktowy</Link></p>
+<p>&copy; {new Date().getFullYear()} Bartex - Materiały budowlane <span className="mx-2">•</span> <Link href="/polityka-prywatnosci" className="text-neutral-500 underline">Polityka prywatności</Link> <span className="mx-2">•</span> <Link href="/" className="text-neutral-500 underline">Adres kontaktowy</Link></p>
 </div>
      
 

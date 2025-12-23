@@ -38,10 +38,7 @@ export default function RootLayout({
         {/* Google Tag Manager */}
         
     
-    <script 
-    id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" 
-    data-settings-id="pxHnWAYp8hC6ur" 
-    async />
+
         <script
           dangerouslySetInnerHTML={{
             __html: `
