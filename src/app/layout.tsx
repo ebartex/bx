@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/navbar/page";
 import { Poppins } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
-import RatingBar from "@/components/rating/RatingBar";
+
 import NewYearTopbar from "@/components/layout/topbar/NewYearTopbar";
 
 
@@ -71,7 +71,7 @@ export default function RootLayout({
         <div className="xl:w-[1200px] mx-auto">
     
           {children}
-          <RatingBar />
+   
         </div>
 
         <div className="xl:w-[1200px] mx-auto">
