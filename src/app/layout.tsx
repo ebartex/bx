@@ -30,14 +30,7 @@ export default function RootLayout({
   return (
     <html lang="pl" className={poppins.className}>
       <body className="bg-stone-100">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-53LWG4GN"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          ></iframe>
-        </noscript>
+
         
         <NewYearTopbar />
         <Topbar />
