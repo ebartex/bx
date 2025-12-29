@@ -3,7 +3,8 @@ import Navbar from "@/components/layout/navbar/page";
 import { Poppins } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
-import ChristmasTopbar from "@/components/layout/topbar/ChristmasTopbar";
+import RatingBar from "@/components/rating/RatingBar";
+import NewYearTopbar from "@/components/layout/topbar/NewYearTopbar";
 
 
 const poppins = Poppins({
@@ -61,7 +62,7 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         
-        <ChristmasTopbar />
+        <NewYearTopbar />
         <Topbar />
         <div className="bg-white">
           <Navbar />
@@ -70,6 +71,7 @@ export default function RootLayout({
         <div className="xl:w-[1200px] mx-auto">
     
           {children}
+          <RatingBar />
         </div>
 
         <div className="xl:w-[1200px] mx-auto">
