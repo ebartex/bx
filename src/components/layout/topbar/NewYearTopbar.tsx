@@ -22,7 +22,7 @@ export default function NewYearTopbar() {
         <Snowflake className="h-4 w-4 text-white/80" />
 
         <span className="text-white/80">
-          Zdrowia, spokoju i realizacji wszystkich planów w nadchodzącym roku ✨
+          Zdrowia i realizacji planów w nadchodzącym roku ✨
         </span>
 
         <Sparkles className="h-4 w-4 text-emerald-300 drop-shadow" />
