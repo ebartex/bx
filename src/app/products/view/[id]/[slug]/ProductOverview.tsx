@@ -50,7 +50,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
             <h1 className="text-xl font-normal tracking-wide">{product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}</h1>
             {product.kodpaskowy && product.kodpaskowy.trim() !== "" && (
               <p className="text-sm text-muted-foreground font-normal">
-                EAN: <span className="text-foreground font-medium">{product.kodpaskowy}</span>
+                Ean: <span className="font-medium">{product.kodpaskowy}</span>
               </p>
             )}
           </div>
