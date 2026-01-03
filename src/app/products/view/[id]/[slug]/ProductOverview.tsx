@@ -47,7 +47,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
         <div className=''>
           <div className='space-y-2'>
             <p className='text-sm text-muted-foreground font-normal'>{product.xt?.kod}</p>
-            <h1 className="text-xl font-normal tracking-wide">{product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}</h2>
+            <h1 className="text-xl font-normal tracking-wide">{product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}</h1>
             {product.kodpaskowy && product.kodpaskowy.trim() !== "" && (
               <p className="text-sm text-muted-foreground font-normal">
                 EAN: <span className="text-foreground font-medium">{product.kodpaskowy}</span>
