@@ -4,7 +4,8 @@ import { Poppins } from "next/font/google";
 import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
 
-import NewYearTopbar from "@/components/layout/topbar/NewYearTopbar";
+
+import YearAmbientTopbar from "@/components/layout/topbar/YearAmbientTopbar";
 
 
 const poppins = Poppins({
@@ -32,7 +33,7 @@ export default function RootLayout({
       <body className="bg-stone-100">
 
         
-        <NewYearTopbar />
+        <YearAmbientTopbar />
         <Topbar />
         <div className="bg-white">
           <Navbar />
