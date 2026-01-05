@@ -1,4 +1,4 @@
-// app/products/view/[id]/page.tsx (przykładowa ścieżka)
+// app/products/view/[id]/page.tsx
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getTw } from "../../../../../../services/api/tw";
@@ -11,6 +11,18 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+function pickGtin(ean?: string) {
+  const v = (ean ?? "").trim().replace(/\s+/g, "");
+  if (!/^\d+$/.test(v)) return null;
+
+  if (v.length === 8) return { gtin8: v };
+  if (v.length === 12) return { gtin12: v };
+  if (v.length === 13) return { gtin13: v };
+  if (v.length === 14) return { gtin14: v };
+
+  return null;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
 
@@ -20,10 +32,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: "Produkt nie znaleziony",
       description: "Nie znaleziono informacji o produkcie.",
+      robots: { index: false },
     };
   }
 
   const product = result[0];
+
   const name =
     product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
     product.nazwa ||
@@ -31,10 +45,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const slug = slugify(name);
   const canonical = `https://www.ebartex.pl/products/view/${id}/${slug}`;
+
   return {
-    title: `${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa} Bartex Gorzkowice`,
-    description: product.kod ?? "Produkt",
-  alternates: {
+    title: `${name} Bartex Gorzkowice`,
+    description: (product.kod ?? "Produkt") as string,
+    alternates: {
       canonical,
     },
   };
@@ -45,7 +60,6 @@ async function ProductSection({ id }: { id: string }) {
   const products = (await getTw(`/tw/index?tw-id=${id}`)) as Product[];
   const product = products?.[0];
 
-  // opcjonalnie: obsługa braku produktu
   if (!product) {
     return (
       <div className="p-6">
@@ -54,7 +68,58 @@ async function ProductSection({ id }: { id: string }) {
     );
   }
 
-  return <ProductClient product={product} />;
+  const name =
+    product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
+    product.nazwa ||
+    `Produkt ${id}`;
+
+  const slug = slugify(name);
+  const canonical = `https://www.ebartex.pl/products/view/${id}/${slug}`;
+
+  // Dostosuj pola do swoich danych (cena / ean / kategoria).
+  // Zostawiam bez "zgadywania" nazw pól — schema zadziała nawet bez części pól.
+  const ean = (product as any).kodpaskowy ?? (product as any).ean ?? "";
+  const gtinObj = pickGtin(ean);
+
+  const category =
+    (product as any).kategoria ??
+    product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name;
+
+  const priceRaw = (product as any).cena ?? (product as any).price ?? null;
+  const priceNum =
+    typeof priceRaw === "number"
+      ? priceRaw
+      : Number(String(priceRaw ?? "").replace(",", "."));
+  const price =
+    Number.isFinite(priceNum) && priceNum > 0 ? String(priceNum) : undefined;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name,
+    url: canonical,
+    ...(category ? { category } : {}),
+    ...(product.kod ? { sku: product.kod } : {}),
+    ...(gtinObj ?? {}),
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "PLN",
+      ...(price ? { price } : {}),
+      availability: "https://schema.org/InStock", // jeśli masz stan magazynowy, podmień na logiczny mapping
+      itemCondition: "https://schema.org/NewCondition",
+      url: canonical,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <ProductClient product={product} />
+    </>
+  );
 }
 
 export default async function Page({ params }: PageProps) {
@@ -81,12 +146,12 @@ function ProductSkeleton() {
 
           {/* prawa strona */}
           <div className="space-y-4">
-            <Skeleton className="h-4 w-24" />      {/* kod / kategoria */}
-            <Skeleton className="h-7 w-10/12" />   {/* nazwa */}
-            <Skeleton className="h-4 w-40" />      {/* kod paskowy */}
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-7 w-10/12" />
+            <Skeleton className="h-4 w-40" />
 
             <div className="pt-2">
-              <Skeleton className="h-10 w-44" />   {/* cena */}
+              <Skeleton className="h-10 w-44" />
             </div>
 
             <div className="flex items-center gap-2 pt-2">
