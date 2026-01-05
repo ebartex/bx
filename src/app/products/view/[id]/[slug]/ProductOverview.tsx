@@ -22,7 +22,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
 
   const categoryHref =
     categoryId
-      ? `/view/${categoryId}/${categorySlug}`
+      ? `/categories/view/${categoryId}/${categorySlug}`
       : undefined;
 
   return (
@@ -61,7 +61,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
                 {categoryHref ? (
                   <Link
                     href={categoryHref}
-                    className="underline underline-offset-2 hover:text-foreground transition-colors"
+                    className="hover:text-foreground transition-colors"
                   >
                     {categoryName}
                   </Link>
