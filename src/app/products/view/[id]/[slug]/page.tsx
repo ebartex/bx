@@ -11,6 +11,9 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+const SITE = "https://www.ebartex.pl";
+const IMG_CDN = "https://www.imgstatic.ebartex.pl/";
+
 function pickGtin(ean?: string) {
   const v = (ean ?? "").trim().replace(/\s+/g, "");
   if (!/^\d+$/.test(v)) return null;
@@ -33,7 +36,7 @@ function parsePrice(raw: unknown): string | undefined {
   const s = String(raw).trim();
   if (!s) return undefined;
 
-  // usuń spacje, "zł"/"PLN", zamień przecinek na kropkę
+  // usuń spacje i PLN/zł, zamień przecinek na kropkę
   const cleaned = s
     .replace(/\s+/g, "")
     .replace(/zł|pln/gi, "")
@@ -45,17 +48,30 @@ function parsePrice(raw: unknown): string | undefined {
   return String(n);
 }
 
-const SITE = "https://www.ebartex.pl";
-const CDN = "https://www.imgstatic.ebartex.pl/"; // jeśli masz inne, podmień
+function productImages(product: Product): string[] {
+  const photos = (product as any).productphoto ?? [];
+  if (!Array.isArray(photos) || photos.length === 0) {
+    return [`${SITE}/product_512.png`];
+  }
 
-function toAbsUrl(u?: string) {
-  if (!u) return null;
-  const v = u.trim();
-  if (!v) return null;
-  if (v.startsWith("http://") || v.startsWith("https://")) return v;
-  if (v.startsWith("//")) return `https:${v}`;
-  if (v.startsWith("/")) return `${SITE}${v}`;
-  return `${CDN}${v}`;
+  const main =
+    photos.find((p: any) => Number(p?.main_photo) === 1) ??
+    photos[0];
+
+  const path = main?.photo_512 || photos[0]?.photo_512 || "product_512.png";
+  const url = path.startsWith("http")
+    ? path
+    : `${IMG_CDN}${path}`;
+
+  return [url];
+}
+
+function availabilityFromStock(product: Product) {
+  const stanHandl = (product as any).sm?.[0]?.stanHandl ?? 0;
+  const inStock = Number(stanHandl) > 0;
+  return inStock
+    ? "https://schema.org/InStock"
+    : "https://schema.org/OutOfStock";
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -78,15 +94,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     product.nazwa ||
     `Produkt ${id}`;
 
-  const slug = slugify(name);
-  const canonical = `${SITE}/products/view/${id}/${slug}`;
+  const canonical = `${SITE}/products/view/${id}/${slugify(name)}`;
 
   return {
     title: `${name} Bartex Gorzkowice`,
-    description: (product.kod ?? "Produkt") as string,
-    alternates: {
-      canonical,
-    },
+    description: (product.xt?.kod ?? product.kod ?? "Produkt") as string,
+    alternates: { canonical },
   };
 }
 
@@ -112,56 +125,49 @@ async function ProductSection({ id }: { id: string }) {
   const canonical = `${SITE}/products/view/${id}/${slug}`;
 
   // ====== dane do schema ======
-  const category =
-    (product as any).kategoria ??
-    product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name;
+  const image = productImages(product);
 
-  const ean = (product as any).kodpaskowy ?? (product as any).ean ?? "";
+  const ean = (product as any).kodpaskowy ?? "";
   const gtinObj = pickGtin(ean);
 
-  // cena — podmień pola jeśli masz inne
-  const price = parsePrice(
-    (product as any).cena ?? (product as any).price ?? (product as any).cena_brutto
-  );
+  
 
-  // obrazki — podmień źródła jeśli masz inne
-  const imagesRaw =
-    (product as any).images ??
-    (product as any).photos ??
-    (product as any).zdjecia ??
-    (product as any).galeria ??
-    [];
+  // CENA (dokładnie jak w Twoim komponencie)
+  const cenaRaw = (product as any).cn?.[0]?.cena2 ?? (product as any).cn?.[0]?.cena;
+  const price = parsePrice(cenaRaw);
 
-  const image = Array.isArray(imagesRaw)
-    ? imagesRaw
-        .map((x: any) =>
-          toAbsUrl(typeof x === "string" ? x : x?.url || x?.src || x?.path)
-        )
-        .filter(Boolean)
-    : [toAbsUrl(imagesRaw)].filter(Boolean);
+  const availability = availabilityFromStock(product);
 
-  // ====== schema.org Product ======
+  // Kategoria — jeśli masz lepsze pole na kategorię, podmień tutaj
+  const category =
+    (product as any).xt?.kod // (opcjonalnie) jeśli to jest kod kategorii to nie, ale zostawiam jako fallback
+      ? undefined
+      : undefined;
+
   const schema: any = {
     "@context": "https://schema.org",
     "@type": "Product",
     name,
     url: canonical,
-    ...(image.length ? { image } : {}),
-    ...(category ? { category } : {}),
-    ...(product.kod ? { sku: product.kod } : {}),
+    image, // ✅ wymagane przez Google
+  
     ...(gtinObj ?? {}),
+    // jeśli masz realną kategorię tekstową, możesz ją dodać:
+    ...(category ? { category } : {}),
+    offers: {
+      "@type": "Offer",
+      url: canonical,
+      priceCurrency: "PLN",
+      // ✅ wymagane: price
+      ...(price ? { price } : {}),
+      availability,
+      itemCondition: "https://schema.org/NewCondition",
+    },
   };
 
-  // Offer dodajemy TYLKO jeśli mamy cenę (żeby Google nie krzyczał o missing price)
-  if (price) {
-    schema.offers = {
-      "@type": "Offer",
-      priceCurrency: "PLN",
-      price,
-      availability: "https://schema.org/InStock", // jeśli masz stan, zmapuj logicznie
-      itemCondition: "https://schema.org/NewCondition",
-      url: canonical,
-    };
+  // Jeśli czasem nie masz ceny, to lepiej usunąć offers, żeby nie było błędu:
+  if (!price) {
+    delete schema.offers;
   }
 
   return (
@@ -190,14 +196,12 @@ function ProductSkeleton() {
     <div className="w-full bg-white">
       <div className="p-8">
         <div className="grid md:grid-cols-2 gap-8">
-          {/* obrazek */}
           <div>
             <div className="border border-slate-100 shadow-none rounded-none flex items-center justify-center p-4">
               <Skeleton className="h-[320px] w-[320px] max-w-full" />
             </div>
           </div>
 
-          {/* prawa strona */}
           <div className="space-y-4">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-7 w-10/12" />
