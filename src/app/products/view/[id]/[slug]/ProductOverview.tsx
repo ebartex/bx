@@ -11,12 +11,13 @@ type ProductOverviewProps = {
 }
 
 const ProductOverview = ({ product }: ProductOverviewProps) => {
+  console.log(product);
   const stanHandl = product.sm?.[0]?.stanHandl ?? 0;
   const stanColor = Number(stanHandl) === 0 ? "text-red-700" : "text-green-700";
 
   // ====== dane kategorii ======
-  const categoryId = product.xt?.id || product.xt?.idxt; // dostosuj jeśli inne pole
-  const categoryName = product.xt?.kod || "Kategoria";
+  const categoryId = product.xt?.id; // dostosuj jeśli inne pole
+  const categoryName = product.xt?.kod;
   const categorySlug = slugify(categoryName);
 
   const categoryHref =
