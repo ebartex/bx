@@ -23,6 +23,41 @@ function pickGtin(ean?: string) {
   return null;
 }
 
+function parsePrice(raw: unknown): string | undefined {
+  if (raw === null || raw === undefined) return undefined;
+
+  if (typeof raw === "number") {
+    return Number.isFinite(raw) && raw > 0 ? String(raw) : undefined;
+  }
+
+  const s = String(raw).trim();
+  if (!s) return undefined;
+
+  // usuń spacje, "zł"/"PLN", zamień przecinek na kropkę
+  const cleaned = s
+    .replace(/\s+/g, "")
+    .replace(/zł|pln/gi, "")
+    .replace(",", ".");
+
+  const n = Number(cleaned);
+  if (!Number.isFinite(n) || n <= 0) return undefined;
+
+  return String(n);
+}
+
+const SITE = "https://www.ebartex.pl";
+const CDN = "https://www.imgstatic.ebartex.pl/"; // jeśli masz inne, podmień
+
+function toAbsUrl(u?: string) {
+  if (!u) return null;
+  const v = u.trim();
+  if (!v) return null;
+  if (v.startsWith("http://") || v.startsWith("https://")) return v;
+  if (v.startsWith("//")) return `https:${v}`;
+  if (v.startsWith("/")) return `${SITE}${v}`;
+  return `${CDN}${v}`;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
 
@@ -44,7 +79,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     `Produkt ${id}`;
 
   const slug = slugify(name);
-  const canonical = `https://www.ebartex.pl/products/view/${id}/${slug}`;
+  const canonical = `${SITE}/products/view/${id}/${slug}`;
 
   return {
     title: `${name} Bartex Gorzkowice`,
@@ -74,42 +109,60 @@ async function ProductSection({ id }: { id: string }) {
     `Produkt ${id}`;
 
   const slug = slugify(name);
-  const canonical = `https://www.ebartex.pl/products/view/${id}/${slug}`;
+  const canonical = `${SITE}/products/view/${id}/${slug}`;
 
-  // Dostosuj pola do swoich danych (cena / ean / kategoria).
-  // Zostawiam bez "zgadywania" nazw pól — schema zadziała nawet bez części pól.
-  const ean = (product as any).kodpaskowy ?? (product as any).ean ?? "";
-  const gtinObj = pickGtin(ean);
-
+  // ====== dane do schema ======
   const category =
     (product as any).kategoria ??
     product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name;
 
-  const priceRaw = (product as any).cena ?? (product as any).price ?? null;
-  const priceNum =
-    typeof priceRaw === "number"
-      ? priceRaw
-      : Number(String(priceRaw ?? "").replace(",", "."));
-  const price =
-    Number.isFinite(priceNum) && priceNum > 0 ? String(priceNum) : undefined;
+  const ean = (product as any).kodpaskowy ?? (product as any).ean ?? "";
+  const gtinObj = pickGtin(ean);
 
-  const schema = {
+  // cena — podmień pola jeśli masz inne
+  const price = parsePrice(
+    (product as any).cena ?? (product as any).price ?? (product as any).cena_brutto
+  );
+
+  // obrazki — podmień źródła jeśli masz inne
+  const imagesRaw =
+    (product as any).images ??
+    (product as any).photos ??
+    (product as any).zdjecia ??
+    (product as any).galeria ??
+    [];
+
+  const image = Array.isArray(imagesRaw)
+    ? imagesRaw
+        .map((x: any) =>
+          toAbsUrl(typeof x === "string" ? x : x?.url || x?.src || x?.path)
+        )
+        .filter(Boolean)
+    : [toAbsUrl(imagesRaw)].filter(Boolean);
+
+  // ====== schema.org Product ======
+  const schema: any = {
     "@context": "https://schema.org",
     "@type": "Product",
     name,
     url: canonical,
+    ...(image.length ? { image } : {}),
     ...(category ? { category } : {}),
     ...(product.kod ? { sku: product.kod } : {}),
     ...(gtinObj ?? {}),
-    offers: {
+  };
+
+  // Offer dodajemy TYLKO jeśli mamy cenę (żeby Google nie krzyczał o missing price)
+  if (price) {
+    schema.offers = {
       "@type": "Offer",
       priceCurrency: "PLN",
-      ...(price ? { price } : {}),
-      availability: "https://schema.org/InStock", // jeśli masz stan magazynowy, podmień na logiczny mapping
+      price,
+      availability: "https://schema.org/InStock", // jeśli masz stan, zmapuj logicznie
       itemCondition: "https://schema.org/NewCondition",
       url: canonical,
-    },
-  };
+    };
+  }
 
   return (
     <>
