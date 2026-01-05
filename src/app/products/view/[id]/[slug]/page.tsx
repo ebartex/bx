@@ -5,6 +5,7 @@ import { getTw } from "../../../../../../services/api/tw";
 import type { Product } from "../../../../../../types/product";
 import ProductClient from "./PageClient";
 import { Skeleton } from "@/components/ui/skeleton";
+import { slugify } from "@/utils/slugify";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -23,10 +24,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const product = result[0];
+  const name =
+    product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
+    product.nazwa ||
+    `Produkt ${id}`;
 
+  const slug = slugify(name);
+  const canonical = `https://www.ebartex.pl/products/view/${id}/${slug}`;
   return {
     title: `${product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa} Bartex Gorzkowice`,
     description: product.kod ?? "Produkt",
+  alternates: {
+      canonical,
+    },
   };
 }
 
