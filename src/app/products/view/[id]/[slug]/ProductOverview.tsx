@@ -5,6 +5,7 @@ import { Product } from '../../../../../../types/product'
 import { Squircle } from 'lucide-react';
 import PriceLabel from '@/components/product/PriceLabel';
 import { slugify } from "@/utils/slugify";
+import ProductDescription from './ProductDescription';
 
 type ProductOverviewProps = {
   product: Product
@@ -14,7 +15,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
   console.log(product);
   const stanHandl = product.sm?.[0]?.stanHandl ?? 0;
   const stanColor = Number(stanHandl) === 0 ? "text-red-700" : "text-green-700";
-
+  const descriptionHtml = product.tw_descriptions?.[0]?.description ?? "";
   // ====== dane kategorii ======
   const categoryId = product.xt?.id; // dostosuj jeśli inne pole
   const categoryName = product.xt?.kod;
@@ -98,7 +99,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
                 <span className="text-sm">w magazynie</span>
               </div>
             </div>
-
+            <ProductDescription html={descriptionHtml} />
           </div>
         </div>
       </div>

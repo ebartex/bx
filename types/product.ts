@@ -22,6 +22,7 @@ export type Product = {
   }[];
   cn?: { cena: string, cena1?: string, cena2?: string }[];  // Cena produktu
   s_t_elements?: STElement[];   
+  tw_descriptions?: { id: number; tw_id: string; description: string }[];
 }
 
 export type Sm = {
