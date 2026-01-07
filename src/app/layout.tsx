@@ -39,13 +39,13 @@ export default function RootLayout({
           <Navbar />
         </div>
 
-        <div className="xl:w-[1300px] mx-auto">
+        <div className="xl:w-[1260px] mx-auto">
     
           {children}
 
         </div>
 
-        <div className="xl:w-[1300px] mx-auto">
+        <div className="xl:w-[1260px] mx-auto">
           <Footer />
         </div>
       </body>
