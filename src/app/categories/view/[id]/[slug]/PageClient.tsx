@@ -25,7 +25,7 @@ export default function PageClient({ products }: PageClientProps) {
 
   return (
     <>
-      <div className="flex-1 p-1">
+      <div className="flex-1">
         {products.length === 0 ? (
           <div className="text-center mt-10">
             <h2 className="text-xl font-semibold text-gray-700">Brak wyników</h2>
