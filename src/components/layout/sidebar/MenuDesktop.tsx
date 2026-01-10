@@ -87,7 +87,7 @@ export default function MenuDesktop() {
               className="hover:bg-slate-100 hover:rounded-none cursor-pointer pr-4 pt-2 flex justify-between items-center font-normal"
               onClick={() => handleCategoryClick(category.id)}
             >
-              <span>{category.kod}</span>
+              <span className="text-[13px]">{category.kod}</span>
             </AccordionTrigger>
 
             <AccordionContent>
@@ -103,7 +103,7 @@ export default function MenuDesktop() {
                     <div
                       key={subIndex}
                       onClick={() => handleSubCategoryClick(subcategory.id, slugify(subcategory.kod))} // Kliknięcie w subkategorię
-                      className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
+                      className="text-[13px] pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
                     >
                       <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
                     </div>

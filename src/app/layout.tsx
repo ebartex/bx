@@ -35,7 +35,7 @@ export default function RootLayout({
         
         <YearAmbientTopbar />
         <Topbar />
-        <div className="bg-white">
+        <div className="bg-white border-b-1">
           <Navbar />
         </div>
 
