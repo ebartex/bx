@@ -78,31 +78,34 @@ export default function MenuDesktop() {
 
   return (
     <div className="hidden xl:block lg:flex lg:flex-col lg:w-64">
-      <h2 className="pl-4 pt-4 pb-0 text-md font-natural mb-4">Kategorie</h2>
+      <h2 className="text-md font-normal ml-4 pt-4 mb-4">Kategorie</h2>
 
       <Accordion type="single" collapsible>
         {categories.map((category, index) => (
-          <AccordionItem key={index} value={category.id} 
-          className="
-          border-b border-slate-200 pr-4 
-          ">
-            <AccordionTrigger
-              className="
-              text-slate-600
-              hover:text-stone-950
-          hover:no-underline
-    border-l-[3px] border-l-transparent
-    rounded-none
-    hover:border-l-sky-600
-    
-    transition-colors duration-200
+          <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
+          <AccordionTrigger
+            className="
+              group
+              hover:bg-slate-100
+              hover:rounded-none
+              hover:no-underline
+              cursor-pointer
+              pr-4 pt-2
+              flex justify-between items-center
+              font-normal
+            "
+            onClick={() => handleCategoryClick(category.id)}
+          >
+            <span className="
+              pl-4 pt-2 text-[13px]
+              text-neutral-800
+              group-hover:text-neutral-950
+              transition-colors
+            ">
+              {category.kod}
+            </span>
+          </AccordionTrigger>
 
-              cursor-pointer p-0 flex justify-between items-center font-normal\
-              "
-              onClick={() => handleCategoryClick(category.id)}
-            >
-              <span className="text-[13px] pl-4 pt-3 pb-3 ">{category.kod}</span>
-            </AccordionTrigger>
 
             <AccordionContent>
               {loadingCategory === category.id ? (
@@ -117,7 +120,7 @@ export default function MenuDesktop() {
                     <div
                       key={subIndex}
                       onClick={() => handleSubCategoryClick(subcategory.id, slugify(subcategory.kod))} // Kliknięcie w subkategorię
-                      className="text-[13px] pl-6 pb-2 pt-2 hover:!underline cursor-pointer"
+                      className="text-neutral-700 text-[13px] pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
                     >
                       <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
                     </div>
