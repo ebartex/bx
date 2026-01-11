@@ -5,7 +5,7 @@ import CommandSearch from "./CommandSearch";
 import Image from "next/image";
 import Link from "next/link";
 import MenuMobile from "./MenuMobile";
-import { Trees } from "lucide-react";
+
 
 
 export default function Navbar() {
@@ -13,7 +13,7 @@ export default function Navbar() {
     <>
          <div className="xl:w-[1200px] mx-auto">
 
-      <nav className="flex flex-col sm:flex-row items-center justify-between mb-2 py-3 xl:py-4 xl:pr-6"> 
+      <nav className="flex flex-col sm:flex-row items-center justify-between mb-2 xl:pr-6"> 
         {/* Flex w kolumnie na urządzeniach mobilnych, wiersz na większych ekranach, wyrównanie w poziomie */}
         <div className="pr-5 flex items-center gap-2 sm:w-auto w-full mb-4 sm:mb-0">
         {/* Ikona Menu */}
