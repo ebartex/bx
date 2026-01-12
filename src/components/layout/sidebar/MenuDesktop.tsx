@@ -1,136 +1,96 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
-import { getXt } from "../../../../services/api/xt";
-import { slugify } from "@/utils/slugify";
 import { Category } from "../../../../types/category";
+import { getXt } from "../../../../services/api/xt";
 
-
-
-
-
-
-export default function MenuDesktop() {
-  const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
-  const [subcategories, setSubcategories] = useState<{ [key: string]: Category[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
-  const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
-  const router = useRouter(); // Inicjujemy useRouter
+export default function MenuDesktop({
+  onHoverCategory,
+}: {
+  onHoverCategory: (cat: Category) => void;
+}) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Pobieranie kategorii z API
     const fetchCategories = async () => {
       try {
-        const data = await getXt('/xt/index?Xt-super=2200&Xt-root=2200'); // Użycie getXt zamiast fetch
-        setCategories(data as Category[]); // Ustawiamy stan kategorii
-      } catch (error) {
-        console.error("Error fetching categories:", error);
+        const data = (await getXt("/xt/index?Xt-super=2200&Xt-root=2200")) as Category[];
+        setCategories(data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCategories(); // Uruchamiamy funkcję pobierającą kategorie
+    fetchCategories();
   }, []);
 
-  // Funkcja obsługująca kliknięcie w kategorię
-  const handleCategoryClick = (categoryId: string) => {
-    // Jeżeli podkategorie dla tej kategorii już zostały pobrane, nie musimy ich ponownie ładować
-    if (subcategories[categoryId]) {
-      return;
-    }
-
-    // Ustawiamy kategorię jako ładowaną
-    setLoadingCategory(categoryId);
-
-    // Pobieranie podkategorii dla danej kategorii z API
-    const fetchSubcategories = async () => {
-      try {
-        const data = await getXt(`/xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
-        setSubcategories((prev) => ({
-          ...prev,
-          [categoryId]: data as Category[], // Dodajemy podkategorie dla danej kategorii
-        }));
-
-        // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy
-        setTimeout(() => {
-          setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
-        }, 500); // Opóźnienie 0.5 sekundy
-      } catch (error) {
-        console.error("Error fetching subcategories:", error);
-
-        // Opóźniamy ustawienie stanu ładowania na null, w przypadku błędu
-        setTimeout(() => {
-          setLoadingCategory(null); // Ustawiamy stan ładowania na null po błędzie
-        }, 500);
-      }
-    };
-
-    fetchSubcategories(); // Uruchamiamy funkcję pobierającą podkategorie
-  };
-
-  // Funkcja obsługująca kliknięcie w subkategorię
-  const handleSubCategoryClick = (subCategoryId: string, slug: string) => {
-    // Przejście do strony z podkategorią
-    router.push(`/parentcategories/view/${subCategoryId}/${slug}`);
-  };
-
   return (
-    <div className="hidden xl:block lg:flex lg:flex-col lg:w-64">
-      <h2 className="text-md font-normal ml-4 pt-4 mb-4">Kategorie</h2>
+    <aside className="w-full">
+      {/* HEADER */}
+      <div className="bg-background">
+        <div className="px-4 py-4">
+          <div className=" text-sm font-medium">
+            Kategorie
+          </div>
+        </div>
+      </div>
 
-      <Accordion type="single" collapsible>
-        {categories.map((category, index) => (
-          <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
-          <AccordionTrigger
-            className="
-              group
-              hover:bg-slate-100
-              hover:rounded-none
-              hover:no-underline
-              cursor-pointer
-              pr-4 pt-2
-              flex justify-between items-center
-              font-normal
-            "
-            onClick={() => handleCategoryClick(category.id)}
-          >
-            <span className="
-              pl-4 pt-2 text-[13px]
-              text-neutral-800
-              group-hover:text-neutral-950
-              transition-colors
-            ">
-              {category.kod}
-            </span>
-          </AccordionTrigger>
+      {/* LISTA */}
+      <div>
+        {loading ? (
+          <div className="px-4 py-2 space-y-2">
+            {[...Array(12)].map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full rounded-none" />
+            ))}
+          </div>
+        ) : (
+          <ul className="bg-background">
+            {categories.map((cat) => (
+              <li key={cat.id}>
+                <button
+                  type="button"
+                  onMouseEnter={() => onHoverCategory(cat)}
+                  onFocus={() => onHoverCategory(cat)}
+                  className="
+                  
+                    group relative
+                    w-full
+                    h-10
+                    px-4
+                    text-left
 
+                  
+ 
+                  "
+                >
+                  {/* LEWY AKCENT */}
+                  <span
+                    aria-hidden
+                    className="
+                absolute left-0 top-0
+                      h-full w-[3px]
+               
+          
+                    "
+                  />
 
-            <AccordionContent>
-              {loadingCategory === category.id ? (
-                <div>
-                  <Skeleton className="w-full h-6 mb-2" />
-                  <Skeleton className="w-full h-6 mb-2" />
-                  <Skeleton className="w-full h-6 mb-2" />
-                </div>
-              ) : (
-                <ScrollArea className="h-72">
-                  {subcategories[category.id]?.map((subcategory, subIndex) => (
-                    <div
-                      key={subIndex}
-                      onClick={() => handleSubCategoryClick(subcategory.id, slugify(subcategory.kod))} // Kliknięcie w subkategorię
-                      className="text-neutral-700 text-[13px] pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
-                    >
-                      <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
-                    </div>
-                  ))}
-                </ScrollArea>
-              )}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </div>
+                  {/* LABEL */}
+                  <span className="
+                  text-muted-foreground 
+                  hover:text-foreground 
+                  cursor-pointer block truncate text-[13px] font-normal ">
+                    {cat.kod}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </aside>
   );
 }

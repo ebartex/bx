@@ -7,7 +7,7 @@ import { PackageCheck, Clock, Info, Package, Squircle } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { slugify } from '@/utils/slugify';
-import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
+import MenuDesktop from '@/components/layout/sidebar/_MenuDesktop';
 import { Product } from '../../../../../../types/product';
 import PriceLabel from '@/components/product/PriceLabel';
 

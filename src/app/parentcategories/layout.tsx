@@ -1,4 +1,4 @@
-import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
+import MenuDesktop from '@/components/layout/sidebar/_MenuDesktop';
 
 export default function ParentcategoriesLayout({
   children,

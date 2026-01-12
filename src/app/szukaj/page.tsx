@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import SearchResults from "./SearchResults";
-import MenuDesktop from "@/components/layout/sidebar/MenuDesktop";
+import MenuDesktop from "@/components/layout/sidebar/_MenuDesktop";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function SearchResultsSkeleton() {

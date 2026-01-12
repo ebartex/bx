@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Używamy useRouter z next/navigation
 import { ChevronDown } from 'lucide-react'; // Ikona rozwijania
 import { Category } from '../../../../../../types/category';
-import MenuDesktop from '@/components/layout/sidebar/MenuDesktop';
+import MenuDesktop from '@/components/layout/sidebar/_MenuDesktop';
 import { slugify } from '@/utils/slugify';
 
 
