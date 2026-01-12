@@ -41,55 +41,48 @@ export default function MenuDesktop({
 
       {/* LISTA */}
       <div>
-        {loading ? (
-          <div className="px-4 py-2 space-y-2">
-            {[...Array(12)].map((_, i) => (
-              <Skeleton key={i} className="h-10 w-full rounded-none" />
-            ))}
-          </div>
-        ) : (
-          <ul className="bg-background">
-            {categories.map((cat) => (
-              <li key={cat.id}>
-                <button
-                  type="button"
-                  onMouseEnter={() => onHoverCategory(cat)}
-                  onFocus={() => onHoverCategory(cat)}
-                  className="
-                  
-                    group relative
-                    w-full
-                    h-10
-                    px-4
-                    text-left
+{loading ? (
+  <ul className="bg-background">
+    {Array.from({ length: 8 }).map((_, i) => (
+      <li key={i}>
+        <div className="h-10 px-4 flex items-center">
+          <Skeleton className="h-4 w-2/3 rounded-sm" />
+        </div>
+      </li>
+    ))}
+  </ul>
+) : (
+  <ul className="bg-background">
+    {categories.map((cat) => (
+      <li key={cat.id}>
+        <button
+          type="button"
+          onMouseEnter={() => onHoverCategory(cat)}
+          onFocus={() => onHoverCategory(cat)}
+          className="
+            w-full h-10 px-4
+            flex items-center
+            text-left
+          "
+        >
+          <span
+            className="
+              block truncate
+              text-[13px] font-normal
+              text-muted-foreground
+              hover:text-foreground
+            "
+          >
+            {cat.kod}
+          </span>
+        </button>
+      </li>
+    ))}
+  </ul>
+)}
 
-                  
- 
-                  "
-                >
-                  {/* LEWY AKCENT */}
-                  <span
-                    aria-hidden
-                    className="
-                absolute left-0 top-0
-                      h-full w-[3px]
-               
-          
-                    "
-                  />
 
-                  {/* LABEL */}
-                  <span className="
-                  text-muted-foreground 
-                  hover:text-foreground 
-                  cursor-pointer block truncate text-[13px] font-normal ">
-                    {cat.kod}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+
       </div>
     </aside>
   );
