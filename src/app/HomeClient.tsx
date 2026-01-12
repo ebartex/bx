@@ -19,8 +19,13 @@ export default function HomeClient() {
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [overlayOpen, setOverlayOpen] = useState(false);
 
-  const [subcategories, setSubcategories] = useState<Record<string, Category[]>>({});
+  const [subcategories, setSubcategories] = useState<Record<string, Category[]>>(
+    {}
+  );
   const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  // ✅ nowy stan: czy overlay właśnie się zamyka (fade-out)
+  const [isClosing, setIsClosing] = useState(false);
 
   const closeTimer = useRef<number | null>(null);
 
@@ -31,11 +36,20 @@ export default function HomeClient() {
     }
   };
 
+  const closeOverlayWithFade = (delay = 140) => {
+    setIsClosing(true);
+    window.setTimeout(() => {
+      setOverlayOpen(false);
+      setActiveCategory(null);
+      setIsClosing(false);
+    }, delay);
+  };
+
   const scheduleClose = () => {
     cancelClose();
     closeTimer.current = window.setTimeout(() => {
-      setOverlayOpen(false);
-      setActiveCategory(null);
+      // ✅ zamiast natychmiast: fade-out
+      closeOverlayWithFade(140);
     }, 150);
   };
 
@@ -56,15 +70,22 @@ export default function HomeClient() {
 
   const handleHoverCategory = async (cat: Category) => {
     cancelClose();
+    setIsClosing(false); // ✅ jak wchodzę ponownie, przerywam zamykanie
     setActiveCategory(cat);
     setOverlayOpen(true);
     await ensureSubcategories(cat);
   };
 
   const goToSubcat = (subId: string, kod: string) => {
-    setOverlayOpen(false);
-    setActiveCategory(null);
-    router.push(`/parentcategories/view/${subId}/${slugify(kod)}`);
+    // ✅ 1) start fade-out
+    setIsClosing(true);
+
+    const href = `/parentcategories/view/${subId}/${slugify(kod)}`;
+
+    // ✅ 2) po krótkiej animacji nawigacja
+    window.setTimeout(() => {
+      router.push(href);
+    }, 140);
   };
 
   const activeSubs = activeCategory ? subcategories[activeCategory.id] || [] : [];
@@ -73,7 +94,7 @@ export default function HomeClient() {
     <div className="flex h-screen">
       {/* LEFT 1/5 */}
       <div
-        className="hidden lg:block w-1/6 border-r "
+        className="hidden lg:block w-1/6 border-r"
         onMouseEnter={cancelClose}
         onMouseLeave={scheduleClose}
       >
@@ -99,20 +120,25 @@ export default function HomeClient() {
 
         {/* OVERLAY */}
         {overlayOpen && activeCategory && (
-          <div className="absolute inset-0 z-20 bg-background">
+          <div
+            className={[
+              "absolute inset-0 z-20 bg-background",
+              "transition-opacity duration-150 ease-out",
+              isClosing ? "opacity-0" : "opacity-100",
+            ].join(" ")}
+          >
             {/* header */}
             <div className="border-b">
               <div className="px-4 py-4">
-               <div className="text-sm font-medium">
-                  {activeCategory.kod}
-                </div>
+                <div className="text-sm font-medium">{activeCategory.kod}</div>
               </div>
             </div>
 
             {/* content */}
             <ScrollArea className="h-[calc(100vh-56px)]">
               <div className="p-4">
-                {loadingId === activeCategory.id && !subcategories[activeCategory.id] ? (
+                {loadingId === activeCategory.id &&
+                !subcategories[activeCategory.id] ? (
                   <div className="grid grid-cols-3 gap-2">
                     {[...Array(18)].map((_, i) => (
                       <Skeleton key={i} className="h-10 w-full rounded-none" />
@@ -131,7 +157,6 @@ export default function HomeClient() {
                             px-4
                             text-left
                             cursor-pointer
-                         
                             rounded-none
                             text-muted-foreground
                             hover:bg-accent

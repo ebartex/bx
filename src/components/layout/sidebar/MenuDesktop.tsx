@@ -60,9 +60,11 @@ export default function MenuDesktop({
           onMouseEnter={() => onHoverCategory(cat)}
           onFocus={() => onHoverCategory(cat)}
           className="
+            group
             w-full h-10 px-4
             flex items-center
             text-left
+            cursor-pointer
           "
         >
           <span
@@ -70,7 +72,7 @@ export default function MenuDesktop({
               block truncate
               text-[13px] font-normal
               text-muted-foreground
-              hover:text-foreground
+              group-hover:text-foreground
             "
           >
             {cat.kod}
