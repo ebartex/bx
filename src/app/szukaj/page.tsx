@@ -41,7 +41,7 @@ export default function SearchPage() {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <div className="bg-white">
+      <div className="bg-background">
         <MenuDesktop />
       </div>
 
