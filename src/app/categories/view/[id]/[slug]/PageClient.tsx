@@ -1,15 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { PackageCheck, Clock, Info, Package, Squircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Badge } from '@/components/ui/badge';
-import { slugify } from '@/utils/slugify';
-import MenuDesktop from '@/components/layout/sidebar/_MenuDesktop';
-import { Product } from '../../../../../../types/product';
-import PriceLabel from '@/components/product/PriceLabel';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { PackageCheck, Clock, Info, Package, Squircle } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { slugify } from "@/utils/slugify";
+import { Product } from "../../../../../../types/product";
+import PriceLabel from "@/components/product/PriceLabel";
 
 interface PageClientProps {
   products: Product[];
@@ -24,126 +23,190 @@ export default function PageClient({ products }: PageClientProps) {
   };
 
   return (
-    <>
-      <div className="flex-1">
-        {products.length === 0 ? (
-          <div className="text-center mt-10">
-            <h2 className="text-xl font-semibold text-gray-700">Brak wyników</h2>
-            <p className="text-gray-500">Nie znaleziono żadnych produktów, które pasują do Twojego zapytania.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 xl:grid-cols-4">
-            {products.map((product) => {
-              const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
-              const stanColor = stan === 0 ? 'text-red-700' : 'text-green-700';
+    <div className="flex-1 p-1 text-foreground">
+      {products.length === 0 ? (
+        <div className="text-center mt-10">
+          <h2 className="text-xl font-semibold text-foreground">Brak wyników</h2>
+          <p className="text-muted-foreground">
+            Nie znaleziono żadnych produktów, które pasują do Twojego zapytania.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 xl:grid-cols-4">
+          {products.map((product) => {
+            const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
 
-              const title =
-                product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa;
+            // ✅ tokenowe kolory zamiast red/green hardcode
+            const stanColor = stan === 0 ? "text-destructive" : "text-primary";
 
-              return (
-                <div
-                  key={product.id}
-                  className="border cursor-pointer border-slate-200 rounded-none p-4 relative"
-                  onClick={() => handleProductClick(product.id, slugify(title))}
-                >
-                  {/* Badge - Najtańszy (żółto-pomarańczowy) */}
-                  {(product as any).is_cheapest && (
-        <Badge
-          className="absolute top-2 right-2 h-5 min-w-5 rounded-full px-1 bg-orange-500 text-white dark:bg-orange-600 tabular-nums"
-          variant="secondary"
-        >Najtańszy</Badge>
-                  )}
+            const title =
+              product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
+              product.nazwa;
 
-                  {stan === 0 && product.zp.length > 0 && (
-                    <div className="absolute top-0 right-0 p-2">
-                      <Popover
-                        open={openPopoverId === product.id}
-                        onOpenChange={(isOpen) => setOpenPopoverId(isOpen ? product.id : null)}
+            const mainPhoto = product.productphoto?.find((p) => p.main_photo === 1)?.photo_512;
+            const imgSrc =
+              product.productphoto?.length > 0 && mainPhoto
+                ? `https://www.imgstatic.ebartex.pl/${mainPhoto}`
+                : "/product_512.png";
+
+            return (
+              <div
+                key={product.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleProductClick(product.id, slugify(title))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleProductClick(product.id, slugify(title));
+                  }
+                }}
+                className="
+                  relative
+                  cursor-pointer
+                  border border-border
+                  bg-card text-card-foreground
+                  rounded-none
+                  p-4
+                  transition-colors
+                  hover:bg-accent
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-ring
+                  focus-visible:ring-offset-2
+                  focus-visible:ring-offset-background
+                "
+              >
+                
+                {/* Badge - Najtańszy (bez hardcode koloru) */}
+                {(product as any).is_cheapest && (
+                  <Badge
+                    variant="secondary"
+                    className="
+                      absolute top-2 right-2
+                      h-5 min-w-5 rounded-full px-2
+                      bg-seco text-seco-foreground
+                  
+                      tabular-nums
+                    "
+                  >
+                    Najtańszy
+                  </Badge>
+                )}
+
+                {/* Popover - Produkt w zamówieniu */}
+                {stan === 0 && product.zp?.length > 0 && (
+                  <div className="absolute top-0 right-0 p-2">
+                    <Popover
+                      open={openPopoverId === product.id}
+                      onOpenChange={(isOpen) => setOpenPopoverId(isOpen ? product.id : null)}
+                    >
+                      <PopoverTrigger
+                        asChild
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <PopoverTrigger onClick={(e) => e.stopPropagation()} asChild>
-                          <PackageCheck className="ml-20 text-green-800 cursor-pointer" size={32} />
-                        </PopoverTrigger>
-
-                        <PopoverContent
-                          side="top"
-                          className="text-sm space-y-2 max-w-xs"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenPopoverId(null);
-                          }}
+                        <button
+                          type="button"
+                          className="
+                            inline-flex items-center justify-center
+                            rounded-none
+                            p-1
+                            hover:bg-accent
+                            focus-visible:outline-none
+                            focus-visible:ring-2
+                            focus-visible:ring-ring
+                            focus-visible:ring-offset-2
+                            focus-visible:ring-offset-background
+                          "
+                          aria-label="Produkt w zamówieniu"
                         >
-                          <div className="flex items-center gap-2 font-semibold text-gray-800">
-                            <Info className="text-blue-600" size={18} />
-                            <span>Produkt w zamówieniu</span>
-                          </div>
+                          <PackageCheck className="text-primary" size={28} />
+                        </button>
+                      </PopoverTrigger>
 
-                          <div className="flex items-center gap-2 text-gray-700">
-                            <Clock size={16} className="text-gray-600" />
-                            <span>Data zamówienia: {product.zp[0].data}</span>
-                          </div>
-
-                          <div className="flex items-start gap-2 text-gray-600">
-                            <Package size={16} className="mt-1 text-yellow-600" />
-                            <span>
-                              Produkt zostanie uzupełniony o <strong>stan magazynowy</strong> w ciągu kilku dni od daty zamówienia.
-                            </span>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  )}
-
-                  <div className="flex justify-center mb-4">
-                    <Image
-                      src={
-                        product.productphoto.length > 0
-                          ? `https://www.imgstatic.ebartex.pl/${
-                              product.productphoto.find((photo) => photo.main_photo === 1)?.photo_512 || ''
-                            }`
-                          : '/product_512.png'
-                      }
-                      width={150}
-                      height={150}
-                      alt={title}
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-
-                  <h2 className="text-sm text-zinc-800 font-normal mb-2">{title}</h2>
-
-                  {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
-                    (() => {
-                      const cena = String(product.cn[0].cena2 || product.cn[0].cena);
-
-                      const jednostka = product.cn[0].cena2
-                        ? product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ''
-                        : product.jm || '';
-
-                      return (
-                        <div className="text-right">
-                          <PriceLabel size="medium" price={cena} unit={jednostka} />
+                      <PopoverContent
+                        side="top"
+                        className="text-sm space-y-2 max-w-xs bg-popover text-popover-foreground border border-border"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenPopoverId(null);
+                        }}
+                      >
+                        <div className="flex items-center gap-2 font-semibold text-foreground">
+                          <Info className="text-primary" size={18} />
+                          <span>Produkt w zamówieniu</span>
                         </div>
-                      );
-                    })()
-                  ) : (
-                    <div className="text-lg text-zinc-700 mb-2 text-right">
-                      <span className="font-bold text-2xl">
-                        0
-                        <sup className="text-sm font-bold custom-sup">,00 zł</sup>
-                      </span>
-                    </div>
-                  )}
 
-                  <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                    <span className="text-sm">w magazynie</span>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock size={16} className="text-muted-foreground" />
+                          <span>Data zamówienia: {product.zp[0].data}</span>
+                        </div>
+
+                        <div className="flex items-start gap-2 text-muted-foreground">
+                          <Package size={16} className="mt-1 text-muted-foreground" />
+                          <span>
+                            Produkt zostanie uzupełniony o{" "}
+                            <strong className="text-foreground">stan magazynowy</strong>{" "}
+                            w ciągu kilku dni od daty zamówienia.
+                          </span>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
+                )}
+
+                {/* Image */}
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src={imgSrc}
+                    width={150}
+                    height={150}
+                    alt={title}
+                    className="object-cover rounded-none"
+                  />
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </>
+
+                {/* Title */}
+                <h2 className="text-sm font-normal mb-2 text-foreground">
+                  {title}
+                </h2>
+
+                {/* Price */}
+                {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
+                  (() => {
+                    const cena = String(product.cn[0].cena2 || product.cn[0].cena);
+
+                    const jednostka = product.cn[0].cena2
+                      ? product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ""
+                      : product.jm || "";
+
+                    return (
+                      <div className="text-right">
+                        <PriceLabel size="medium" price={cena} unit={jednostka} />
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <div className="text-right text-muted-foreground mb-2">
+                    <span className="font-bold text-2xl text-foreground">
+                      0
+                      <sup className="text-sm font-bold custom-sup text-muted-foreground">
+                        ,00 zł
+                      </sup>
+                    </span>
+                  </div>
+                )}
+
+                {/* Stock */}
+                <div className="absolute bottom-0 left-0 p-2 flex items-center">
+                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                  <span className="text-sm text-muted-foreground">w magazynie</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }

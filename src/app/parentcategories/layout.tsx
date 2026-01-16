@@ -1,4 +1,4 @@
-import MenuDesktop from '@/components/layout/sidebar/_MenuDesktop';
+import MenuDesktop from "@/components/layout/sidebar/_MenuDesktop";
 
 export default function ParentcategoriesLayout({
   children,
@@ -6,17 +6,16 @@ export default function ParentcategoriesLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container mx-auto bg-white">
+    <div className="container mx-auto">
       <div className="flex">
-        {/* Sidebar – renderuje się RAZ */}
-        <div className="hidden lg:block">
+        {/* Sidebar – stała szerokość */}
+        <aside className="hidden lg:block w-72 shrink-0">
           <MenuDesktop />
-        </div>
+        </aside>
 
-        {/* Zawartość dynamiczna */}
-        <div className="flex-1">
+        <main className="flex-1 min-w-0">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

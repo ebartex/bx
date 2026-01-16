@@ -41,7 +41,7 @@ export default async function Page({ params }: PageProps) {
   const { id } = await params; // ✅ TU TEŻ MUSI być await
 
   return (
-    <div className="container mx-auto bg-white">
+    <div className="container mx-auto">
       <Suspense fallback={<ProductsSkeleton />}>
         <ProductsSection id={id} />
       </Suspense>
@@ -54,7 +54,7 @@ export default async function Page({ params }: PageProps) {
 
 function ProductsSkeleton() {
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
       {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}

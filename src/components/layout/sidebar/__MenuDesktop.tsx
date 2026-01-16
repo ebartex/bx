@@ -1,0 +1,137 @@
+
+
+'use client';
+
+import { useState, useEffect } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useRouter } from "next/navigation";
+import { getXt } from "../../../../services/api/xt";
+import { slugify } from "@/utils/slugify";
+import { Category } from "../../../../types/category";
+
+
+
+
+
+
+export default function MenuDesktop() {
+  const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
+  const [subcategories, setSubcategories] = useState<{ [key: string]: Category[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
+  const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
+  const router = useRouter(); // Inicjujemy useRouter
+
+  useEffect(() => {
+    // Pobieranie kategorii z API
+    const fetchCategories = async () => {
+      try {
+        const data = await getXt('/xt/index?Xt-super=2200&Xt-root=2200'); // Użycie getXt zamiast fetch
+        setCategories(data as Category[]); // Ustawiamy stan kategorii
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories(); // Uruchamiamy funkcję pobierającą kategorie
+  }, []);
+
+  // Funkcja obsługująca kliknięcie w kategorię
+  const handleCategoryClick = (categoryId: string) => {
+    // Jeżeli podkategorie dla tej kategorii już zostały pobrane, nie musimy ich ponownie ładować
+    if (subcategories[categoryId]) {
+      return;
+    }
+
+    // Ustawiamy kategorię jako ładowaną
+    setLoadingCategory(categoryId);
+
+    // Pobieranie podkategorii dla danej kategorii z API
+    const fetchSubcategories = async () => {
+      try {
+        const data = await getXt(`/xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
+        setSubcategories((prev) => ({
+          ...prev,
+          [categoryId]: data as Category[], // Dodajemy podkategorie dla danej kategorii
+        }));
+
+        // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy
+        setTimeout(() => {
+          setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
+        }, 500); // Opóźnienie 0.5 sekundy
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+
+        // Opóźniamy ustawienie stanu ładowania na null, w przypadku błędu
+        setTimeout(() => {
+          setLoadingCategory(null); // Ustawiamy stan ładowania na null po błędzie
+        }, 500);
+      }
+    };
+
+    fetchSubcategories(); // Uruchamiamy funkcję pobierającą podkategorie
+  };
+
+  // Funkcja obsługująca kliknięcie w subkategorię
+  const handleSubCategoryClick = (subCategoryId: string, slug: string) => {
+    // Przejście do strony z podkategorią
+    router.push(`/parentcategories/view/${subCategoryId}/${slug}`);
+  };
+
+  return (
+    <div className="hidden xl:block lg:flex lg:flex-col lg:w-64">
+
+      <Accordion type="single" collapsible>
+        {categories.map((category, index) => (
+          <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
+<AccordionTrigger
+  className="
+    group
+    hover:bg-zinc-100
+    hover:rounded-none
+    hover:no-underline
+    cursor-pointer
+    pr-4 pt-2
+    flex justify-between items-center
+    font-normal
+  "
+  onClick={() => handleCategoryClick(category.id)}
+>
+  <span className="
+    pl-4 pt-2 text-[13px]
+    text-neutral-500
+    group-hover:text-neutral-950
+    transition-colors
+  ">
+    {category.kod}
+  </span>
+</AccordionTrigger>
+
+
+            <AccordionContent>
+              {loadingCategory === category.id ? (
+                <div>
+                  <Skeleton className="w-full h-6 mb-2" />
+                  <Skeleton className="w-full h-6 mb-2" />
+                  <Skeleton className="w-full h-6 mb-2" />
+                </div>
+              ) : (
+                <ScrollArea className="h-72">
+                  {subcategories[category.id]?.map((subcategory, subIndex) => (
+                    <div
+                      key={subIndex}
+                      onClick={() => handleSubCategoryClick(subcategory.id, slugify(subcategory.kod))} // Kliknięcie w subkategorię
+                      className="text-[13px] pl-6 pb-2 pt-2 hover:!bg-zinc-100 cursor-pointer"
+                    >
+                      <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
+                    </div>
+                  ))}
+                </ScrollArea>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  );
+}
