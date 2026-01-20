@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 function SearchResultsSkeleton() {
   return (
-    <div className="container mx-auto bg-white">
+    <div className="container mx-auto">
       <div className="p-4">
         <Skeleton className="h-6 w-96" />
       </div>
@@ -39,17 +39,19 @@ function SearchResultsSkeleton() {
 
 export default function SearchPage() {
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <div className="bg-white">
-        <MenuDesktop />
-      </div>
+    <div className="container mx-auto">
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="hidden lg:block w-72 shrink-0">
+          <MenuDesktop />
+        </div>
 
-      {/* Main content */}
-      <div className="flex-1">
-        <Suspense fallback={<SearchResultsSkeleton />}>
-          <SearchResults />
-        </Suspense>
+        {/* Main content */}
+        <div className="flex-1">
+          <Suspense fallback={<SearchResultsSkeleton />}>
+            <SearchResults />
+          </Suspense>
+        </div>
       </div>
     </div>
   );

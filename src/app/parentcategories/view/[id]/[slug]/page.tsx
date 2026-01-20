@@ -1,4 +1,4 @@
-// page.tsx
+// page.tsx parentcategories/view/[id]/[slug]/page.tsx
 import { Suspense } from 'react';
 import { getXt } from '../../../../../../services/api/xt'; // Serwis do pobierania danych
 import { notFound } from 'next/navigation'; // Zwraca 404, jeśli dane nie są dostępne
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   const categoryName = category[0]?.kod || 'Kategoria';
   return {
-    title: `${categoryName} - Moja Strona`,
+    title: `${categoryName} -  Sklep budowlany Bartex Gorzkowice Kamieńsk Rozprza`,
     description: `${categoryName} - Produkty dostępne w naszej ofercie.`,
   };
 }
@@ -42,6 +42,8 @@ export default async function Page({ params }: PageProps) {
   // Zapytanie do API o podkategorie
   const apiUrl = `/xt/index?Xt-super=${id}`;
   const subCategories: Category[] = await getXt(apiUrl) as Category[];
+
+
 
   if (!subCategories || subCategories.length === 0) {
     notFound(); // Jeśli brak wyników, zwróć 404

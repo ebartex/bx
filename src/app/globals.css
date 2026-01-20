@@ -33,8 +33,8 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
-  --color-seco: var(--seco);
-  --color-seco-foreground: var(--seco-foreground);  
+  --color-success: var(--success);
+  --color-success-foreground: var(-success-foreground);  
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -78,9 +78,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  /* SUCCESS = ZIELONY (status/korzyść) */
-  --seco: oklch(0.46 0.12 233);
-  --seco-foreground: oklch(0.985 0 0); /* jasny tekst na zielonym */
+  --success: oklch(0.596 0.145 163.225);
+  --success-foreground: oklch(0.708 0 0);
 }
 
 .dark {

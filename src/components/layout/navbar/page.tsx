@@ -26,13 +26,9 @@ export default function Navbar() {
 
         {/* Obrazek */}
           <Link href="/">
-          <Image 
-            src="/bartex.png" 
-            alt="Logo" 
-            width={100} 
-            height={25} 
-            className="mr-4"
-          />
+
+             <span className="text-3xl font-semibold text-slate-800"><span className="w-2.5 h-2.5 bg-orange-500 rounded-full"></span>Bartex</span>
+           
           </Link>
           
         </div>

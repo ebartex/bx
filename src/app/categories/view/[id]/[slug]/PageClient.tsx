@@ -23,7 +23,7 @@ export default function PageClient({ products }: PageClientProps) {
   };
 
   return (
-    <div className="flex-1 p-1 text-foreground">
+    <div className="flex-1 md:pl-3 text-foreground">
       {products.length === 0 ? (
         <div className="text-center mt-10">
           <h2 className="text-xl font-semibold text-foreground">Brak wyników</h2>
@@ -37,7 +37,7 @@ export default function PageClient({ products }: PageClientProps) {
             const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
 
             // ✅ tokenowe kolory zamiast red/green hardcode
-            const stanColor = stan === 0 ? "text-destructive" : "text-primary";
+            const stanColor = stan === 0 ? "text-destructive" : "text-success";
 
             const title =
               product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
@@ -64,7 +64,7 @@ export default function PageClient({ products }: PageClientProps) {
                 className="
                   relative
                   cursor-pointer
-                  border border-border
+              border-r border-b border-border shadow-sm
                   bg-card text-card-foreground
                   rounded-none
                   p-4
@@ -84,18 +84,18 @@ export default function PageClient({ products }: PageClientProps) {
                     variant="secondary"
                     className="
                       absolute top-2 right-2
-                      h-5 min-w-5 rounded-full px-2
-                      bg-seco text-seco-foreground
-                  
+                      h-5 min-w-5 rounded-sm px-2
+                      text-seco-foreground
+                      bg-muted
                       tabular-nums
                     "
                   >
-                    Najtańszy
+                   % Najtańszy
                   </Badge>
                 )}
 
                 {/* Popover - Produkt w zamówieniu */}
-                {stan === 0 && product.zp?.length > 0 && (
+                {/*stan === 0 && product.zp?.length > 0 && (
                   <div className="absolute top-0 right-0 p-2">
                     <Popover
                       open={openPopoverId === product.id}
@@ -153,7 +153,7 @@ export default function PageClient({ products }: PageClientProps) {
                       </PopoverContent>
                     </Popover>
                   </div>
-                )}
+                )*/} 
 
                 {/* Image */}
                 <div className="flex justify-center mb-4">
@@ -199,8 +199,8 @@ export default function PageClient({ products }: PageClientProps) {
 
                 {/* Stock */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                  <span className="text-sm text-muted-foreground">w magazynie</span>
+                  <Squircle size={14} className={`${stanColor} fill-current mr-2`} />
+                  <span className="text-xs text-muted-foreground">w magazynie</span>
                 </div>
               </div>
             );
