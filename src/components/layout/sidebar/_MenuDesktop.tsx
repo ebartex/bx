@@ -1,6 +1,4 @@
 "use client";
-
-import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronRight, Folder } from "lucide-react";
@@ -37,7 +35,7 @@ type RootNode = Category & { children?: SubNode[] };
 
 export default function MenuDesktop() {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
 
   const [tree, setTree] = useState<RootNode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,10 +45,10 @@ export default function MenuDesktop() {
   const [openSubId, setOpenSubId] = useState<string | null>(null);
 
   // --- helpers ---
-  const getActiveIdFromPath = (path: string) => {
-    const m = path.match(/^\/categories\/view\/([^/]+)/);
-    return m?.[1] ?? null;
-  };
+const getActiveIdFromPath = (path: string): string | null => {
+  const m = path.match(/^\/categories\/view\/([^/]+)/);
+  return m?.[1] ?? null;
+};
 
   const activeId = useMemo(() => getActiveIdFromPath(pathname), [pathname]);
 
