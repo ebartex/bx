@@ -186,7 +186,7 @@ export default function CommandSearch() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="cursor-pointer w-full h-10 bg-muted text-left text-muted-foreground text-sm px-10 rounded-3xl relative"
+        className="cursor-pointer w-full border border-2 border-brand2 h-10 bg-muted text-left text-muted-foreground text-sm px-10 rounded-3xl relative"
       >
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
         Szukaj

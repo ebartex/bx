@@ -88,7 +88,7 @@ export default function SearchResults() {
   };
 
   return (
-    <div className="container mx-auto bg-white">
+    <div className="container mx-auto">
       <h1 className="text-xl font-normal pl-4">
         Wyniki wyszukiwania dla <span className="font-medium">"{query}"</span>
       </h1>
@@ -110,12 +110,12 @@ export default function SearchResults() {
             return (
               <div
                 key={product.id}
-                className="border border-slate-200 rounded-none p-4 pb-10 relative cursor-pointer flex flex-col justify-between"
+                className="bg-card text-card-foreground border border-muted rounded-none p-4 pb-10 relative cursor-pointer flex flex-col justify-between"
                 onClick={() => handleProductClick(product.id, slugify(title))}
               >
                 {(product as any).is_cheapest && (
                   <Badge
-                    className="absolute top-2 right-2 h-5 min-w-5 rounded-full px-2 bg-orange-500 text-white dark:bg-orange-600 tabular-nums"
+                    className="absolute top-2 right-2 h-5 min-w-5 rounded-full px-2 bg-yellow-500 text-primary dark:bg-orange-600 tabular-nums"
                     variant="secondary"
                   >
                     Najtańszy

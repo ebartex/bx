@@ -1,135 +1,307 @@
-'use client';
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { ChevronRight, Folder } from "lucide-react";
 
-import { useState, useEffect } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+} from "@/components/ui/sidebar";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
+
 import { getXt } from "../../../../services/api/xt";
 import { slugify } from "@/utils/slugify";
 import { Category } from "../../../../types/category";
 
-
-
-
-
+// Tree types (3 levels)
+type ItemNode = Category;
+type SubNode = Category & { children?: ItemNode[] };
+type RootNode = Category & { children?: SubNode[] };
 
 export default function MenuDesktop() {
-  const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
-  const [subcategories, setSubcategories] = useState<{ [key: string]: Category[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
-  const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
-  const router = useRouter(); // Inicjujemy useRouter
+  const router = useRouter();
+  const pathname = usePathname() ?? "";
 
+  const [tree, setTree] = useState<RootNode[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Open state
+  const [openRootId, setOpenRootId] = useState<string | null>(null);
+  const [openSubId, setOpenSubId] = useState<string | null>(null);
+
+  // --- helpers ---
+const getActiveIdFromPath = (path: string): string | null => {
+  const m = path.match(/^\/categories\/view\/([^/]+)/);
+  return m?.[1] ?? null;
+};
+
+  const activeId = useMemo(() => getActiveIdFromPath(pathname), [pathname]);
+
+  // 1) Fetch whole tree once
   useEffect(() => {
-    // Pobieranie kategorii z API
-    const fetchCategories = async () => {
+    let cancelled = false;
+
+    const fetchTree = async () => {
+      setLoading(true);
       try {
-        const data = await getXt('/xt/index?Xt-super=2200&Xt-root=2200'); // Użycie getXt zamiast fetch
-        setCategories(data as Category[]); // Ustawiamy stan kategorii
-      } catch (error) {
-        console.error("Error fetching categories:", error);
+        // dopasuj URL do Twojego endpointu
+        const data = (await getXt("/xt/tree?root=2200")) as RootNode[];
+        if (!cancelled) setTree(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error("Error fetching category tree:", e);
+        if (!cancelled) setTree([]);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
 
-    fetchCategories(); // Uruchamiamy funkcję pobierającą kategorie
+    fetchTree();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Funkcja obsługująca kliknięcie w kategorię
-  const handleCategoryClick = (categoryId: string) => {
-    // Jeżeli podkategorie dla tej kategorii już zostały pobrane, nie musimy ich ponownie ładować
-    if (subcategories[categoryId]) {
+  // 2) Build lookup maps (root/sub/item -> location) for O(1) open
+  const index = useMemo(() => {
+    const rootById = new Map<string, RootNode>();
+    const subToRoot = new Map<string, string>(); // subId -> rootId
+    const itemToSub = new Map<string, string>(); // itemId -> subId
+    const itemToRoot = new Map<string, string>(); // itemId -> rootId
+
+    for (const r of tree) {
+      const rid = String(r.id);
+      rootById.set(rid, r);
+
+      const subs = r.children ?? [];
+      for (const s of subs) {
+        const sid = String(s.id);
+        subToRoot.set(sid, rid);
+
+        const items = s.children ?? [];
+        for (const it of items) {
+          const itId = String(it.id);
+          itemToSub.set(itId, sid);
+          itemToRoot.set(itId, rid);
+        }
+      }
+    }
+
+    return { rootById, subToRoot, itemToSub, itemToRoot };
+  }, [tree]);
+
+  // 3) Auto-open based on activeId
+  useEffect(() => {
+    if (!activeId) return;
+    if (!tree.length) return;
+
+    const aid = String(activeId);
+
+    // Case A: active is ROOT
+    if (index.rootById.has(aid)) {
+      setOpenRootId(aid);
       return;
     }
 
-    // Ustawiamy kategorię jako ładowaną
-    setLoadingCategory(categoryId);
+    // Case B: active is SUB (też /categories/view/:id)
+    const rootForSub = index.subToRoot.get(aid);
+    if (rootForSub) {
+      setOpenRootId(rootForSub);
+      setOpenSubId(aid); // ✅ otwórz sub, pokaże itemy
+      return;
+    }
 
-    // Pobieranie podkategorii dla danej kategorii z API
-    const fetchSubcategories = async () => {
-      try {
-        const data = await getXt(`/xt/subcat?Xt-super=${categoryId}`); // Użycie getXt zamiast fetch
-        setSubcategories((prev) => ({
-          ...prev,
-          [categoryId]: data as Category[], // Dodajemy podkategorie dla danej kategorii
-        }));
+    // Case C: active is ITEM
+    const subForItem = index.itemToSub.get(aid);
+    const rootForItem = index.itemToRoot.get(aid);
 
-        // Opóźniamy ustawienie stanu ładowania o 0.5 sekundy
-        setTimeout(() => {
-          setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
-        }, 500); // Opóźnienie 0.5 sekundy
-      } catch (error) {
-        console.error("Error fetching subcategories:", error);
+    if (rootForItem) setOpenRootId(rootForItem);
+    if (subForItem) setOpenSubId(subForItem);
+  }, [activeId, tree, index]);
 
-        // Opóźniamy ustawienie stanu ładowania na null, w przypadku błędu
-        setTimeout(() => {
-          setLoadingCategory(null); // Ustawiamy stan ładowania na null po błędzie
-        }, 500);
-      }
-    };
-
-    fetchSubcategories(); // Uruchamiamy funkcję pobierającą podkategorie
-  };
-
-  // Funkcja obsługująca kliknięcie w subkategorię
-  const handleSubCategoryClick = (subCategoryId: string, slug: string) => {
-    // Przejście do strony z podkategorią
-    router.push(`/parentcategories/view/${subCategoryId}/${slug}`);
+  const goCategory = (cat: Category) => {
+    router.push(`/categories/view/${cat.id}/${slugify(cat.kod)}`);
   };
 
   return (
-    <div className="hidden xl:block lg:flex lg:flex-col lg:w-64">
+    <Sidebar
+      side="left"
+      variant="inset"
+      collapsible="none"
+      className="w-full h-full border-0 bg-transparent shadow-none static"
+    >
+      <SidebarContent className="h-full bg-background text-foreground border-r border-border shadow-sm">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-sm px-4 py-4 text-foreground">
+            Kategorie
+          </SidebarGroupLabel>
 
-      <Accordion type="single" collapsible>
-        {categories.map((category, index) => (
-          <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
-<AccordionTrigger
-  className="
-    group
-    hover:bg-zinc-100
-    hover:rounded-none
-    hover:no-underline
-    cursor-pointer
-    pr-4 pt-2
-    flex justify-between items-center
-    font-normal
-  "
-  onClick={() => handleCategoryClick(category.id)}
->
-  <span className="
-    pl-4 pt-2 text-[13px]
-    text-neutral-500
-    group-hover:text-neutral-950
-    transition-colors
-  ">
-    {category.kod}
-  </span>
-</AccordionTrigger>
-
-
-            <AccordionContent>
-              {loadingCategory === category.id ? (
-                <div>
-                  <Skeleton className="w-full h-6 mb-2" />
-                  <Skeleton className="w-full h-6 mb-2" />
-                  <Skeleton className="w-full h-6 mb-2" />
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {loading ? (
+                <div className="px-4 py-2 space-y-2">
+                  {[...Array(10)].map((_, i) => (
+                    <Skeleton key={i} className="h-9 w-full rounded-none" />
+                  ))}
+                </div>
+              ) : !tree.length ? (
+                <div className="px-4 py-3 text-sm text-muted-foreground">
+                  Brak kategorii
                 </div>
               ) : (
-                <ScrollArea className="h-72">
-                  {subcategories[category.id]?.map((subcategory, subIndex) => (
-                    <div
-                      key={subIndex}
-                      onClick={() => handleSubCategoryClick(subcategory.id, slugify(subcategory.kod))} // Kliknięcie w subkategorię
-                      className="text-[13px] pl-6 pb-2 pt-2 hover:!bg-zinc-100 cursor-pointer"
-                    >
-                      <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
-                    </div>
-                  ))}
-                </ScrollArea>
+                tree.map((root) => {
+                  const rid = String(root.id);
+                  const isRootOpen = openRootId === rid;
+
+                  const subs = root.children ?? [];
+
+                  return (
+                    <SidebarMenuItem key={rid}>
+                      <Collapsible
+                        open={isRootOpen}
+                        onOpenChange={(next) => {
+                          // jedna otwarta root
+                          setOpenRootId(next ? rid : null);
+                          if (!next) setOpenSubId(null);
+                        }}
+                        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+                      >
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton className="w-full h-10 rounded-none px-4 hover:bg-accent">
+                            <ChevronRight className="transition-transform opacity-70 text-brand2" />
+                          
+                            <span className="truncate text-[13px] text-primary group-hover:text-foreground transition-colors">
+                              {root.kod}
+                            </span>
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+
+                        <CollapsibleContent>
+                          <SidebarMenuSub className="pl-0">
+                            {subs.length ? (
+                              <ScrollArea className="h-72">
+                                <div className="py-1">
+                                  {subs.map((sub) => {
+                                    const sid = String(sub.id);
+                                    const isSubOpen = openSubId === sid;
+
+                                    const items = sub.children ?? [];
+
+                                    return (
+                                      <SidebarMenuItem key={sid}>
+                                        <Collapsible
+                                          open={isSubOpen}
+                                          onOpenChange={(next) => {
+                                            // jedna otwarta sub
+                                            setOpenSubId(next ? sid : null);
+                                          }}
+                                          className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+                                        >
+                                          <div className="flex">
+                                            {/* strzałka rozwijania sub */}
+                                            <CollapsibleTrigger asChild>
+                                              <SidebarMenuButton
+                                                className="w-10 h-9 rounded-none px-2 hover:bg-accent text-muted-foreground"
+                                                title="Rozwiń"
+                                                onClick={(e) => e.stopPropagation()}
+                                              >
+                                                <ChevronRight className="transition-transform opacity-70 text-brand2" />
+                                              </SidebarMenuButton>
+                                            </CollapsibleTrigger>
+
+                                            {/* klik w nazwę sub = nawigacja */}
+                                            <SidebarMenuButton
+                                              onClick={() => goCategory(sub)}
+                                              className={[
+                                                "flex-1 w-full h-9 rounded-none px-2 justify-start",
+                                                "hover:bg-accent",
+                                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                                "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                                                activeId === sid
+                                                  ? "bg-accent text-foreground"
+                                                  : "text-primary hover:text-foreground",
+                                              ].join(" ")}
+                                            >
+                                              <span className="truncate text-[13px]">
+                                                {sub.kod}
+                                              </span>
+                                            </SidebarMenuButton>
+                                          </div>
+
+                                          <CollapsibleContent>
+                                            <SidebarMenuSub className="pl-0">
+                                              {items.length ? (
+                                                <div className="py-1">
+                                                  {items.map((it) => {
+                                                    const itId = String(it.id);
+                                                    const isActiveItem =
+                                                      activeId === itId;
+
+                                                    return (
+                                                      <SidebarMenuItem key={itId}>
+                                                        <SidebarMenuButton
+                                                          onClick={() => goCategory(it)}
+                                                          className={[
+                                                            "w-full h-9 rounded-none px-14 justify-start",
+                                                            "hover:bg-accent",
+                                                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                                            "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                                                            isActiveItem
+                                                              ? "bg-accent text-foreground"
+                                                              : "text-primary hover:text-foreground",
+                                                          ].join(" ")}
+                                                        >
+                                                          <span className="truncate text-[13px]">
+                                                            {it.kod}
+                                                          </span>
+                                                        </SidebarMenuButton>
+                                                      </SidebarMenuItem>
+                                                    );
+                                                  })}
+                                                </div>
+                                              ) : (
+                                                <div className="px-14 py-2 text-xs text-muted-foreground">
+                                                  Brak itemkategorii
+                                                </div>
+                                              )}
+                                            </SidebarMenuSub>
+                                          </CollapsibleContent>
+                                        </Collapsible>
+                                      </SidebarMenuItem>
+                                    );
+                                  })}
+                                </div>
+                              </ScrollArea>
+                            ) : (
+                              <div className="px-10 py-2 text-xs text-muted-foreground">
+                                Brak podkategorii
+                              </div>
+                            )}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </SidebarMenuItem>
+                  );
+                })
               )}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </div>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }

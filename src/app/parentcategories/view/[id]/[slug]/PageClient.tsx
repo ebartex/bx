@@ -1,48 +1,85 @@
 // PageClient.tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Używamy useRouter z next/navigation
-import { ChevronDown } from 'lucide-react'; // Ikona rozwijania
-import { Category } from '../../../../../../types/category';
-import MenuDesktop from '@/components/layout/sidebar/_MenuDesktop';
-import { slugify } from '@/utils/slugify';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 
+import { Category } from "../../../../../../types/category";
+import { slugify } from "@/utils/slugify";
 
 interface PageClientProps {
-  subCategories: Category[]; // Lista podkategorii
+  subCategories: Category[];
 }
 
 export default function PageClient({ subCategories }: PageClientProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
+
   const router = useRouter();
 
-  // Funkcja do obsługi kliknięcia w podkategorię
   const handleSubCategoryClick = (subCategoryId: string, slug: string) => {
-    router.push(`/categories/view/${subCategoryId}/${slug}`); // Przekierowanie do strony podkategorii
+    router.push(`/categories/view/${subCategoryId}/${slug}`);
   };
 
   return (
+    <div className="flex-1 p-4 text-foreground">
+      {error && (
+        <div className="mb-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
-      <div className="flex-1 p-4">
-      <div className={`mb-4 overflow-auto ${subCategories.length > 2 ? 'h-100' : 'h-auto'}`}>
-        {subCategories.length > 0 ? (
-          subCategories.map((subCategory) => (
-            <div
-              key={subCategory.id}
-              onClick={() => handleSubCategoryClick(subCategory.id, slugify(subCategory.kod))} // Obsługuje kliknięcie
-              className="rounded-none flex items-center justify-between cursor-pointer hover:bg-gray-100 p-2 border rounded-md transition w-full"
-            >
-              <span className="text-xs text-gray-800">{subCategory.kod}</span>
-              <ChevronDown className="text-gray-500" />
-            </div>
-          ))
+      <div
+        className={[
+          "mb-4",
+          "border border-border",
+          "bg-card text-card-foreground",
+          "rounded-none",
+          "overflow-auto",
+          subCategories.length > 2 ? "max-h-[420px]" : "max-h-none",
+        ].join(" ")}
+      >
+        {loading ? (
+          <div className="p-4 text-sm text-muted-foreground">Ładowanie…</div>
+        ) : subCategories.length > 0 ? (
+          <ul className="divide-y divide-border">
+            {subCategories.map((subCategory) => (
+              <li key={subCategory.id}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSubCategoryClick(subCategory.id, slugify(subCategory.kod))
+                  }
+                  className="
+                    w-full
+                    flex items-center justify-between
+                    px-3 py-2
+                    text-left
+                    transition
+                    hover:bg-accent
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-ring
+                    focus-visible:ring-offset-2
+                    focus-visible:ring-offset-background
+                  "
+                >
+                  <span className="text-xs text-foreground">
+                    {subCategory.kod}
+                  </span>
+
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <p className="text-center text-gray-500">Brak podkategorii</p>
+          <p className="p-4 text-center text-sm text-muted-foreground">
+            Brak podkategorii
+          </p>
         )}
       </div>
-      </div>
-
+    </div>
   );
 }

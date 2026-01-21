@@ -6,10 +6,10 @@ export default function CategoriesLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container mx-auto bg-white">
+    <div className="container mx-auto">
       <div className="flex">
         {/* Sidebar – renderuje się RAZ */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block w-72 shrink-0">
           <MenuDesktop />
         </div>
 

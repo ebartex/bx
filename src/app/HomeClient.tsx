@@ -80,7 +80,7 @@ export default function HomeClient() {
     // ✅ 1) start fade-out
     setIsClosing(true);
 
-    const href = `/parentcategories/view/${subId}/${slugify(kod)}`;
+    const href = `/categories/view/${subId}/${slugify(kod)}`;
 
     // ✅ 2) po krótkiej animacji nawigacja
     window.setTimeout(() => {

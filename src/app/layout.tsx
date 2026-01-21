@@ -6,6 +6,7 @@ import Footer from "@/components/layout/footer/page";
 
 
 import YearAmbientTopbar from "@/components/layout/topbar/YearAmbientTopbar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 
 const poppins = Poppins({
@@ -30,7 +31,7 @@ export default function RootLayout({
   
   return (
     <html lang="pl" className={poppins.className}>
-      <body className="bg-stone-100">
+      <body className="bg-foreground/5">
 
         
         <YearAmbientTopbar />
@@ -39,13 +40,15 @@ export default function RootLayout({
           <Navbar />
         </div>
 
-        <div className="xl:w-[1260px] mx-auto">
+        <div className="xl:w-[1200px] mx-auto">
     
+        <SidebarProvider>
           {children}
+        </SidebarProvider>
 
         </div>
 
-        <div className="xl:w-[1260px] mx-auto">
+        <div className="xl:w-[1200px] mx-auto">
           <Footer />
         </div>
       </body>
