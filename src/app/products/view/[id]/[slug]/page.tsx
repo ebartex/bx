@@ -36,7 +36,6 @@ function parsePrice(raw: unknown): string | undefined {
   const s = String(raw).trim();
   if (!s) return undefined;
 
-  // usuń spacje i PLN/zł, zamień przecinek na kropkę
   const cleaned = s
     .replace(/\s+/g, "")
     .replace(/zł|pln/gi, "")
@@ -54,14 +53,9 @@ function productImages(product: Product): string[] {
     return [`${SITE}/product_512.png`];
   }
 
-  const main =
-    photos.find((p: any) => Number(p?.main_photo) === 1) ??
-    photos[0];
-
+  const main = photos.find((p: any) => Number(p?.main_photo) === 1) ?? photos[0];
   const path = main?.photo_512 || photos[0]?.photo_512 || "product_512.png";
-  const url = path.startsWith("http")
-    ? path
-    : `${IMG_CDN}${path}`;
+  const url = path.startsWith("http") ? path : `${IMG_CDN}${path}`;
 
   return [url];
 }
@@ -69,9 +63,7 @@ function productImages(product: Product): string[] {
 function availabilityFromStock(product: Product) {
   const stanHandl = (product as any).sm?.[0]?.stanHandl ?? 0;
   const inStock = Number(stanHandl) > 0;
-  return inStock
-    ? "https://schema.org/InStock"
-    : "https://schema.org/OutOfStock";
+  return inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -103,7 +95,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// ✅ osobna sekcja async — tu dzieje się await, więc Suspense ma sens
+// async section
 async function ProductSection({ id }: { id: string }) {
   const products = (await getTw(`/tw/index?tw-id=${id}`)) as Product[];
   const product = products?.[0];
@@ -124,51 +116,34 @@ async function ProductSection({ id }: { id: string }) {
   const slug = slugify(name);
   const canonical = `${SITE}/products/view/${id}/${slug}`;
 
-  // ====== dane do schema ======
   const image = productImages(product);
 
   const ean = (product as any).kodpaskowy ?? "";
   const gtinObj = pickGtin(ean);
 
-  
-
-  // CENA (dokładnie jak w Twoim komponencie)
   const cenaRaw = (product as any).cn?.[0]?.cena2 ?? (product as any).cn?.[0]?.cena;
   const price = parsePrice(cenaRaw);
 
   const availability = availabilityFromStock(product);
-
-  // Kategoria — jeśli masz lepsze pole na kategorię, podmień tutaj
-  const category =
-    (product as any).xt?.kod // (opcjonalnie) jeśli to jest kod kategorii to nie, ale zostawiam jako fallback
-      ? undefined
-      : undefined;
 
   const schema: any = {
     "@context": "https://schema.org",
     "@type": "Product",
     name,
     url: canonical,
-    image, // ✅ wymagane przez Google
-  
+    image,
     ...(gtinObj ?? {}),
-    // jeśli masz realną kategorię tekstową, możesz ją dodać:
-    ...(category ? { category } : {}),
     offers: {
       "@type": "Offer",
       url: canonical,
       priceCurrency: "PLN",
-      // ✅ wymagane: price
       ...(price ? { price } : {}),
       availability,
       itemCondition: "https://schema.org/NewCondition",
     },
   };
 
-  // Jeśli czasem nie masz ceny, to lepiej usunąć offers, żeby nie było błędu:
-  if (!price) {
-    delete schema.offers;
-  }
+  if (!price) delete schema.offers;
 
   return (
     <>
@@ -193,11 +168,11 @@ export default async function Page({ params }: PageProps) {
 
 function ProductSkeleton() {
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-background text-foreground">
       <div className="p-8">
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <div className="border border-slate-100 shadow-none rounded-none flex items-center justify-center p-4">
+            <div className="border border-border rounded-none shadow-none flex items-center justify-center p-4 bg-card">
               <Skeleton className="h-[320px] w-[320px] max-w-full" />
             </div>
           </div>

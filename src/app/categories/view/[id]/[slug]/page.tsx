@@ -2,8 +2,6 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-
-
 import PageClient from "./PageClient";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getXt } from "../../../../../../services/api/xt";
@@ -34,17 +32,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 function buildTwKatalogParam(ids: string[]) {
-  // tylko cyfry, bez syfu
-  const clean = ids.map(String).map((s) => s.trim()).filter((s) => /^\d+$/.test(s));
+  const clean = ids
+    .map(String)
+    .map((s) => s.trim())
+    .filter((s) => /^\d+$/.test(s));
   if (clean.length === 0) return null;
-  return `(${clean.join(",")})`; // (1,2,3)
+  return `(${clean.join(",")})`;
 }
 
 async function ProductsSection({ id }: { id: string }) {
-  // 1) próbujemy jako parent: pobierz podkategorie
   const subCategories = (await getXt(`/xt/index?Xt-super=${id}`)) as Category[];
 
-  // 2) jeśli są podkategorie → robimy produkty ze wszystkich podkategorii
   if (Array.isArray(subCategories) && subCategories.length > 0) {
     const ids = subCategories.map((c) => String(c.id));
     const katalogParam = buildTwKatalogParam(ids);
@@ -56,7 +54,6 @@ async function ProductsSection({ id }: { id: string }) {
     return <PageClient products={products ?? []} />;
   }
 
-  // 3) jeśli nie ma podkategorii → zwykła kategoria
   const productUrl = `tw/index?tw-katalog=${id}`;
   const products = (await getXt(productUrl)) as Product[];
 
@@ -67,7 +64,7 @@ export default async function Page({ params }: PageProps) {
   const { id } = await params;
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto bg-background text-foreground">
       <Suspense fallback={<ProductsSkeleton />}>
         <ProductsSection id={id} />
       </Suspense>
@@ -79,7 +76,10 @@ function ProductsSkeleton() {
   return (
     <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="border border-slate-200 p-4 flex flex-col gap-3">
+        <div
+          key={i}
+          className="border border-border bg-card text-card-foreground p-4 flex flex-col gap-3 rounded-none"
+        >
           <Skeleton className="h-[150px] w-full rounded-md" />
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-6 w-1/2 ml-auto" />

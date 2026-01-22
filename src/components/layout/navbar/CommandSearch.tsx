@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -19,6 +19,7 @@ import NProgressHandler from "@/components/nprogress/NProgressHandler";
 import { getXt } from "../../../../services/api/xt";
 import { Product } from "../../../../types/product";
 import { Category } from "../../../../types/category";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -75,9 +76,7 @@ export default function CommandSearch() {
       const [productRes, categoryRes, parentCategoryRes] = await Promise.all([
         getXt(`/tw/search?q=${q}`),
         getXt(`/xt/index?xt-podkatalog=0&xt-kod=?${q}?`),
-        getXt(
-          `/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${q}?`
-        ),
+        getXt(`/xt/index?Xt-root=2200&Xt-super=!=2200&Xt-podkatalog=!=0&Xt-id=!=2200&xt-kod=?${q}?`),
       ]);
 
       const productData: Product[] = (productRes as any).json
@@ -157,8 +156,8 @@ export default function CommandSearch() {
   }, [isOpen]);
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="border-b border-slate-100">
-      <div className="px-4 pt-4 pb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">
+    <div className="border-b border-border">
+      <div className="px-4 pt-4 pb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         {title}
       </div>
       <div className="pb-3">{children}</div>
@@ -175,7 +174,7 @@ export default function CommandSearch() {
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-100 cursor-pointer"
+      className="w-full text-left px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors hover:bg-muted/60"
     >
       {children}
     </button>
@@ -183,36 +182,39 @@ export default function CommandSearch() {
 
   return (
     <>
+      {/* Trigger */}
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="cursor-pointer w-full border border-2 border-brand2 h-10 bg-muted text-left text-muted-foreground text-sm px-10 rounded-3xl relative"
+        className="
+          cursor-pointer w-full h-10 rounded-3xl relative text-left text-sm
+          border border-input bg-muted px-10
+          text-muted-foreground
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+        "
       >
-        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+        <Search
+          size={18}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
         Szukaj
       </button>
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent
           side="top"
-          className="
-            p-0
-            rounded-none
-            h-[65vh]
-            max-h-[65vh]
-            overflow-hidden
-          "
+          className="p-0 rounded-none h-[65vh] max-h-[65vh] overflow-hidden bg-background text-foreground"
         >
           <div
             ref={scrollRef}
-            className="h-full overflow-y-auto bg-white overscroll-contain"
+            className="h-full overflow-y-auto overscroll-contain bg-background"
             style={{
               paddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
               scrollPaddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
               WebkitOverflowScrolling: "touch",
             }}
           >
-            <SheetHeader className="flex-row items-center gap-2 px-4 pt-4 pb-3 border-b bg-white">
+            <SheetHeader className="flex-row items-center gap-2 px-4 pt-4 pb-3 border-b border-border bg-background">
               <SheetTitle className="sr-only">Szukaj</SheetTitle>
 
               <SheetBackButton />
@@ -221,25 +223,24 @@ export default function CommandSearch() {
                 <Input
                   ref={inputRef}
                   className="
-                  rounded-3xl
-                    border border-slate-200
-              focus:ring-sky-600 focus:ring-offset-2 focus:outline-none
-                    bg-muted border-transparent shadow-none
-                    pl-10 pr-3
-                    block w-full h-10
-                     text-sm
+                    h-10 rounded-3xl pl-10 pr-3 text-sm
+                    bg-muted border-input
+                    focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2
                   "
                   placeholder="Szukaj produktów..."
                   onChange={handleSearchChange}
                   value={query}
                   onKeyDown={handleKeyDown}
                 />
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Search
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
               </div>
             </SheetHeader>
 
             {query.trim().length > 2 && (
-              <div className="border-b bg-white flex justify-center py-3">
+              <div className="border-b border-border bg-background flex justify-center py-3">
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -255,7 +256,7 @@ export default function CommandSearch() {
               </div>
             )}
 
-            <div className="bg-white">
+            <div className="bg-background">
               {(parentCategoryResults.length > 0 || categoryResults.length > 0) && (
                 <Section title="Kategorie">
                   <div className="flex flex-col">
@@ -264,7 +265,9 @@ export default function CommandSearch() {
                         key={`parent-${category.id}`}
                         onClick={() => handleLink(`/parentcategories/view/${category.id}/test`)}
                       >
-                        <span className="text-sm font-medium">{category.kod}</span>
+                        <span className="text-sm font-medium text-foreground">
+                          {category.kod}
+                        </span>
                       </RowButton>
                     ))}
 
@@ -273,7 +276,9 @@ export default function CommandSearch() {
                         key={`cat-${category.id}`}
                         onClick={() => handleLink(`/categories/view/${category.id}/test`)}
                       >
-                        <span className="text-sm font-medium">{category.kod}</span>
+                        <span className="text-sm font-medium text-foreground">
+                          {category.kod}
+                        </span>
                       </RowButton>
                     ))}
                   </div>
@@ -284,7 +289,7 @@ export default function CommandSearch() {
                 {loading ? (
                   <div className="px-4 pb-2">
                     {[...Array(5)].map((_, index) => (
-                      <Skeleton key={index} className="h-12 mb-2 bg-slate-100 rounded-none" />
+                      <Skeleton key={index} className="h-12 mb-2 rounded-none bg-muted" />
                     ))}
                   </div>
                 ) : results.length > 0 ? (
@@ -299,7 +304,9 @@ export default function CommandSearch() {
                           src={
                             result.productphoto?.length > 0
                               ? (() => {
-                                  const main = result.productphoto.find((p: any) => p.main_photo === 1);
+                                  const main = result.productphoto.find(
+                                    (p: any) => p.main_photo === 1
+                                  );
                                   return main?.photo_512
                                     ? `https://www.imgstatic.ebartex.pl/${main.photo_512}`
                                     : "/product_512.png";
@@ -313,16 +320,15 @@ export default function CommandSearch() {
 
                         {/* nazwa + badge */}
                         <div className="min-w-0 flex-1 flex items-center gap-2">
-                          <span className="text-sm truncate">
+                          <span className="text-sm truncate text-foreground">
                             {result.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
                               result.nazwa}
                           </span>
 
                           {(result as any).is_cheapest && (
-                <Badge
-          className=" h-5 min-w-5 rounded-full px-1 bg-orange-500 text-white dark:bg-orange-600 tabular-nums"
-          variant="secondary"
-        >Najtańszy</Badge>
+                            <Badge className="h-5 rounded-full px-2" variant="secondary">
+                              Najtańszy
+                            </Badge>
                           )}
                         </div>
 
@@ -331,16 +337,19 @@ export default function CommandSearch() {
                           {result.sm?.length ? (
                             result.sm.map((item: any, idx: number) => {
                               const stan = Number(item.stanHandl) || 0;
-                              const colorClass = stan === 0 ? "text-red-700" : "text-green-700";
+
+                              // shadcn-friendly: primary = jest, destructive = brak
+                              const cls = stan === 0 ? "text-destructive" : "text-primary";
+
                               return (
                                 <div key={idx} className="flex items-center">
-                                  <Squircle className={`${colorClass} fill-current`} />
+                                  <Squircle className={`${cls} fill-current`} />
                                 </div>
                               );
                             })
                           ) : (
                             <div className="flex items-center">
-                              <Squircle className="text-red-700 fill-current" />
+                              <Squircle className="text-destructive fill-current" />
                             </div>
                           )}
                         </div>
@@ -348,8 +357,8 @@ export default function CommandSearch() {
                     ))}
                   </div>
                 ) : (
-                  <div className="px-4 pb-2 text-sm text-gray-500">
-                    Brak wyników — wpisz nazwę produktu..
+                  <div className="px-4 pb-2 text-sm text-muted-foreground">
+                    Brak wyników — wpisz nazwę produktu.
                   </div>
                 )}
               </Section>
@@ -361,7 +370,12 @@ export default function CommandSearch() {
                       <button
                         key={`${historyQuery}-${index}`}
                         onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(historyQuery)}`)}
-                        className="cursor-pointer bg-white border text-slate-700 rounded-full px-4 py-1 text-sm hover:bg-slate-100"
+                        className="
+                          cursor-pointer rounded-full px-4 py-1 text-sm transition-colors
+                          bg-background border border-border text-foreground
+                          hover:bg-muted/60
+                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+                        "
                         type="button"
                       >
                         {historyQuery}

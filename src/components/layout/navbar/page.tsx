@@ -2,7 +2,6 @@
 
 
 import CommandSearch from "./CommandSearch";
-import Image from "next/image";
 import Link from "next/link";
 import MenuMobile from "./MenuMobile";
 
@@ -27,7 +26,7 @@ export default function Navbar() {
         {/* Obrazek */}
           <Link href="/">
 
-             <span className="text-3xl font-semibold text-slate-800"><span className="w-2.5 h-2.5 bg-orange-500 rounded-full"></span>Bartex</span>
+             <span className="text-3xl font-semibold text-slate-800 dark:text-white"><span className="w-2.5 h-2.5 bg-orange-500 rounded-full"></span>Bartex</span>
            
           </Link>
           

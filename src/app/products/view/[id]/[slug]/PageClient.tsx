@@ -2,7 +2,7 @@
 "use client";
 
 
-import { Button } from "@/components/ui/button";
+
 import { Product } from "../../../../../../types/product";
 import ProductOverview from "./ProductOverview";
 

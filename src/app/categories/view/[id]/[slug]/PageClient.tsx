@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { PackageCheck, Clock, Info, Package, Squircle } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {Squircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { slugify } from "@/utils/slugify";
 import { Product } from "../../../../../../types/product";
@@ -200,7 +199,9 @@ export default function PageClient({ products }: PageClientProps) {
                 {/* Stock */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
                   <Squircle size={14} className={`${stanColor} fill-current mr-2`} />
-                  <span className="text-xs text-muted-foreground">w magazynie</span>
+                  <span className="text-xs text-foreground">
+                    {stan === 0 ? "brak w magazynie" : "w magazynie"}
+                  </span>
                 </div>
               </div>
             );

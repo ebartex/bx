@@ -13,13 +13,15 @@ type ProductOverviewProps = {
 
 const ProductOverview = ({ product }: ProductOverviewProps) => {
   const stanHandl = product.sm?.[0]?.stanHandl ?? 0;
-  const stanColor = Number(stanHandl) === 0 ? "text-red-700" : "text-green-700";
+
+  // shadcn-friendly (bez hardcode): jest = primary, brak = destructive
+  const stanColor = Number(stanHandl) === 0 ? "text-destructive" : "text-primary";
+
   const descriptionHtml = product.tw_descriptions?.[0]?.description ?? "";
 
   const categoryId = product.xt?.id;
   const categoryName = product.xt?.kod;
   const categorySlug = slugify(categoryName);
-
   const categoryHref = categoryId ? `/categories/view/${categoryId}/${categorySlug}` : undefined;
 
   const imgSrc =
@@ -35,12 +37,12 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
     product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa;
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-background text-foreground">
       <div className="p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Side - Image */}
           <div className="min-w-0">
-            <Card className="border-slate-100 shadow-none">
+            <Card className="border-border shadow-none rounded-none bg-card">
               <div className="p-3 sm:p-4">
                 <Image
                   src={imgSrc}
@@ -60,7 +62,10 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
               <p className="text-sm text-muted-foreground font-normal">
                 Kategoria:{" "}
                 {categoryHref ? (
-                  <Link href={categoryHref} className="hover:text-foreground transition-colors">
+                  <Link
+                    href={categoryHref}
+                    className="hover:text-foreground transition-colors"
+                  >
                     {categoryName}
                   </Link>
                 ) : (
@@ -68,13 +73,14 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
                 )}
               </p>
 
-              <h1 className="text-xl font-normal tracking-wide">
-                {product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa}
+              <h1 className="text-xl font-normal tracking-wide text-foreground">
+                {product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
+                  product.nazwa}
               </h1>
 
               {product.kodpaskowy?.trim() ? (
                 <p className="text-sm text-muted-foreground font-normal">
-                  EAN: <span className="font-medium">{product.kodpaskowy}</span>
+                  EAN: <span className="font-medium text-foreground">{product.kodpaskowy}</span>
                 </p>
               ) : null}
             </div>
@@ -94,7 +100,9 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
             <div className="mt-4">
               <div className="flex items-center space-x-3">
                 <Squircle size={16} className={`${stanColor} fill-current`} />
-                <span className="text-sm">w magazynie</span>
+                <span className="text-sm text-foreground">
+                  {Number(stanHandl) === 0 ? "brak w magazynie" : "w magazynie"}
+                </span>
               </div>
             </div>
 

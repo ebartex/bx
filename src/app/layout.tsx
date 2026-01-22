@@ -20,32 +20,34 @@ export const metadata = {
   title: "Bartex Gorzkowice telefon 44 6818 043 Piotr Bartnik Materiały Budowlane",
   description: "Bartex Gorzkowice materiały budowlane, chemia budowlana, narzędzia, farby, lakiery, kleje, izolacje, systemy dociepleń, artykuły hydrauliczne i elektryczne.",
 };
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-
-
-
-  
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl" className={poppins.className}>
-      <body className="bg-foreground/5">
+    <html lang="pl" className={poppins.className} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function () {
+  try {
+    var stored = localStorage.getItem("theme");
+    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var theme = stored ? stored : (prefersDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  } catch (e) {}
+})();`,
+          }}
+        />
+      </head>
 
-        
-        <YearAmbientTopbar />
+      <body className="bg-background text-foreground">
+  
         <Topbar />
-        <div className="bg-white border-b-1">
+        <div className="bg-background border-b">
           <Navbar />
         </div>
 
         <div className="xl:w-[1200px] mx-auto">
-    
-        <SidebarProvider>
-          {children}
-        </SidebarProvider>
-
+          <SidebarProvider>{children}</SidebarProvider>
         </div>
 
         <div className="xl:w-[1200px] mx-auto">

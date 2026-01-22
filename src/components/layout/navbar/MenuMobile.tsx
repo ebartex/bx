@@ -1,146 +1,155 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { Menu, SquareRoundCorner } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Skeleton } from "@/components/ui/skeleton"; // Importujemy Skeleton z shadcn
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation"; // Importujemy useRouter z next/navigation
+import { useRouter } from "next/navigation";
 import { getXt } from "../../../../services/api/xt";
 
-// Typ dla kategorii
 type Category = {
   id: string;
   kod: string;
 };
 
-// Typ dla podkategorii
 type SubCategory = {
   kod: string;
   id: string;
 };
 
-
 export default function MenuMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]); // Zmienna do przechowywania kategorii
-  const [subcategories, setSubcategories] = useState<{ [key: string]: SubCategory[] }>({}); // Zmienna do przechowywania podkategorii dla każdej kategorii
-  const [loadingCategory, setLoadingCategory] = useState<string | null>(null); // Zmienna do przechowywania ID kategorii, która jest ładowana
-  const router = useRouter(); // Inicjujemy useRouter
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Record<string, SubCategory[]>>({});
+  const [loadingCategory, setLoadingCategory] = useState<string | null>(null);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen); // Przełączanie stanu menu
-  };
+  const router = useRouter();
 
   useEffect(() => {
-    // Pobieranie kategorii z API przy użyciu getXt
     const fetchCategories = async () => {
       try {
-        const data = await getXt('xt/index?Xt-super=2200&Xt-root=2200'); // Zamieniamy fetch na getXt
-        setCategories(data as Category[]); // Ustawiamy stan kategorii
+        const data = await getXt("xt/index?Xt-super=2200&Xt-root=2200");
+        setCategories(data as Category[]);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
 
-    fetchCategories(); // Uruchamiamy funkcję pobierającą kategorie
+    fetchCategories();
   }, []);
 
-  // Funkcja obsługująca kliknięcie w kategorię
   const handleCategoryClick = (categoryId: string) => {
-    // Jeżeli podkategorie dla tej kategorii już zostały pobrane, nie musimy ich ponownie ładować
-    if (subcategories[categoryId]) {
-      return;
-    }
+    if (subcategories[categoryId]) return;
 
-    // Ustawiamy kategorię jako ładowaną
     setLoadingCategory(categoryId);
 
-    // Pobieranie podkategorii dla danej kategorii z API przy użyciu getXt
     const fetchSubcategories = async () => {
       try {
-        const data = await getXt(`xt/subcat?Xt-super=${categoryId}`); // Zamieniamy fetch na getXt
+        const data = await getXt(`xt/subcat?Xt-super=${categoryId}`);
         setSubcategories((prev) => ({
           ...prev,
-          [categoryId]: data as SubCategory[], // Dodajemy podkategorie dla danej kategorii
+          [categoryId]: data as SubCategory[],
         }));
       } catch (error) {
         console.error("Error fetching subcategories:", error);
       } finally {
-        setTimeout(() => {
-          setLoadingCategory(null); // Ustawiamy stan ładowania na null po załadowaniu danych
-        }, 500); // Opóźnienie 0.5 sekundy
+        setTimeout(() => setLoadingCategory(null), 500);
       }
     };
 
-    fetchSubcategories(); // Uruchamiamy funkcję pobierającą podkategorie
+    fetchSubcategories();
   };
 
-  // Funkcja obsługująca kliknięcie w subkategorię
   const handleSubCategoryClick = (subCategoryId: string) => {
-    // Zamykamy menu (Sheet)
     setIsMenuOpen(false);
-
-    // Przejście do strony z podkategorią
     router.push(`/parentcategories/view/${subCategoryId}/test`);
   };
 
   return (
-    <>
-      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <SheetTrigger asChild>
-          <Menu className="ml-3 lg:hidden" onClick={toggleMenu} />
-        </SheetTrigger>
+    <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+      <SheetTrigger asChild>
+        <button
+          type="button"
+          className="ml-3 lg:hidden"
+          onClick={() => setIsMenuOpen((v) => !v)}
+          aria-label="Otwórz menu kategorii"
+        >
+          <Menu />
+        </button>
+      </SheetTrigger>
 
-        <SheetContent className="p-0">
-          <SheetHeader className="p-0">
-            <SheetTitle className="pt-4 pl-2">Kategorie</SheetTitle>
-          </SheetHeader>
+      <SheetContent className="p-0 bg-background text-foreground">
+        <SheetHeader className="p-0 border-b border-border">
+          <SheetTitle className="pt-4 pl-2 text-base font-semibold">
+            Kategorie
+          </SheetTitle>
+        </SheetHeader>
 
-          <div className="p-0 overflow-auto">
-            <div>
-              <Accordion type="single" collapsible>
-                {categories.map((category, index) => (
-                  <AccordionItem key={index} value={category.id} className="border-b border-slate-200">
-                    <AccordionTrigger
-                      className="pr-4 pt-2 flex justify-between items-center font-normal"
-                      onClick={() => handleCategoryClick(category.id)}
-                    >
-                      <div className="relative mb-5">
-                        <SquareRoundCorner className="absolute left-1" />
-                      </div>
-                      <span className="flex-grow pl-5">{category.kod}</span>
-                    </AccordionTrigger>
+        <div className="p-0 overflow-auto">
+          <Accordion type="single" collapsible>
+            {categories.map((category) => (
+              <AccordionItem
+                key={category.id}
+                value={category.id}
+                className="border-b border-border"
+              >
+                <AccordionTrigger
+                  className="pr-4 pt-2 flex justify-between items-center font-normal"
+                  onClick={() => handleCategoryClick(category.id)}
+                >
+                  <div className="relative mb-5">
+                    <SquareRoundCorner className="absolute left-1 text-muted-foreground" />
+                  </div>
+                  <span className="flex-grow pl-5 text-foreground">
+                    {category.kod}
+                  </span>
+                </AccordionTrigger>
 
-                    <AccordionContent>
-                      {loadingCategory === category.id ? (
-                        <div>
-                          <Skeleton className="w-full h-6 mb-2" />
-                          <Skeleton className="w-full h-6 mb-2" />
-                          <Skeleton className="w-full h-6 mb-2" />
-                        </div>
-                      ) : (
-                        <ScrollArea className="h-72">
-                          {subcategories[category.id]?.map((subcategory, subIndex) => (
-                            <div
-                              key={subIndex}
-                              onClick={() => handleSubCategoryClick(subcategory.id)} // Kliknięcie w subkategorię
-                              className="pl-6 pb-2 pt-2 hover:!bg-slate-100 cursor-pointer"
-                            >
-                              <p>{subcategory.kod}</p> {/* Wyświetlanie kodu subkategorii */}
-                            </div>
-                          ))}
-                        </ScrollArea>
-                      )}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-    </>
+                <AccordionContent>
+                  {loadingCategory === category.id ? (
+                    <div className="px-4 pb-2">
+                      <Skeleton className="w-full h-6 mb-2" />
+                      <Skeleton className="w-full h-6 mb-2" />
+                      <Skeleton className="w-full h-6 mb-2" />
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-72">
+                      {subcategories[category.id]?.map((subcategory) => (
+                        <button
+                          key={subcategory.id}
+                          type="button"
+                          onClick={() => handleSubCategoryClick(subcategory.id)}
+                          className="
+                            w-full text-left pl-6 pr-4 py-2
+                            cursor-pointer transition-colors
+                            hover:bg-muted/60
+                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+                          "
+                        >
+                          <p className="text-sm text-foreground">{subcategory.kod}</p>
+                        </button>
+                      ))}
+                    </ScrollArea>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
