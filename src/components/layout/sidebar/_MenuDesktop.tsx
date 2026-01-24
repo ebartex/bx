@@ -228,7 +228,7 @@ const getActiveIdFromPath = (path: string): string | null => {
                                               onClick={() => goCategory(sub)}
                                               className={[
                                                 "flex-1 w-full h-9 rounded-none px-2 justify-start",
-                                                "hover:bg-accent",
+                                                "hover:bg-accent","active:bg-accent",
                                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                                 "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                                                 activeId === sid
@@ -257,7 +257,7 @@ const getActiveIdFromPath = (path: string): string | null => {
                                                           onClick={() => goCategory(it)}
                                                           className={[
                                                             "w-full h-9 rounded-none px-14 justify-start",
-                                                            "hover:bg-accent",
+                                                            "hover:bg-accent", "active:bg-accent",
                                                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                                             "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                                                             isActiveItem

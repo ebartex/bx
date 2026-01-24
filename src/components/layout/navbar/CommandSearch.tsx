@@ -188,7 +188,7 @@ export default function CommandSearch() {
         onClick={() => setIsOpen(true)}
         className="
           cursor-pointer w-full h-10 rounded-3xl relative text-left text-sm
-          border border-input bg-muted px-10
+          border border-input bg-accent px-10
           text-muted-foreground
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         "
@@ -224,7 +224,7 @@ export default function CommandSearch() {
                   ref={inputRef}
                   className="
                     h-10 rounded-3xl pl-10 pr-3 text-sm
-                    bg-muted border-input
+                     border-input
                     focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2
                   "
                   placeholder="Szukaj produktów..."

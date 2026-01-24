@@ -26,9 +26,9 @@ export default function Navbar() {
         {/* Obrazek */}
           <Link href="/">
 
-<span className="text-3xl font-semibold text-slate-800">
-  <span className="dark:text-white">Bar</span>
-  <span className="dark:text-red-600">tex</span>
+<span className="text-3xl font-semibold">
+  <span className="dark:text-white text-slate-800">Bar</span>
+  <span className="text-rose-600">tex</span>
 </span>
 
 
