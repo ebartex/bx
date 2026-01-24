@@ -45,10 +45,10 @@ export default function MenuDesktop() {
   const [openSubId, setOpenSubId] = useState<string | null>(null);
 
   // --- helpers ---
-const getActiveIdFromPath = (path: string): string | null => {
-  const m = path.match(/^\/categories\/view\/([^/]+)/);
-  return m?.[1] ?? null;
-};
+  const getActiveIdFromPath = (path: string): string | null => {
+    const m = path.match(/^\/categories\/view\/([^/]+)/);
+    return m?.[1] ?? null;
+  };
 
   const activeId = useMemo(() => getActiveIdFromPath(pathname), [pathname]);
 
@@ -59,7 +59,6 @@ const getActiveIdFromPath = (path: string): string | null => {
     const fetchTree = async () => {
       setLoading(true);
       try {
-        // dopasuj URL do Twojego endpointu
         const data = (await getXt("/xt/tree?root=2200")) as RootNode[];
         if (!cancelled) setTree(Array.isArray(data) ? data : []);
       } catch (e) {
@@ -79,9 +78,9 @@ const getActiveIdFromPath = (path: string): string | null => {
   // 2) Build lookup maps (root/sub/item -> location) for O(1) open
   const index = useMemo(() => {
     const rootById = new Map<string, RootNode>();
-    const subToRoot = new Map<string, string>(); // subId -> rootId
-    const itemToSub = new Map<string, string>(); // itemId -> subId
-    const itemToRoot = new Map<string, string>(); // itemId -> rootId
+    const subToRoot = new Map<string, string>();
+    const itemToSub = new Map<string, string>();
+    const itemToRoot = new Map<string, string>();
 
     for (const r of tree) {
       const rid = String(r.id);
@@ -111,21 +110,18 @@ const getActiveIdFromPath = (path: string): string | null => {
 
     const aid = String(activeId);
 
-    // Case A: active is ROOT
     if (index.rootById.has(aid)) {
       setOpenRootId(aid);
       return;
     }
 
-    // Case B: active is SUB (też /categories/view/:id)
     const rootForSub = index.subToRoot.get(aid);
     if (rootForSub) {
       setOpenRootId(rootForSub);
-      setOpenSubId(aid); // ✅ otwórz sub, pokaże itemy
+      setOpenSubId(aid);
       return;
     }
 
-    // Case C: active is ITEM
     const subForItem = index.itemToSub.get(aid);
     const rootForItem = index.itemToRoot.get(aid);
 
@@ -174,16 +170,22 @@ const getActiveIdFromPath = (path: string): string | null => {
                       <Collapsible
                         open={isRootOpen}
                         onOpenChange={(next) => {
-                          // jedna otwarta root
                           setOpenRootId(next ? rid : null);
                           if (!next) setOpenSubId(null);
                         }}
                         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
                       >
                         <CollapsibleTrigger asChild>
-                          <SidebarMenuButton className="w-full h-10 rounded-none px-4 hover:bg-accent">
-                            <ChevronRight className="transition-transform opacity-70 text-brand2" />
-                          
+                          <SidebarMenuButton
+                            className="
+                              cursor-pointer
+                              w-full h-10 px-4
+                              rounded-md
+                              hover:bg-accent active:bg-accent
+                              transition-colors
+                            "
+                          >
+                            <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
                             <span className="truncate text-[13px] text-primary group-hover:text-foreground transition-colors">
                               {root.kod}
                             </span>
@@ -193,11 +195,18 @@ const getActiveIdFromPath = (path: string): string | null => {
                         <CollapsibleContent>
                           <SidebarMenuSub className="pl-0">
                             {subs.length ? (
-                              <ScrollArea className="h-72">
+                              <ScrollArea
+                                className="
+                                  h-72
+                                  [&_[data-radix-scroll-area-viewport]]:px-1
+                                  [&_[data-radix-scroll-area-viewport]]:pr-3
+                                "
+                              >
                                 <div className="py-1">
                                   {subs.map((sub) => {
                                     const sid = String(sub.id);
                                     const isSubOpen = openSubId === sid;
+                                    const isSubActive = activeId === sid;
 
                                     const items = sub.children ?? [];
 
@@ -206,34 +215,47 @@ const getActiveIdFromPath = (path: string): string | null => {
                                         <Collapsible
                                           open={isSubOpen}
                                           onOpenChange={(next) => {
-                                            // jedna otwarta sub
                                             setOpenSubId(next ? sid : null);
                                           }}
-                                          className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+                                          className="group/collapsible [&[data-state=open]>div>button>svg:first-child]:rotate-90"
                                         >
-                                          <div className="flex">
-                                            {/* strzałka rozwijania sub */}
+                                          <div
+                                            className={[
+                                              "flex w-full group/sub-row rounded-md transition-colors",
+                                              "hover:bg-accent active:bg-accent",
+                                              isSubActive ? "bg-accent" : "",
+                                            ].join(" ")}
+                                          >
                                             <CollapsibleTrigger asChild>
                                               <SidebarMenuButton
-                                                className="w-10 h-9 rounded-none px-2 hover:bg-accent text-muted-foreground"
+                                                className="
+                                                  cursor-pointer
+                                                  w-9 h-9 px-2
+                                                  rounded-md
+                                                  text-muted-foreground
+                                                  bg-transparent
+                                                  hover:bg-accent active:bg-accent
+                                                  transition-colors
+                                                "
                                                 title="Rozwiń"
                                                 onClick={(e) => e.stopPropagation()}
                                               >
-                                                <ChevronRight className="transition-transform opacity-70 text-brand2" />
+                                                <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
                                               </SidebarMenuButton>
                                             </CollapsibleTrigger>
 
-                                            {/* klik w nazwę sub = nawigacja */}
                                             <SidebarMenuButton
                                               onClick={() => goCategory(sub)}
                                               className={[
-                                                "flex-1 w-full h-9 rounded-none px-2 justify-start",
-                                                "hover:bg-accent","active:bg-accent",
+                                                "cursor-pointer",
+                                                "flex-1 w-full h-9 px-2 justify-start",
+                                                "rounded-md",
+                                                "bg-transparent hover:bg-transparent active:bg-transparent",
                                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                                 "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                                                activeId === sid
-                                                  ? "bg-accent text-foreground"
-                                                  : "text-primary hover:text-foreground",
+                                                isSubActive
+                                                  ? "text-foreground"
+                                                  : "text-primary group-hover/sub-row:text-foreground",
                                               ].join(" ")}
                                             >
                                               <span className="truncate text-[13px]">
@@ -248,16 +270,17 @@ const getActiveIdFromPath = (path: string): string | null => {
                                                 <div className="py-1">
                                                   {items.map((it) => {
                                                     const itId = String(it.id);
-                                                    const isActiveItem =
-                                                      activeId === itId;
+                                                    const isActiveItem = activeId === itId;
 
                                                     return (
                                                       <SidebarMenuItem key={itId}>
                                                         <SidebarMenuButton
                                                           onClick={() => goCategory(it)}
                                                           className={[
-                                                            "w-full h-9 rounded-none px-14 justify-start",
-                                                            "hover:bg-accent", "active:bg-accent",
+                                                            "cursor-pointer",
+                                                            "w-full h-9 px-10 justify-start",
+                                                            "rounded-md transition-colors",
+                                                            "hover:bg-accent active:bg-accent",
                                                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                                             "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                                                             isActiveItem
