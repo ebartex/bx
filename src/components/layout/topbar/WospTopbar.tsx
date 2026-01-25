@@ -189,7 +189,7 @@ export default function WospTopbar() {
             "
           >
             <Sparkles className="h-4 w-4" />
-            Zobacz akcje
+            Zobacz aukcje
             <ExternalLink className="h-4 w-4 opacity-90" />
           </Link>
         </div>
