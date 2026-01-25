@@ -165,11 +165,11 @@ export default function WospTopbar() {
             <div className="flex items-center gap-2">
               <Heart className="h-4 w-4 text-red-600 dark:text-red-400 wosp-heartbeat" />
               <span className="truncate text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-50">
-                Wielka Orkiestra Świątecznej Pomocy
+                WOŚP 34
               </span>
             </div>
             <div className="truncate text-[12px] sm:text-[13px] text-zinc-700 dark:text-zinc-300">
-              Gramy razem — dorzuć cegiełkę i udostępnij ❤️
+              Gramy razem ❤️
             </div>
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function WospTopbar() {
             "
           >
             <Sparkles className="h-4 w-4" />
-            Zobacz akcje WOŚP
+            Zobacz akcje
             <ExternalLink className="h-4 w-4 opacity-90" />
           </Link>
         </div>
