@@ -220,18 +220,23 @@ export default function CommandSearch() {
               <SheetBackButton />
 
               <div className="relative flex-1">
-                <Input
-                  ref={inputRef}
-                  className="
-                    h-10 rounded-3xl pl-10 pr-3 text-sm
-                     border-input
-                    focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2
-                  "
-                  placeholder="Szukaj produktów..."
-                  onChange={handleSearchChange}
-                  value={query}
-                  onKeyDown={handleKeyDown}
-                />
+              <Input
+                ref={inputRef}
+                className="
+                  h-10 rounded-3xl pl-10 pr-3 text-sm
+                  border-input
+                  bg-transparent
+                  focus:bg-secondary
+                  focus-visible:ring-0
+                  focus-visible:ring-offset-0
+                  focus-visible:outline-none
+                "
+                placeholder="Szukaj produktów..."
+                onChange={handleSearchChange}
+                value={query}
+                onKeyDown={handleKeyDown}
+              />
+
                 <Search
                   size={18}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"

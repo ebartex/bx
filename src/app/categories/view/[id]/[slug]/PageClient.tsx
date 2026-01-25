@@ -22,7 +22,7 @@ export default function PageClient({ products }: PageClientProps) {
   };
 
   return (
-    <div className="flex-1 md:pl-3 text-foreground">
+    <div className="flex-1 text-foreground">
       {products.length === 0 ? (
         <div className="text-center mt-10">
           <h2 className="text-xl font-semibold text-foreground">Brak wyników</h2>
@@ -63,7 +63,7 @@ export default function PageClient({ products }: PageClientProps) {
                 className="
                   relative
                   cursor-pointer
-              border-r border-b border-border shadow-sm
+                  border-r border-b border-border shadow-sm
                   bg-card text-card-foreground
                   rounded-none
                   p-4
