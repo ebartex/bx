@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import Link from "next/link";
 import MenuDesktop from "@/components/layout/sidebar/MenuDesktop";
 import { slugify } from "@/utils/slugify";
 
@@ -109,13 +109,22 @@ export default function HomeClient() {
       >
         {/* IMAGE (always) */}
         <div className="relative w-full h-full">
-          <Image
-            alt="Zdjęcie"
-            src="/pl_11736_20230905_114759.jpg"
-            width={1146}
-            height={430}
-            className="object-contain object-left-top w-full h-full"
-          />
+
+
+          <Link
+            href="/products/view/79314/emulsja-gruntujaca-atlas-nkp-wiadro-10kg-walek"
+            className="relative w-full h-full block cursor-pointer"
+          >
+            <Image
+              alt="Emulsja gruntująca ATLAS NKP"
+              src="/pl_11736_20230905_114759.jpg"
+              width={1146}
+              height={430}
+              className="object-contain object-left-top w-full h-full"
+              priority
+            />
+          </Link>
+
         </div>
 
         {/* OVERLAY */}

@@ -5,8 +5,9 @@ import Topbar from "@/components/layout/topbar/page";
 import Footer from "@/components/layout/footer/page";
 
 
-import YearAmbientTopbar from "@/components/layout/topbar/YearAmbientTopbar";
+
 import { SidebarProvider } from "@/components/ui/sidebar";
+import WospTopbar from "@/components/layout/topbar/WospTopbar";
 
 
 const poppins = Poppins({
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="bg-background text-foreground">
-  
+          <WospTopbar/>
         <Topbar />
         <div className="bg-background border-b">
           <Navbar />
