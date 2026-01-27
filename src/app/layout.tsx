@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="bg-background text-foreground">
-          <WospTopbar/>
+
         <Topbar />
         <div className="bg-background border-b">
           <Navbar />
