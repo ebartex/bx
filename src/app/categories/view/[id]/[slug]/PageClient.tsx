@@ -199,7 +199,7 @@ export default function PageClient({ products }: PageClientProps) {
                 {/* Stock */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
                   <Squircle size={14} className={`${stanColor} fill-current mr-2`} />
-                  <span className="text-xs text-foreground">
+                  <span className="text-xs tex-foreground dark:text-muted-foreground">
                     {stan === 0 ? "brak w magazynie" : "w magazynie"}
                   </span>
                 </div>

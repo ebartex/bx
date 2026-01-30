@@ -1,13 +1,9 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronRight, Folder } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 
 import {
   Sidebar,
@@ -44,6 +40,9 @@ export default function MenuDesktop() {
   const [openRootId, setOpenRootId] = useState<string | null>(null);
   const [openSubId, setOpenSubId] = useState<string | null>(null);
 
+  // ✅ NEW: manual root highlight (ignores URL)
+  const [selectedRootId, setSelectedRootId] = useState<string | null>(null);
+
   // --- helpers ---
   const getActiveIdFromPath = (path: string): string | null => {
     const m = path.match(/^\/categories\/view\/([^/]+)/);
@@ -75,7 +74,7 @@ export default function MenuDesktop() {
     };
   }, []);
 
-  // 2) Build lookup maps (root/sub/item -> location) for O(1) open
+  // 2) Build lookup maps (root/sub/item -> location) for O(1) open + active
   const index = useMemo(() => {
     const rootById = new Map<string, RootNode>();
     const subToRoot = new Map<string, string>();
@@ -103,6 +102,36 @@ export default function MenuDesktop() {
     return { rootById, subToRoot, itemToSub, itemToRoot };
   }, [tree]);
 
+  // ✅ 2.5) Active PATH ids (root/sub) derived from activeId
+  const activePath = useMemo(() => {
+    const aid = activeId ? String(activeId) : null;
+    if (!aid) return { aid: null, activeRootId: null, activeSubId: null };
+
+    // if active is root
+    if (index.rootById.has(aid)) {
+      return { aid, activeRootId: aid, activeSubId: null };
+    }
+
+    // if active is sub
+    const rootForSub = index.subToRoot.get(aid);
+    if (rootForSub) {
+      return { aid, activeRootId: rootForSub, activeSubId: aid };
+    }
+
+    // if active is item
+    const rootForItem = index.itemToRoot.get(aid) ?? null;
+    const subForItem = index.itemToSub.get(aid) ?? null;
+    return { aid, activeRootId: rootForItem, activeSubId: subForItem };
+  }, [activeId, index]);
+
+  // ✅ Optional: gdy wchodzisz z URL prosto w kategorię (np. refresh),
+  // ustaw default selectedRootId raz, jeśli jeszcze nie wybrano ręcznie.
+  useEffect(() => {
+    if (!selectedRootId && activePath.activeRootId) {
+      setSelectedRootId(activePath.activeRootId);
+    }
+  }, [activePath.activeRootId, selectedRootId]);
+
   // 3) Auto-open based on activeId
   useEffect(() => {
     if (!activeId) return;
@@ -112,6 +141,7 @@ export default function MenuDesktop() {
 
     if (index.rootById.has(aid)) {
       setOpenRootId(aid);
+      setOpenSubId(null);
       return;
     }
 
@@ -163,6 +193,9 @@ export default function MenuDesktop() {
                   const rid = String(root.id);
                   const isRootOpen = openRootId === rid;
 
+                  // ✅ ROOT highlight is manual only (ignore URL)
+                  const isRootSelected = selectedRootId === rid;
+
                   const subs = root.children ?? [];
 
                   return (
@@ -175,38 +208,48 @@ export default function MenuDesktop() {
                         }}
                         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
                       >
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton
-                            className="
-                              cursor-pointer
-                              w-full h-10 px-4
-                              rounded-md
-                              hover:bg-accent active:bg-accent
-                              transition-colors
-                            "
-                          >
-                            <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
-                            <span className="truncate text-[13px] text-primary group-hover:text-foreground transition-colors">
-                              {root.kod}
-                            </span>
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
+                        {/* ROOT */}
+                        <SidebarMenuButton
+                          data-active={isRootSelected}
+                          onClick={() => {
+                            // ✅ zawsze zaznacz kliknięty root i usuń poprzednie
+                            setSelectedRootId(rid);
+
+                            // ✅ skoro klikasz root, czyść sub (bo i tak zmieniasz kontekst)
+                            setOpenSubId(null);
+
+                            setOpenRootId((prev) => (prev === rid ? null : rid));
+                          }}
+                          className={[
+                            "active:bg-sidebar-accent/40 cursor-pointer w-full h-10 px-4 rounded-md transition-colors flex items-center gap-2 hover:bg-sidebar-accent/40",
+                            isRootSelected
+                              ? "!bg-transparent hover:!bg-sidebar-accent/40 !font-semibold"
+                              : "hover:bg-sidebar-accent/40 active:bg-sidebar-accent/40 ",
+                          ].join(" ")}
+                        >
+                          <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
+                          <span className="truncate text-[13px] text-primary group-hover:text-foreground transition-colors">
+                            {root.kod}
+                          </span>
+                        </SidebarMenuButton>
 
                         <CollapsibleContent>
-                          <SidebarMenuSub className="pl-0">
+                          <SidebarMenuSub className="p-0 m-0 border-0 !border-l-0">
                             {subs.length ? (
-                              <ScrollArea
-                                className="
-                                  h-72
-                                  [&_[data-radix-scroll-area-viewport]]:px-1
-                                  [&_[data-radix-scroll-area-viewport]]:pr-3
-                                "
-                              >
+                              <ScrollArea className="h-72">
                                 <div className="py-1">
                                   {subs.map((sub) => {
                                     const sid = String(sub.id);
                                     const isSubOpen = openSubId === sid;
-                                    const isSubActive = activeId === sid;
+
+                                    // sub bold from URL path
+                                    const isSubInActivePath =
+                                      activePath.activeSubId === sid;
+
+                                    const toggleSub = () =>
+                                      setOpenSubId((prev) =>
+                                        prev === sid ? null : sid
+                                      );
 
                                     const items = sub.children ?? [];
 
@@ -217,78 +260,83 @@ export default function MenuDesktop() {
                                           onOpenChange={(next) => {
                                             setOpenSubId(next ? sid : null);
                                           }}
-                                          className="group/collapsible [&[data-state=open]>div>button>svg:first-child]:rotate-90"
+                                          className="group/collapsible"
                                         >
-                                          <div
+                                          {/* SUB */}
+                                          <SidebarMenuButton
+                                            onClick={() => {
+                                              setOpenSubId(sid);
+                                              goCategory(sub);
+                                            }}
                                             className={[
-                                              "flex w-full group/sub-row rounded-md transition-colors",
-                                              "hover:bg-accent active:bg-accent",
-                                              isSubActive ? "bg-accent" : "",
+                                              "cursor-pointer",
+                                              "w-full h-9 px-4 justify-start",
+                                              "rounded-md transition-colors",
+                                              "flex items-center",
+                                              "active:bg-sidebar-accent/40",
+                                              isSubInActivePath
+                                                ? "hover:bg-sidebar-accent/40 text-sidebar-accent-foreground font-semibold"
+                                                : "hover:bg-sidebar-accent/40 text-primary hover:text-foreground",
+                                              "focus-visible:outline-md focus-visible:ring-2 focus-visible:ring-ring",
+                                              "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                                             ].join(" ")}
                                           >
-                                            <CollapsibleTrigger asChild>
-                                              <SidebarMenuButton
-                                                className="
-                                                  cursor-pointer
-                                                  w-9 h-9 px-2
-                                                  rounded-md
-                                                  text-muted-foreground
-                                                  bg-transparent
-                                                  hover:bg-accent active:bg-accent
-                                                  transition-colors
-                                                "
-                                                title="Rozwiń"
-                                                onClick={(e) => e.stopPropagation()}
+                                            <div className="flex w-full items-center gap-2 pl-6">
+                                              <span
+                                                role="button"
+                                                aria-label="Rozwiń"
+                                                className="flex items-center justify-center size-4 -ml-1 rounded-md"
+                                                onClick={(e) => {
+                                                  e.preventDefault();
+                                                  e.stopPropagation();
+                                                  toggleSub();
+                                                }}
                                               >
-                                                <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
-                                              </SidebarMenuButton>
-                                            </CollapsibleTrigger>
+                                                <ChevronRight
+                                                  className={[
+                                                    "transition-transform duration-200 opacity-70 text-brand2",
+                                                    isSubOpen ? "rotate-90" : "",
+                                                  ].join(" ")}
+                                                />
+                                              </span>
 
-                                            <SidebarMenuButton
-                                              onClick={() => goCategory(sub)}
-                                              className={[
-                                                "cursor-pointer",
-                                                "flex-1 w-full h-9 px-2 justify-start",
-                                                "rounded-md",
-                                                "bg-transparent hover:bg-transparent active:bg-transparent",
-                                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                                                "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                                                isSubActive
-                                                  ? "text-foreground"
-                                                  : "text-primary group-hover/sub-row:text-foreground",
-                                              ].join(" ")}
-                                            >
                                               <span className="truncate text-[13px]">
                                                 {sub.kod}
                                               </span>
-                                            </SidebarMenuButton>
-                                          </div>
+                                            </div>
+                                          </SidebarMenuButton>
 
                                           <CollapsibleContent>
-                                            <SidebarMenuSub className="pl-0">
+                                            <SidebarMenuSub className="p-0 m-0 border-0 !border-l-0">
                                               {items.length ? (
                                                 <div className="py-1">
                                                   {items.map((it) => {
                                                     const itId = String(it.id);
-                                                    const isActiveItem = activeId === itId;
+
+                                                    const isActiveItem =
+                                                      activePath.aid === itId;
 
                                                     return (
                                                       <SidebarMenuItem key={itId}>
+                                                        {/* ITEM */}
                                                         <SidebarMenuButton
-                                                          onClick={() => goCategory(it)}
+                                                          onClick={() =>
+                                                            goCategory(it)
+                                                          }
                                                           className={[
                                                             "cursor-pointer",
-                                                            "w-full h-9 px-10 justify-start",
+                                                            "w-full h-9 px-4 justify-start",
                                                             "rounded-md transition-colors",
-                                                            "hover:bg-accent active:bg-accent",
-                                                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                                            "hover:bg-sidebar-accent/40",
+                                                            "active:bg-sidebar-accent/40",
+                                                            "focus-visible:outline-md focus-visible:ring-2 focus-visible:ring-ring",
                                                             "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                                                             isActiveItem
-                                                              ? "bg-accent text-foreground"
+                                                              ? "bg-sidebar-accent hover:bg-sidebar-accent text-foreground font-semibold"
                                                               : "text-primary hover:text-foreground",
                                                           ].join(" ")}
                                                         >
-                                                          <span className="truncate text-[13px]">
+                                                          <span className="truncate text-[13px] pl-10">
                                                             {it.kod}
                                                           </span>
                                                         </SidebarMenuButton>
