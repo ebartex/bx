@@ -40,7 +40,7 @@ export default function MenuDesktop() {
   const [openRootId, setOpenRootId] = useState<string | null>(null);
   const [openSubId, setOpenSubId] = useState<string | null>(null);
 
-  // ✅ NEW: manual root highlight (ignores URL)
+  // ✅ manual root highlight (ignores URL)
   const [selectedRootId, setSelectedRootId] = useState<string | null>(null);
 
   // --- helpers ---
@@ -102,7 +102,7 @@ export default function MenuDesktop() {
     return { rootById, subToRoot, itemToSub, itemToRoot };
   }, [tree]);
 
-  // ✅ 2.5) Active PATH ids (root/sub) derived from activeId
+  // ✅ Active PATH ids (root/sub) derived from activeId
   const activePath = useMemo(() => {
     const aid = activeId ? String(activeId) : null;
     if (!aid) return { aid: null, activeRootId: null, activeSubId: null };
@@ -124,8 +124,7 @@ export default function MenuDesktop() {
     return { aid, activeRootId: rootForItem, activeSubId: subForItem };
   }, [activeId, index]);
 
-  // ✅ Optional: gdy wchodzisz z URL prosto w kategorię (np. refresh),
-  // ustaw default selectedRootId raz, jeśli jeszcze nie wybrano ręcznie.
+  // ✅ Optional: when entering from URL directly (refresh), set default selectedRootId once
   useEffect(() => {
     if (!selectedRootId && activePath.activeRootId) {
       setSelectedRootId(activePath.activeRootId);
@@ -208,162 +207,175 @@ export default function MenuDesktop() {
                         }}
                         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
                       >
-                        {/* ROOT */}
-                        <SidebarMenuButton
-                          data-active={isRootSelected}
-                          onClick={() => {
-                            // ✅ zawsze zaznacz kliknięty root i usuń poprzednie
-                            setSelectedRootId(rid);
-
-                            // ✅ skoro klikasz root, czyść sub (bo i tak zmieniasz kontekst)
-                            setOpenSubId(null);
-
-                            setOpenRootId((prev) => (prev === rid ? null : rid));
-                          }}
+                        {/* ✅ HOVER-ZONE: tło na całej wysokości otwartego drzewa */}
+                        <div
                           className={[
-                            "active:bg-sidebar-accent/40 cursor-pointer w-full h-10 px-4 rounded-md transition-colors flex items-center gap-2 hover:bg-sidebar-accent/40",
-                            isRootSelected
-                              ? "!bg-transparent hover:!bg-sidebar-accent/40 !font-semibold"
-                              : "hover:bg-sidebar-accent/40 active:bg-sidebar-accent/40 ",
+                            "relative rounded-md transition-colors",
+                            isRootOpen ? "hover:bg-sidebar-accent/20" : "",
                           ].join(" ")}
                         >
-                          <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
-                          <span className="truncate text-[13px] text-primary group-hover:text-foreground transition-colors">
-                            {root.kod}
-                          </span>
-                        </SidebarMenuButton>
+                          {/* ROOT */}
+                          <SidebarMenuButton
+                            data-active={isRootSelected}
+                            onClick={() => {
+                              // ✅ always select clicked root (remove previous)
+                              setSelectedRootId(rid);
 
-                        <CollapsibleContent>
-                          <SidebarMenuSub className="p-0 m-0 border-0 !border-l-0">
-                            {subs.length ? (
-                              <ScrollArea className="h-72">
-                                <div className="py-1">
-                                  {subs.map((sub) => {
-                                    const sid = String(sub.id);
-                                    const isSubOpen = openSubId === sid;
+                              // ✅ since root click changes context, clear sub
+                              setOpenSubId(null);
 
-                                    // sub bold from URL path
-                                    const isSubInActivePath =
-                                      activePath.activeSubId === sid;
+                              setOpenRootId((prev) =>
+                                prev === rid ? null : rid
+                              );
+                            }}
+                            className={[
+                              "relative z-10", // ✅ above hover-zone bg
+                              "active:bg-sidebar-accent/40 cursor-pointer w-full h-10 px-4 rounded-md transition-colors flex items-center gap-2 hover:bg-sidebar-accent/40",
+                              isRootSelected
+                                ? "!bg-transparent hover:!bg-sidebar-accent/40 !font-semibold"
+                                : "hover:bg-sidebar-accent/40 active:bg-sidebar-accent/40 ",
+                            ].join(" ")}
+                          >
+                            <ChevronRight className="transition-transform duration-200 opacity-70 text-brand2" />
+                            <span className="truncate text-[13px] text-primary group-hover:text-foreground transition-colors">
+                              {root.kod}
+                            </span>
+                          </SidebarMenuButton>
 
-                                    const toggleSub = () =>
-                                      setOpenSubId((prev) =>
-                                        prev === sid ? null : sid
-                                      );
+                          <CollapsibleContent className="relative z-10">
+                            <SidebarMenuSub className="p-0 m-0 border-0 !border-l-0">
+                              {subs.length ? (
+                                <ScrollArea className="h-72">
+                                  <div className="py-1">
+                                    {subs.map((sub) => {
+                                      const sid = String(sub.id);
+                                      const isSubOpen = openSubId === sid;
 
-                                    const items = sub.children ?? [];
+                                      // sub bold from URL path
+                                      const isSubInActivePath =
+                                        activePath.activeSubId === sid;
 
-                                    return (
-                                      <SidebarMenuItem key={sid}>
-                                        <Collapsible
-                                          open={isSubOpen}
-                                          onOpenChange={(next) => {
-                                            setOpenSubId(next ? sid : null);
-                                          }}
-                                          className="group/collapsible"
-                                        >
-                                          {/* SUB */}
-                                          <SidebarMenuButton
-                                            onClick={() => {
-                                              setOpenSubId(sid);
-                                              goCategory(sub);
+                                      const toggleSub = () =>
+                                        setOpenSubId((prev) =>
+                                          prev === sid ? null : sid
+                                        );
+
+                                      const items = sub.children ?? [];
+
+                                      return (
+                                        <SidebarMenuItem key={sid}>
+                                          <Collapsible
+                                            open={isSubOpen}
+                                            onOpenChange={(next) => {
+                                              setOpenSubId(next ? sid : null);
                                             }}
-                                            className={[
-                                              "cursor-pointer",
-                                              "w-full h-9 px-4 justify-start",
-                                              "rounded-md transition-colors",
-                                              "flex items-center",
-                                              "active:bg-sidebar-accent/40",
-                                              isSubInActivePath
-                                                ? "hover:bg-sidebar-accent/40 text-sidebar-accent-foreground font-semibold"
-                                                : "hover:bg-sidebar-accent/40 text-primary hover:text-foreground",
-                                              "focus-visible:outline-md focus-visible:ring-2 focus-visible:ring-ring",
-                                              "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                                            ].join(" ")}
+                                            className="group/collapsible"
                                           >
-                                            <div className="flex w-full items-center gap-2 pl-6">
-                                              <span
-                                                role="button"
-                                                aria-label="Rozwiń"
-                                                className="flex items-center justify-center size-4 -ml-1 rounded-md"
-                                                onClick={(e) => {
-                                                  e.preventDefault();
-                                                  e.stopPropagation();
-                                                  toggleSub();
-                                                }}
-                                              >
-                                                <ChevronRight
-                                                  className={[
-                                                    "transition-transform duration-200 opacity-70 text-brand2",
-                                                    isSubOpen ? "rotate-90" : "",
-                                                  ].join(" ")}
-                                                />
-                                              </span>
+                                            {/* SUB */}
+                                            <SidebarMenuButton
+                                              onClick={() => {
+                                                setOpenSubId(sid);
+                                                goCategory(sub);
+                                              }}
+                                              className={[
+                                                "cursor-pointer",
+                                                "w-full h-9 px-4 justify-start",
+                                                "rounded-md transition-colors",
+                                                "flex items-center",
+                                                "active:bg-sidebar-accent/40",
+                                                isSubInActivePath
+                                                  ? "hover:bg-sidebar-accent/40 text-sidebar-accent-foreground font-semibold"
+                                                  : "hover:bg-sidebar-accent/40 text-primary hover:text-foreground",
+                                                "focus-visible:outline-md focus-visible:ring-2 focus-visible:ring-ring",
+                                                "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                                              ].join(" ")}
+                                            >
+                                              <div className="flex w-full items-center gap-2 pl-6">
+                                                <span
+                                                  role="button"
+                                                  aria-label="Rozwiń"
+                                                  className="flex items-center justify-center size-4 -ml-1 rounded-md"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    toggleSub();
+                                                  }}
+                                                >
+                                                  <ChevronRight
+                                                    className={[
+                                                      "transition-transform duration-200 opacity-70 text-brand2",
+                                                      isSubOpen
+                                                        ? "rotate-90"
+                                                        : "",
+                                                    ].join(" ")}
+                                                  />
+                                                </span>
 
-                                              <span className="truncate text-[13px]">
-                                                {sub.kod}
-                                              </span>
-                                            </div>
-                                          </SidebarMenuButton>
+                                                <span className="truncate text-[13px]">
+                                                  {sub.kod}
+                                                </span>
+                                              </div>
+                                            </SidebarMenuButton>
 
-                                          <CollapsibleContent>
-                                            <SidebarMenuSub className="p-0 m-0 border-0 !border-l-0">
-                                              {items.length ? (
-                                                <div className="py-1">
-                                                  {items.map((it) => {
-                                                    const itId = String(it.id);
+                                            <CollapsibleContent>
+                                              <SidebarMenuSub className="p-0 m-0 border-0 !border-l-0">
+                                                {items.length ? (
+                                                  <div className="py-1">
+                                                    {items.map((it) => {
+                                                      const itId = String(it.id);
 
-                                                    const isActiveItem =
-                                                      activePath.aid === itId;
+                                                      const isActiveItem =
+                                                        activePath.aid === itId;
 
-                                                    return (
-                                                      <SidebarMenuItem key={itId}>
-                                                        {/* ITEM */}
-                                                        <SidebarMenuButton
-                                                          onClick={() =>
-                                                            goCategory(it)
-                                                          }
-                                                          className={[
-                                                            "cursor-pointer",
-                                                            "w-full h-9 px-4 justify-start",
-                                                            "rounded-md transition-colors",
-                                                            "hover:bg-sidebar-accent/40",
-                                                            "active:bg-sidebar-accent/40",
-                                                            "focus-visible:outline-md focus-visible:ring-2 focus-visible:ring-ring",
-                                                            "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                                                            isActiveItem
-                                                              ? "bg-sidebar-accent hover:bg-sidebar-accent text-foreground font-semibold"
-                                                              : "text-primary hover:text-foreground",
-                                                          ].join(" ")}
-                                                        >
-                                                          <span className="truncate text-[13px] pl-10">
-                                                            {it.kod}
-                                                          </span>
-                                                        </SidebarMenuButton>
-                                                      </SidebarMenuItem>
-                                                    );
-                                                  })}
-                                                </div>
-                                              ) : (
-                                                <div className="px-14 py-2 text-xs text-muted-foreground">
-                                                  Brak itemkategorii
-                                                </div>
-                                              )}
-                                            </SidebarMenuSub>
-                                          </CollapsibleContent>
-                                        </Collapsible>
-                                      </SidebarMenuItem>
-                                    );
-                                  })}
+                                                      return (
+                                                        <SidebarMenuItem key={itId}>
+                                                          {/* ITEM */}
+                                                          <SidebarMenuButton
+                                                            onClick={() =>
+                                                              goCategory(it)
+                                                            }
+                                                            className={[
+                                                              "cursor-pointer",
+                                                              "w-full h-9 px-4 justify-start",
+                                                              "rounded-md transition-colors",
+                                                              "hover:bg-sidebar-accent/40",
+                                                              "active:bg-sidebar-accent/40",
+                                                              "focus-visible:outline-md focus-visible:ring-2 focus-visible:ring-ring",
+                                                              "focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                                                              isActiveItem
+                                                                ? "bg-sidebar-accent hover:bg-sidebar-accent text-foreground font-semibold"
+                                                                : "text-primary hover:text-foreground",
+                                                            ].join(" ")}
+                                                          >
+                                                            <span className="truncate text-[13px] pl-10">
+                                                              {it.kod}
+                                                            </span>
+                                                          </SidebarMenuButton>
+                                                        </SidebarMenuItem>
+                                                      );
+                                                    })}
+                                                  </div>
+                                                ) : (
+                                                  <div className="px-14 py-2 text-xs text-muted-foreground">
+                                                    Brak itemkategorii
+                                                  </div>
+                                                )}
+                                              </SidebarMenuSub>
+                                            </CollapsibleContent>
+                                          </Collapsible>
+                                        </SidebarMenuItem>
+                                      );
+                                    })}
+                                  </div>
+                                </ScrollArea>
+                              ) : (
+                                <div className="px-10 py-2 text-xs text-muted-foreground">
+                                  Brak podkategorii
                                 </div>
-                              </ScrollArea>
-                            ) : (
-                              <div className="px-10 py-2 text-xs text-muted-foreground">
-                                Brak podkategorii
-                              </div>
-                            )}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
+                              )}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </div>
                       </Collapsible>
                     </SidebarMenuItem>
                   );
