@@ -188,14 +188,20 @@ export default function CommandSearch() {
         onClick={() => setIsOpen(true)}
         className="
           cursor-pointer w-full h-10 rounded-3xl relative text-left text-sm
-          border border-input bg-accent px-10
+          px-10
+          group
+      
+          hover:bg-transparent
+          transition-colors
+          border border-input border-2
           text-muted-foreground
+          bg-secondary
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         "
       >
         <Search
           size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-hover:text-foreground/80 transition-colors"
         />
         Szukaj
       </button>
@@ -218,30 +224,41 @@ export default function CommandSearch() {
               <SheetTitle className="sr-only">Szukaj</SheetTitle>
 
               <SheetBackButton />
+<div className="relative flex-1 group">
+  <Input
+    ref={inputRef}
+    className="
+      h-10 rounded-3xl pl-10 pr-3 text-sm
+      border border-input border-2
+      bg-secondary
+      text-muted-foreground
+      transition-colors
 
-              <div className="relative flex-1">
-              <Input
-                ref={inputRef}
-                className="
-                  h-10 rounded-3xl pl-10 pr-3 text-sm
-                  border-input
-                  bg-transparent
-                  focus:bg-secondary
-                  focus-visible:ring-0
-                  focus-visible:ring-offset-0
-                  focus-visible:outline-none
-                "
-                placeholder="Szukaj produktów..."
-                onChange={handleSearchChange}
-                value={query}
-                onKeyDown={handleKeyDown}
-              />
+      hover:placeholder:text-foreground/80
+      hover:bg-transparent      
+      focus:bg-transparent
+      focus-visible:ring-0
+      focus-visible:ring-offset-0
+      focus-visible:outline-none
+    "
+    placeholder="Szukaj produktów..."
+    onChange={handleSearchChange}
+    value={query}
+    onKeyDown={handleKeyDown}
+  />
 
-                <Search
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-              </div>
+  <Search
+    size={18}
+    className="
+      absolute left-3 top-1/2 -translate-y-1/2
+      text-muted-foreground
+      transition-colors
+      group-hover:text-foreground/80
+      group-focus-within:text-foreground
+    "
+  />
+</div>
+
             </SheetHeader>
 
             {query.trim().length > 2 && (
