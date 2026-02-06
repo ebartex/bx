@@ -211,7 +211,7 @@ export default function MenuDesktop() {
                         <div
                           className={[
                             "relative rounded-md transition-colors",
-                            isRootOpen ? "hover:bg-sidebar-accent/20" : "",
+                            isRootOpen ? "hover:bg-sidebar-accent/20 " : "",
                           ].join(" ")}
                         >
                           {/* ROOT */}
