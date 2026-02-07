@@ -83,7 +83,7 @@ export default function MenuMobile() {
       <SheetTrigger asChild>
         <button
           type="button"
-          className="ml-3 lg:hidden"
+          className="ml-3 pt-2 lg:hidden"
           onClick={() => setIsMenuOpen((v) => !v)}
           aria-label="Otwórz menu kategorii"
         >
