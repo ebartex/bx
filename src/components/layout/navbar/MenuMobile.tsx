@@ -87,7 +87,7 @@ export default function MenuMobile() {
   onClick={() => setIsMenuOpen((v) => !v)}
   className={`
     lg:hidden
-   
+    ml-2
     inline-flex items-center justify-center
     h-10 w-10
     rounded-lg
