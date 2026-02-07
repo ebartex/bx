@@ -311,7 +311,7 @@ export default function CommandSearch() {
                 {loading ? (
                   <div className="px-4 pb-2">
                     {[...Array(5)].map((_, index) => (
-                      <Skeleton key={index} className="h-12 mb-2 rounded-none bg-muted" />
+                      <Skeleton key={index} className="h-12 mb-2 rounded-none" />
                     ))}
                   </div>
                 ) : results.length > 0 ? (
@@ -348,7 +348,7 @@ export default function CommandSearch() {
                           </span>
 
                           {(result as any).is_cheapest && (
-                            <Badge className="h-5 rounded-full px-2" variant="secondary">
+                            <Badge className="h-5 rounded-full px-2 bg-primary text-primary-foreground ">
                               Najtańszy
                             </Badge>
                           )}
@@ -361,7 +361,7 @@ export default function CommandSearch() {
                               const stan = Number(item.stanHandl) || 0;
 
                               // shadcn-friendly: primary = jest, destructive = brak
-                              const cls = stan === 0 ? "text-destructive" : "text-primary";
+                              const cls = stan === 0 ? "text-destructive" : "text-success";
 
                               return (
                                 <div key={idx} className="flex items-center">
