@@ -86,7 +86,8 @@ export default function MenuMobile() {
   aria-label="Otwórz menu kategorii"
   onClick={() => setIsMenuOpen((v) => !v)}
   className={`
-    ml-2 lg:hidden
+    lg:hidden
+   
     inline-flex items-center justify-center
     h-10 w-10
     rounded-lg
@@ -97,7 +98,7 @@ export default function MenuMobile() {
     ${isMenuOpen ? "bg-muted/60" : ""}
   `}
 >
-  <Menu className="h-5 w-5" />
+  <Menu className="h-7 w-7" />
 </button>
 
       </SheetTrigger>
