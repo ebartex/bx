@@ -81,14 +81,25 @@ export default function MenuMobile() {
   return (
     <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <SheetTrigger asChild>
-        <button
-          type="button"
-          className="ml-3 pt-2 lg:hidden"
-          onClick={() => setIsMenuOpen((v) => !v)}
-          aria-label="Otwórz menu kategorii"
-        >
-          <Menu />
-        </button>
+<button
+  type="button"
+  aria-label="Otwórz menu kategorii"
+  onClick={() => setIsMenuOpen((v) => !v)}
+  className={`
+    ml-2 lg:hidden
+    inline-flex items-center justify-center
+    h-10 w-10
+    rounded-lg
+    transition-all
+    hover:bg-muted/50
+    active:bg-muted/70
+    active:scale-95
+    ${isMenuOpen ? "bg-muted/60" : ""}
+  `}
+>
+  <Menu className="h-5 w-5" />
+</button>
+
       </SheetTrigger>
 
       <SheetContent className="p-0 bg-background text-foreground">
