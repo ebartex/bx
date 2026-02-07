@@ -42,9 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className="dark:bg-background bg-accent text-foreground">
-
+  <Pellet />
         <Topbar />
-         <Pellet />
+       
         <div className="bg-background border-b">
           <Navbar />
         </div>
