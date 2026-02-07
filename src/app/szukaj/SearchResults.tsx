@@ -11,6 +11,7 @@ import { getTw } from "../../../services/api/tw";
 import { slugify } from "@/utils/slugify";
 import { Product } from "../../../types/product";
 import PriceLabel from "@/components/product/PriceLabel";
+import { BadgeLowPrice } from "@/components/layout/ui/badgeLowPrice";
 
 function GridSkeleton() {
   return (
@@ -136,12 +137,7 @@ export default function SearchResults() {
                 onClick={() => handleProductClick(product.id, slug)}
               >
                 {(product as any).is_cheapest && (
-                  <Badge
-                    variant="secondary"
-                    className="absolute top-2 right-2 h-5 rounded-full px-2 tabular-nums"
-                  >
-                    Najtańszy
-                  </Badge>
+                  <BadgeLowPrice/>
                 )}
 
                 {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (

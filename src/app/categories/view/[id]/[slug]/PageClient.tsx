@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {Squircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { slugify } from "@/utils/slugify";
 import { Product } from "../../../../../../types/product";
 import PriceLabel from "@/components/product/PriceLabel";
+import { BadgeLowPrice } from "@/components/layout/ui/badgeLowPrice";
 
 interface PageClientProps {
   products: Product[];
@@ -79,18 +79,7 @@ export default function PageClient({ products }: PageClientProps) {
                 
                 {/* Badge - Najtańszy (bez hardcode koloru) */}
                 {(product as any).is_cheapest && (
-                  <Badge
-                    variant="secondary"
-                    className="
-                      absolute top-2 right-2
-                      h-5 min-w-5 rounded-sm px-2
-                      text-seco-foreground
-                      bg-muted
-                      tabular-nums
-                    "
-                  >
-                   % Najtańszy
-                  </Badge>
+                    <BadgeLowPrice/>
                 )}
 
                 {/* Popover - Produkt w zamówieniu */}
