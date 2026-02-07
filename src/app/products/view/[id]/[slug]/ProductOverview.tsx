@@ -15,7 +15,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
   const stanHandl = product.sm?.[0]?.stanHandl ?? 0;
 
   // shadcn-friendly (bez hardcode): jest = primary, brak = destructive
-  const stanColor = Number(stanHandl) === 0 ? "text-destructive" : "text-primary";
+  const stanColor = Number(stanHandl) === 0 ? "text-destructive" : "text-success";
 
   const descriptionHtml = product.tw_descriptions?.[0]?.description ?? "";
 

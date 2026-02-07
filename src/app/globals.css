@@ -33,9 +33,11 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
-  /* ✅ SUCCESS */
+
+  /* ✅ SUCCESS: mapowanie zostaje, ale wartości są w success.css */
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -76,20 +78,15 @@
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);  --sidebar-border: oklch(0.922 0 0);
- 
-
-
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-
-  --success: oklch(0.596 0.145 163.225);
-  --success-foreground: oklch(0.985 0 0);
 }
 
 .dark {
   --background: oklch(0.20 0.01 270);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.1692 0.0085 274.36); /* oklch(0.205 0 0);*/
+  --card: oklch(0.1692 0.0085 274.36);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -99,7 +96,6 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  /*--accent: oklch(0.269 0 0);*/
   --accent: oklch(0.2533 0.0082 240.19);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
@@ -116,9 +112,8 @@
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.364 0.0118 243.14);
-  /*--sidebar-accent: oklch(0.2533 0.0082 240.19);*/
   --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.58 0.22 27); /* oklch(1 0 0 / 10%);*/ 
+  --sidebar-border: oklch(0.58 0.22 27);
   --sidebar-ring: oklch(0.556 0 0);
 }
 
@@ -129,77 +124,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-.custom-sup {
-  transform: translateY(2px); /* Obniżenie o 2px */
-
-}
-
-.align-super {
-  vertical-align: super; /* Ustawia element <sup> wyżej */
-}
-
-
-/* ===============================
-   2026 AMBIENT / EASTER-EGG
-   =============================== */
-
-/* floating snow */
-@keyframes floaty {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(0, -6px, 0) rotate(8deg);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-}
-
-.year-floaty {
-  animation: floaty var(--d, 6s) ease-in-out infinite;
-}
-
-/* comet */
-@keyframes comet {
-  0% {
-    transform: translate3d(0, -50%, 0) skewX(-18deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate3d(210%, -50%, 0) skewX(-18deg);
-    opacity: 0;
-  }
-}
-
-.year-comet {
-  animation: comet 1.2s ease-out 1;
-}
-
-/* === 1-frame glitch easter-egg === */
-@keyframes year-glitch {
-  0% {
-    transform: none;
-    opacity: 1;
-  }
-  98% {
-    transform: none;
-    opacity: 1;
-  }
-  99% {
-    transform: translateX(-0.5px) skewX(6deg);
-    opacity: 0.85;
-  }
-  100% {
-    transform: none;
-    opacity: 1;
-  }
-}
-
-.year-glitch {
-  animation: year-glitch 15s steps(1) infinite;
 }

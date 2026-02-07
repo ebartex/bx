@@ -1,0 +1,41 @@
+@layer base {
+  :root {
+    --success: oklch(0.596 0.145 163.225);
+    --success-foreground: oklch(0.985 0 0);
+  }
+
+  .dark {
+    /* jeśli chcesz inne w dark – daj tu */
+    --success: oklch(0.696 0.17 162.48);
+    --success-foreground: oklch(0.985 0 0);
+  }
+}
+
+
+@keyframes floaty {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -6px, 0) rotate(8deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+@keyframes comet {
+  0% { transform: translate3d(0, -50%, 0) skewX(-18deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate3d(210%, -50%, 0) skewX(-18deg); opacity: 0; }
+}
+
+@keyframes year-glitch {
+  0% { transform: none; opacity: 1; }
+  98% { transform: none; opacity: 1; }
+  99% { transform: translateX(-0.5px) skewX(6deg); opacity: 0.85; }
+  100% { transform: none; opacity: 1; }
+}
+
+@layer utilities {
+  .custom-sup { transform: translateY(2px); }
+  .align-super { vertical-align: super; }
+
+  .year-floaty { animation: floaty var(--d, 6s) ease-in-out infinite; }
+  .year-comet { animation: comet 1.2s ease-out 1; }
+  .year-glitch { animation: year-glitch 15s steps(1) infinite; }
+}
