@@ -1,3 +1,4 @@
+// app/categories/view/page.tsx
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -72,18 +73,53 @@ export default async function Page({ params }: PageProps) {
   );
 }
 
+/**
+ * ✅ Skeleton dopasowany 1:1 do PageClient cards:
+ * - brak gap w grid (tak jak w PageClient)
+ * - te same "krawędzie": border-r border-b, shadow-sm, p-4, rounded-none
+ * - obrazek wycentrowany i 150x150 + mb-4
+ * - title mb-2
+ * - price wyrównane do prawej
+ * - stock absolutnie na dole -> rezerwujemy miejsce pb-8
+ * - badge absolutnie top-2 right-2
+ */
 function ProductsSkeleton() {
+  const cardClass = `
+    relative
+    border-r border-b border-border shadow-sm
+    bg-card text-card-foreground
+    rounded-none
+    p-4
+  `;
+
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div
-          key={i}
-          className="border border-border bg-card text-card-foreground p-4 flex flex-col gap-3 rounded-none"
-        >
-          <Skeleton className="h-[150px] w-full rounded-md" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-6 w-1/2 ml-auto" />
-          <Skeleton className="h-4 w-1/3" />
+    <div className="grid grid-cols-2 xl:grid-cols-4">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div key={i} className={`${cardClass} pb-8`}>
+          {/* badge placeholder */}
+ 
+
+          {/* image placeholder */}
+          <div className="flex justify-center mb-4">
+            <Skeleton className="h-[150px] w-[150px] rounded-none" />
+          </div>
+
+          {/* title placeholder */}
+          <div className="mb-2 space-y-2">
+            <Skeleton className="h-4 w-[90%] rounded-none" />
+            <Skeleton className="h-4 w-[70%] rounded-none" />
+          </div>
+
+          {/* price placeholder (right) */}
+          <div className="text-right">
+            <Skeleton className="ml-auto h-8 w-28 rounded-none" />
+          </div>
+
+          {/* stock placeholder (bottom-left) */}
+          <div className="absolute bottom-0 left-0 p-2 flex items-center gap-2">
+            <Skeleton className="h-3.5 w-3.5 rounded-none" />
+            <Skeleton className="h-3 w-24 rounded-none" />
+          </div>
         </div>
       ))}
     </div>
