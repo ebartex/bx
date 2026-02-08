@@ -37,7 +37,7 @@ const PriceLabel = ({ price, unit, size = 'medium' }: PriceLabelProps) => {
 
   return (
     <div className="text-lg mb-2 mt-2 text-primary">
-      <span className={`${tracking ? tracking : ''} font-medium ${fontSizeClass}`}>
+      <span className={`${tracking ? tracking : ''} font-semibold ${fontSizeClass}`}>
         {zlote}
         <sup className={`${tracking ? tracking : ''} text-sm ${alignSize ? `align-${alignSize}` : ''}`}>
           ,{grosze} zł/{unit}

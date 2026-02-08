@@ -8,12 +8,12 @@ import Footer from "@/components/layout/footer/page";
 
 
 import { SidebarProvider } from "@/components/ui/sidebar";
-import WospTopbar from "@/components/layout/topbar/WospTopbar";
+
 import Pellet from "@/components/layout/topbar/pellet";
 
 
 const poppins = Poppins({
-  weight: ["300", "400", "500", "700", "900"],
+  weight: ["300", "400", "500", "600", "700", "900"],
   style: ["normal"],
   subsets: ["latin"],
   display: "swap",
