@@ -37,7 +37,8 @@
   /* ✅ SUCCESS: mapowanie zostaje, ale wartości są w success.css */
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -93,7 +94,7 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.2533 0.0082 240.19);
+  --secondary: oklch(0.48 0.0118 243.14); /*oklch(0.2533 0.0082 240.19);*/
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);

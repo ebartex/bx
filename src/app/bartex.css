@@ -2,12 +2,16 @@
   :root {
     --success: oklch(0.596 0.145 163.225);
     --success-foreground: oklch(0.985 0 0);
+    --brand: oklch(0.5912 0.2372 19.45);
+    --brand-foreground: oklch(0.985 0 0); 
   }
 
   .dark {
     /* jeśli chcesz inne w dark – daj tu */
     --success: oklch(0.696 0.17 162.48);
     --success-foreground: oklch(0.985 0 0);
+    --brand: oklch(0.5912 0.2372 19.45);
+    --brand-foreground: oklch(0.985 0 0);
   }
 }
 
