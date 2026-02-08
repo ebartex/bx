@@ -1,3 +1,4 @@
+//searchresults.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -194,7 +195,7 @@ export default function SearchResults() {
                     width={150}
                     height={150}
                     alt={title}
-                    className="mt-5 object-cover rounded-md"
+                    className="mt-5 object-cover rounded-xs"
                   />
                 </div>
 

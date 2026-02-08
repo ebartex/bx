@@ -1,9 +1,10 @@
+// categories.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {Squircle } from "lucide-react";
+import { Squircle } from "lucide-react";
 import { slugify } from "@/utils/slugify";
 import { Product } from "../../../../../../types/product";
 import PriceLabel from "@/components/product/PriceLabel";
@@ -34,13 +35,13 @@ export default function PageClient({ products }: PageClientProps) {
         <div className="grid grid-cols-2 xl:grid-cols-4">
           {products.map((product) => {
             const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
-
-            // ✅ tokenowe kolory zamiast red/green hardcode
             const stanColor = stan === 0 ? "text-destructive" : "text-success";
 
             const title =
               product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name ||
               product.nazwa;
+
+            const slug = slugify(title);
 
             const mainPhoto = product.productphoto?.find((p) => p.main_photo === 1)?.photo_512;
             const imgSrc =
@@ -48,100 +49,38 @@ export default function PageClient({ products }: PageClientProps) {
                 ? `https://www.imgstatic.ebartex.pl/${mainPhoto}`
                 : "/product_512.png";
 
+            const hasPrice =
+              product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena);
+
+            const cena = hasPrice ? String(product.cn![0].cena2 || product.cn![0].cena) : "0";
+
+            const jednostka = hasPrice
+              ? product.cn![0].cena2
+                ? product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ""
+                : product.jm || ""
+              : "";
+
             return (
               <div
                 key={product.id}
                 role="button"
                 tabIndex={0}
-                onClick={() => handleProductClick(product.id, slugify(title))}
+                onClick={() => handleProductClick(product.id, slug)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    handleProductClick(product.id, slugify(title));
+                    handleProductClick(product.id, slug);
                   }
                 }}
                 className="
-                  relative
-                  cursor-pointer
-                  border-r border-b border-border shadow-sm
-                  bg-card text-card-foreground
-                  rounded-none
-                  p-4
-                  transition-colors
-                  hover:bg-accent
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-ring
-                  focus-visible:ring-offset-2
-                  focus-visible:ring-offset-background
+                  bg-card text-card-foreground border border-border rounded-none
+                  p-4 pb-10 relative cursor-pointer
+                  transition-colors hover:bg-muted/50
+                  flex flex-col justify-between
                 "
               >
-                
-                {/* Badge - Najtańszy (bez hardcode koloru) */}
-                {(product as any).is_cheapest && (
-                    <BadgeLowPrice/>
-                )}
-
-                {/* Popover - Produkt w zamówieniu */}
-                {/*stan === 0 && product.zp?.length > 0 && (
-                  <div className="absolute top-0 right-0 p-2">
-                    <Popover
-                      open={openPopoverId === product.id}
-                      onOpenChange={(isOpen) => setOpenPopoverId(isOpen ? product.id : null)}
-                    >
-                      <PopoverTrigger
-                        asChild
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          type="button"
-                          className="
-                            inline-flex items-center justify-center
-                            rounded-none
-                            p-1
-                            hover:bg-accent
-                            focus-visible:outline-none
-                            focus-visible:ring-2
-                            focus-visible:ring-ring
-                            focus-visible:ring-offset-2
-                            focus-visible:ring-offset-background
-                          "
-                          aria-label="Produkt w zamówieniu"
-                        >
-                          <PackageCheck className="text-primary" size={28} />
-                        </button>
-                      </PopoverTrigger>
-
-                      <PopoverContent
-                        side="top"
-                        className="text-sm space-y-2 max-w-xs bg-popover text-popover-foreground border border-border"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenPopoverId(null);
-                        }}
-                      >
-                        <div className="flex items-center gap-2 font-semibold text-foreground">
-                          <Info className="text-primary" size={18} />
-                          <span>Produkt w zamówieniu</span>
-                        </div>
-
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock size={16} className="text-muted-foreground" />
-                          <span>Data zamówienia: {product.zp[0].data}</span>
-                        </div>
-
-                        <div className="flex items-start gap-2 text-muted-foreground">
-                          <Package size={16} className="mt-1 text-muted-foreground" />
-                          <span>
-                            Produkt zostanie uzupełniony o{" "}
-                            <strong className="text-foreground">stan magazynowy</strong>{" "}
-                            w ciągu kilku dni od daty zamówienia.
-                          </span>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                )*/} 
+                {/* Badge – identycznie jak w SearchResults (bez wrappera, bez klas tutaj) */}
+                {(product as any).is_cheapest && <BadgeLowPrice />}
 
                 {/* Image */}
                 <div className="flex justify-center mb-4">
@@ -150,45 +89,31 @@ export default function PageClient({ products }: PageClientProps) {
                     width={150}
                     height={150}
                     alt={title}
-                    className="object-cover rounded-none"
+                    className="mt-5 object-cover rounded-xs"
                   />
                 </div>
 
                 {/* Title */}
-                <h2 className="text-sm font-normal mb-2 text-foreground">
-                  {title}
-                </h2>
+                <h2 className="text-sm font-normal mb-2 text-foreground">{title}</h2>
 
-                {/* Price */}
-                {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
-                  (() => {
-                    const cena = String(product.cn[0].cena2 || product.cn[0].cena);
-
-                    const jednostka = product.cn[0].cena2
-                      ? product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ""
-                      : product.jm || "";
-
-                    return (
-                      <div className="text-right">
-                        <PriceLabel size="medium" price={cena} unit={jednostka} />
-                      </div>
-                    );
-                  })()
-                ) : (
-                  <div className="text-right text-muted-foreground mb-2">
-                    <span className="font-bold text-2xl text-foreground">
-                      0
-                      <sup className="text-sm font-bold custom-sup text-muted-foreground">
-                        ,00 zł
-                      </sup>
-                    </span>
-                  </div>
-                )}
+                {/* Price – zawsze w tym samym miejscu (doklejone do dołu) */}
+                <div className="mt-auto text-right">
+                  {hasPrice ? (
+                    <PriceLabel size="medium" price={cena} unit={jednostka} />
+                  ) : (
+                    <div className="text-lg text-muted-foreground">
+                      <span className="font-bold text-2xl text-foreground">
+                        0
+                        <sup className="text-sm font-bold custom-sup">,00 zł</sup>
+                      </span>
+                    </div>
+                  )}
+                </div>
 
                 {/* Stock */}
                 <div className="absolute bottom-0 left-0 p-2 flex items-center">
                   <Squircle size={14} className={`${stanColor} fill-current mr-2`} />
-                  <span className="text-xs tex-foreground dark:text-muted-foreground">
+                  <span className="text-xs text-foreground">
                     {stan === 0 ? "brak w magazynie" : "w magazynie"}
                   </span>
                 </div>

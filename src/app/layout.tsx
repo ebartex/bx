@@ -48,13 +48,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
         <Topbar />
-  
+       
        
         <div className="bg-sidebar border-b">
+          
           <Navbar />
         </div>
 
         <div className="xl:w-[1200px] mx-auto">
+        
           <SidebarProvider>{children}</SidebarProvider>
         </div>
 

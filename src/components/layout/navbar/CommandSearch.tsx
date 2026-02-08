@@ -176,7 +176,7 @@ export default function CommandSearch() {
       onClick={onClick}
       className="w-full text-left px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors hover:bg-sidebar-accent/40"
     >
-      {children}s
+      {children}
     </button>
   );
 
@@ -195,7 +195,7 @@ export default function CommandSearch() {
           transition-colors
           border border-input border-2
           text-muted-foreground
-          bg-secondary
+          
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         "
       >
@@ -230,7 +230,7 @@ export default function CommandSearch() {
     className="
       h-10 rounded-3xl pl-10 pr-3 text-sm
       border border-input border-2
-      bg-secondary
+ 
       text-muted-foreground
       transition-colors
 
