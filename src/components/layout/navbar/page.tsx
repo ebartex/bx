@@ -26,10 +26,30 @@ export default function Navbar() {
         {/* Obrazek */}
           <Link href="/">
 
-<span className="text-3xl font-semibold">
-  <span className="dark:text-white text-slate-800">Bar</span>
-  <span className="text-rose-600">tex</span>
+<span className="relative inline-block text-3xl font-extrabold tracking-tight">
+  {/* bazowy napis */}
+  <span className="dark:text-white text-slate-800">
+    BARTEX
+  </span>
+
+  {/* nakładana litera */}
+  <span
+    aria-hidden
+    className="
+      pointer-events-none
+      absolute
+      left-[0.55em]
+      top-0
+      text-red-600
+      font-extrabold
+      tracking-tight
+      z-10
+    "
+  >
+    A
+  </span>
 </span>
+
 
 
            
