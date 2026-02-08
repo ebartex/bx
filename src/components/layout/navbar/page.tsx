@@ -28,7 +28,7 @@ export default function Navbar() {
 
 <svg
   width="auto"
-  height="40"
+  height="35"
   viewBox="0 0 200 60"
   className="inline-block text-slate-800 dark:text-white"
 >
