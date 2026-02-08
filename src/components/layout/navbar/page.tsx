@@ -26,30 +26,50 @@ export default function Navbar() {
         {/* Obrazek */}
           <Link href="/">
 
-<span className="relative inline-block text-3xl font-extrabold tracking-tight">
-  {/* bazowy napis */}
-  <span className="dark:text-white text-slate-800">
-    BARTEX
-  </span>
+<svg
+  width="auto"
+  height="40"
+  viewBox="0 0 200 60"
+  className="inline-block text-slate-800 dark:text-white"
+>
+  <defs>
+    <mask id="text-mask">
+      <text
+        x="0"
+        y="45"
+        fontSize="48"
+        fontWeight="800"
+        letterSpacing="-0.05em"
+        fill="white"
+      >
+        BARTEX
+      </text>
+    </mask>
+  </defs>
 
-  {/* nakładana litera */}
-  <span
-    aria-hidden
-    className="
-      pointer-events-none
-      absolute
-      left-[0.55em]
-      top-0
-      text-red-600
-      font-extrabold
-      tracking-tight
-      z-10
-    "
+  {/* bazowy tekst */}
+  <text
+    x="0"
+    y="45"
+    fontSize="48"
+    fontWeight="800"
+    fill="currentColor"
+  >
+    BARTEX
+  </text>
+
+  {/* czerwona A widoczna tylko w literach */}
+  <text
+    x="30"
+    y="45"
+    fontSize="52"
+    fontWeight="800"
+    fill="#dc2626"
+    mask="url(#text-mask)"
   >
     A
-  </span>
-</span>
-
+  </text>
+</svg>
 
 
            
