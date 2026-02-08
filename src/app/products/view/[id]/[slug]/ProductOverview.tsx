@@ -37,7 +37,7 @@ const ProductOverview = ({ product }: ProductOverviewProps) => {
     product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_shop_name || product.nazwa;
 
   return (
-    <div className="w-full bg-background text-foreground">
+    <div className="w-full bg-card text-foreground">
       <div className="p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Side - Image */}

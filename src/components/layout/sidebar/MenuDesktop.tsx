@@ -16,7 +16,9 @@ export default function MenuDesktop({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = (await getXt("/xt/index?Xt-super=2200&Xt-root=2200")) as Category[];
+        const data = (await getXt(
+          "/xt/index?Xt-super=2200&Xt-root=2200"
+        )) as Category[];
         setCategories(data);
       } catch (e) {
         console.error(e);
@@ -29,11 +31,11 @@ export default function MenuDesktop({
   }, []);
 
   return (
-    <aside className="w-full">
+    <aside className="w-full bg-sidebar">
       {/* HEADER */}
-      <div className="bg-background">
+      <div>
         <div className="px-4 py-4">
-          <div className=" text-sm font-medium">
+          <div className="text-sm font-medium text-sidebar-foreground">
             Kategorie
           </div>
         </div>
@@ -41,50 +43,47 @@ export default function MenuDesktop({
 
       {/* LISTA */}
       <div>
-{loading ? (
-  <ul className="bg-background">
-    {Array.from({ length: 8 }).map((_, i) => (
-      <li key={i}>
-        <div className="h-10 px-4 flex items-center">
-          <Skeleton className="h-4 w-2/3 rounded-sm" />
-        </div>
-      </li>
-    ))}
-  </ul>
-) : (
-  <ul className="bg-background">
-    {categories.map((cat) => (
-      <li key={cat.id}>
-        <button
-          type="button"
-          onMouseEnter={() => onHoverCategory(cat)}
-          onFocus={() => onHoverCategory(cat)}
-          className="
-            group
-            w-full h-10 px-4
-            flex items-center
-            text-left
-            cursor-pointer
-          "
-        >
-          <span
-            className="
-              block truncate
-              text-[13px] font-normal
-              text-muted-foreground
-              group-hover:text-foreground
-            "
-          >
-            {cat.kod}
-          </span>
-        </button>
-      </li>
-    ))}
-  </ul>
-)}
-
-
-
+        {loading ? (
+          <ul>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <li key={i}>
+                <div className="h-10 px-4 flex items-center">
+                  <Skeleton className="h-4 w-2/3 rounded-sm" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <ul>
+            {categories.map((cat) => (
+              <li key={cat.id}>
+                <button
+                  type="button"
+                  onMouseEnter={() => onHoverCategory(cat)}
+                  onFocus={() => onHoverCategory(cat)}
+                  className="
+                    group
+                    w-full h-10 px-4
+                    flex items-center
+                    text-left
+                    cursor-pointer
+                  "
+                >
+                  <span
+                    className="
+                      block truncate
+                      text-[13px] font-normal
+                      text-sidebar-foreground/70
+                      group-hover:text-sidebar-foreground
+                    "
+                  >
+                    {cat.kod}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </aside>
   );

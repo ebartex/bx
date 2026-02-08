@@ -12,7 +12,7 @@ export default function Navbar() {
     <>
          <div className="xl:w-[1200px] mx-auto">
 
-      <nav className="flex flex-col sm:flex-row items-center justify-between mb-2 xl:pr-6"> 
+      <nav className="bg-sidebar flex flex-col sm:flex-row items-center justify-between mb-2 xl:pr-6"> 
         {/* Flex w kolumnie na urządzeniach mobilnych, wiersz na większych ekranach, wyrównanie w poziomie */}
         <div className="pr-5 flex items-center gap-2 sm:w-auto w-full mb-4 sm:mb-0">
         {/* Ikona Menu */}

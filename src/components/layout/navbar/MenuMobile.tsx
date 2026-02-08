@@ -103,7 +103,7 @@ export default function MenuMobile() {
 
       </SheetTrigger>
 
-      <SheetContent className="p-0 bg-background text-foreground">
+      <SheetContent className="p-0 bg-card text-foreground">
         <SheetHeader className="p-0 border-b border-border">
           <SheetTitle className="pt-4 pl-2 text-base font-semibold">
             Kategorie

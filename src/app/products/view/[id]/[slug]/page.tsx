@@ -168,7 +168,7 @@ export default async function Page({ params }: PageProps) {
 
 function ProductSkeleton() {
   return (
-    <div className="w-full bg-background text-foreground">
+    <div className="w-full bg-card text-foreground">
       <div className="p-8">
         <div className="grid md:grid-cols-2 gap-8">
           <div>

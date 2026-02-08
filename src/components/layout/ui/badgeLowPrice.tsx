@@ -18,8 +18,8 @@ export function BadgeLowPrice({
         absolute top-2 right-2
         h-5 min-w-5 px-2
         rounded-sm
-        bg-secondary/80 text-secondary-foreground
-        hover:bg-secondary
+        bg-accent text-accent-foreground
+ 
         text-[11px] font-medium
         tabular-nums
         shadow-sm

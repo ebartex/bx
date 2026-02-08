@@ -8,7 +8,7 @@ import { Mail, Phone } from "lucide-react";
 export default function Topbar() {
   return (
     <nav className="h-8 w-full text-sm
-      bg-background text-foreground
+      bg-sidebar text-foreground
       "
     >
       <div className="xl:w-[1200px] xl:mx-auto flex h-full items-center justify-end gap-4 px-4">

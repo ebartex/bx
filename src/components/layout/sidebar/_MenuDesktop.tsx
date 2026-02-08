@@ -167,9 +167,9 @@ export default function MenuDesktop() {
       side="left"
       variant="inset"
       collapsible="none"
-      className="w-full h-full border-0 bg-transparent shadow-none static"
+      className="w-full h-full border-0 bg-sidebar shadow-none static"
     >
-      <SidebarContent className="h-full bg-background text-foreground border-r border-border shadow-sm">
+      <SidebarContent className="h-full bg-sidebar text-foreground border-r border-border shadow-sm">
         <SidebarGroup>
           <SidebarGroupLabel className="text-sm px-4 py-4 text-foreground">
             Kategorie

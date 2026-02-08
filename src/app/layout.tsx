@@ -42,11 +42,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
 
-      <body className="dark:bg-background bg-accent text-foreground">
+      <body className="bg-background text-foreground">
+ 
   <Pellet />
+
+
         <Topbar />
+  
        
-        <div className="bg-background border-b">
+        <div className="bg-sidebar border-b">
           <Navbar />
         </div>
 

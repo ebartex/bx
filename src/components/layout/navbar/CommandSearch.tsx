@@ -174,9 +174,9 @@ export default function CommandSearch() {
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors hover:bg-muted/60"
+      className="w-full text-left px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors hover:bg-sidebar-accent/40"
     >
-      {children}
+      {children}s
     </button>
   );
 
@@ -213,14 +213,14 @@ export default function CommandSearch() {
         >
           <div
             ref={scrollRef}
-            className="h-full overflow-y-auto overscroll-contain bg-background"
+            className="h-full overflow-y-auto overscroll-contain bg-card"
             style={{
               paddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
               scrollPaddingBottom: `${Math.max(16, keyboardInset + 16)}px`,
               WebkitOverflowScrolling: "touch",
             }}
           >
-            <SheetHeader className="flex-row items-center gap-2 px-4 pt-4 pb-3 border-b border-border bg-background">
+            <SheetHeader className="flex-row items-center gap-2 px-4 pt-4 pb-3 border-b border-border bg-sidebar">
               <SheetTitle className="sr-only">Szukaj</SheetTitle>
 
               <SheetBackButton />
@@ -262,7 +262,7 @@ export default function CommandSearch() {
             </SheetHeader>
 
             {query.trim().length > 2 && (
-              <div className="border-b border-border bg-background flex justify-center py-3">
+              <div className="border-b border-border bg-card flex justify-center py-3">
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -278,7 +278,7 @@ export default function CommandSearch() {
               </div>
             )}
 
-            <div className="bg-background">
+            <div className="bg-card">
               {(parentCategoryResults.length > 0 || categoryResults.length > 0) && (
                 <Section title="Kategorie">
                   <div className="flex flex-col">
@@ -389,19 +389,19 @@ export default function CommandSearch() {
                 <Section title="Historia wyszukiwania">
                   <div className="px-4 flex flex-wrap gap-2">
                     {[...searchHistory].reverse().map((historyQuery, index) => (
-                      <button
+                      <Button
                         key={`${historyQuery}-${index}`}
                         onClick={() => handleLink(`/szukaj?q=${encodeURIComponent(historyQuery)}`)}
                         className="
                           cursor-pointer rounded-full px-4 py-1 text-sm transition-colors
-                          bg-background border border-border text-foreground
-                          hover:bg-muted/60
+                          bg-accent/80 border border-border text-foreground
+                          hover:bg-accent
                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
                         "
                         type="button"
                       >
                         {historyQuery}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </Section>

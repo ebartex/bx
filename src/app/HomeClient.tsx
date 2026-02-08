@@ -131,7 +131,7 @@ export default function HomeClient() {
         {overlayOpen && activeCategory && (
           <div
             className={[
-              "absolute inset-0 z-20 bg-background",
+              "absolute inset-0 z-20 bg-sidebar",
               "transition-opacity duration-150 ease-out",
               isClosing ? "opacity-0" : "opacity-100",
             ].join(" ")}
