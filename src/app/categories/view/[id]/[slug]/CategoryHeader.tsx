@@ -20,42 +20,37 @@ export default async function CategoryHeader({
     categoryName = category?.[0]?.kod;
   }
 
-  if (!categoryName || categoryName.length < 2) return null;
+  if (!categoryName) return null;
 
   const first = categoryName[0];
-  const second = categoryName[1];
-  const rest = categoryName.slice(2);
+  const rest = categoryName.slice(1);
 
   return (
     <div className="px-4 pt-2 pb-4">
-      <h1 className="text-xl dark:font-bold font-medium tracking-tight">
-        {/* pierwsza litera – normalnie */}
-        <span className="dark:text-white text-slate-800">
-          {first}
-        </span>
-
-        {/* druga litera z overlay */}
+      <h1 className="text-xl font-bold tracking-tight">
+        
+        {/* pierwsza litera z overlay */}
         <span className="relative inline-block">
           {/* bazowa litera */}
           <span className="dark:text-white text-slate-800">
-            {second}
+            {first}
           </span>
 
-          {/* overlay – w prawo, brand color */}
+          {/* czerwona litera – overlay */}
           <span
             aria-hidden
             className="
               pointer-events-none
               absolute
-              left-[0.09em]
+              left-[-0.09em]
               top-0
               text-brand
-              dark:font-bold font-medium
+              font-bold
               tracking-tight
               z-10
             "
           >
-            {second}
+            {first}
           </span>
         </span>
 
