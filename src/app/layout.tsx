@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Topbar />
        
        
-        <div className="bg-sidebar border-b">
+        <div className="bg-sidebar border-b border-sidebar">
           
           <Navbar />
         </div>

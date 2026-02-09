@@ -73,7 +73,7 @@ export default function PageClient({ products }: PageClientProps) {
                   }
                 }}
                 className="
-                  bg-card text-card-foreground border border-border rounded-none
+                  bg-card text-card-foreground border-b border-r border-background rounded-none
                   p-4 pb-10 relative cursor-pointer
                   transition-colors hover:bg-muted/50
                   flex flex-col justify-between

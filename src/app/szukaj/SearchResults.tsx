@@ -1,11 +1,10 @@
-//searchresults.tsx
+// app/szukaj/SearchResults.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Squircle, PackageCheck, Clock, Info, Package } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Squircle } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTw } from "../../../services/api/tw";
@@ -93,11 +92,7 @@ export default function SearchResults() {
   };
 
   return (
-    <div className="container mx-auto bg-background text-foreground">
-      <h1 className="text-xl font-normal pl-4">
-        Wyniki wyszukiwania dla <span className="font-medium">"{query}"</span>
-      </h1>
-
+    <div className="bg-background text-foreground">
       {error && <p className="text-destructive p-4">{error}</p>}
 
       {loading && <GridSkeleton />}
@@ -105,9 +100,10 @@ export default function SearchResults() {
       {!loading && Array.isArray(results) && results.length > 0 ? (
         <div className="grid grid-cols-2 xl:grid-cols-4">
           {results.map((product) => {
-            const stan = product.sm?.[0]?.stanHandl ? parseFloat(product.sm[0].stanHandl) : 0;
+            const stan = product.sm?.[0]?.stanHandl
+              ? parseFloat(product.sm[0].stanHandl)
+              : 0;
 
-            // shadcn tokens
             const stanColor = stan === 0 ? "text-destructive" : "text-success";
 
             const title =
@@ -118,7 +114,8 @@ export default function SearchResults() {
 
             const imgPath =
               product.productphoto?.length > 0
-                ? product.productphoto.find((photo) => photo.main_photo === 1)?.photo_512 ||
+                ? product.productphoto.find((photo) => photo.main_photo === 1)
+                    ?.photo_512 ||
                   product.productphoto[0]?.photo_512 ||
                   ""
                 : "";
@@ -131,17 +128,13 @@ export default function SearchResults() {
               <div
                 key={product.id}
                 className="
-                  bg-card text-card-foreground border border-border rounded-none
+                  bg-card text-card-foreground border border-background rounded-none
                   p-4 pb-10 relative cursor-pointer flex flex-col justify-between
                   transition-colors hover:bg-muted/50
                 "
                 onClick={() => handleProductClick(product.id, slug)}
               >
-                {(product as any).is_cheapest && (
-                  <BadgeLowPrice/>
-                )}
-
-
+                {(product as any).is_cheapest && <BadgeLowPrice />}
 
                 <div className="flex justify-center mb-4">
                   <Image
@@ -153,14 +146,19 @@ export default function SearchResults() {
                   />
                 </div>
 
-                <h2 className="text-sm font-normal mb-2 text-foreground">{title}</h2>
+                <h2 className="text-sm font-normal mb-2 text-foreground">
+                  {title}
+                </h2>
 
-                {product.cn && product.cn.length > 0 && (product.cn[0].cena2 || product.cn[0].cena) ? (
+                {product.cn &&
+                product.cn.length > 0 &&
+                (product.cn[0].cena2 || product.cn[0].cena) ? (
                   (() => {
                     const cena = String(product.cn[0].cena2 || product.cn[0].cena);
 
                     const jednostka = product.cn[0].cena2
-                      ? product.s_t_elements?.[0]?.product_classification?.[0]?.CDim_jm_Val || ""
+                      ? product.s_t_elements?.[0]?.product_classification?.[0]
+                          ?.CDim_jm_Val || ""
                       : product.jm || "";
 
                     return (
@@ -178,25 +176,23 @@ export default function SearchResults() {
                   </div>
                 )}
 
-<div className="absolute bottom-0 left-0 right-0 p-2 min-h-[56px] flex flex-col justify-center">
-  <div className="flex items-center">
-    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-    <span className="text-xs text-foreground">
-      {stan === 0 ? "brak w magazynie" : "w magazynie"}
-    </span>
-  </div>
+                <div className="absolute bottom-0 left-0 right-0 p-2 min-h-[56px] flex flex-col justify-center">
+                  <div className="flex items-center">
+                    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+                    <span className="text-xs text-foreground">
+                      {stan === 0 ? "brak w magazynie" : "w magazynie"}
+                    </span>
+                  </div>
 
-  <div className="h-[16px] mt-1">
-    {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 ? (
-<span className="text-xs ml-6 text-muted-foreground leading-tight">
-  <span className="font-medium text-foreground">dostawa</span> w toku
-</span>
-
-    ) : null}
-  </div>
-</div>
-
-
+                  <div className="h-[16px] mt-1">
+                    {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 ? (
+                      <span className="text-xs ml-6 text-muted-foreground leading-tight">
+                        <span className="font-medium text-foreground">dostawa</span>{" "}
+                        w toku
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             );
           })}

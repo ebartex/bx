@@ -62,7 +62,7 @@ export default function Navbar() {
   <text
     x="30"
     y="45"
-    fontSize="52"
+    fontSize="48"
     fontWeight="800"
     fill="#dc2626"
     mask="url(#text-mask)"
