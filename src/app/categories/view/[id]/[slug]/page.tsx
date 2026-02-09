@@ -88,7 +88,16 @@ function ProductsSkeleton() {
     relative
     border-r border-b border-border shadow-sm
     bg-card text-card-foreground
-    rounded-none
+    rounded-noneexport default async function Page({ params }: PageProps) {
+  const { id } = await params;
+
+  return (
+    <Suspense fallback={<ProductsSkeleton />}>
+      <ProductsSection id={id} />
+    </Suspense>
+  );
+}
+
     p-4
   `;
 
