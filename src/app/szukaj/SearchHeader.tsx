@@ -11,7 +11,7 @@ export default function SearchHeader() {
   return (
     <h1 className="text-xl font-normal px-4 py-3">
       Wyniki wyszukiwania dla{" "}
-      <span className="dark:font-bold font-medium">"{query}"</span>
+      <span className="dark:font-semibold font-medium">"{query}"</span>
     </h1>
   );
 }
