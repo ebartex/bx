@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Squircle, PackageCheck, Clock, Info, Package } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTw } from "../../../services/api/tw";
 import { slugify } from "@/utils/slugify";
@@ -141,53 +141,7 @@ export default function SearchResults() {
                   <BadgeLowPrice/>
                 )}
 
-                {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 && (
-                  <div className="absolute top-0 right-0 p-2">
-                    <Popover
-                      open={openPopoverId === product.id}
-                      onOpenChange={(isOpen) => setOpenPopoverId(isOpen ? product.id : null)}
-                    >
-                      <PopoverTrigger onClick={(e) => e.stopPropagation()} asChild>
-                        <button
-                          type="button"
-                          className="ml-20 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                          aria-label="Produkt w zamówieniu"
-                        >
-                          <PackageCheck size={32} />
-                        </button>
-                      </PopoverTrigger>
 
-                      <PopoverContent
-                        side="top"
-                        className="text-sm space-y-2 max-w-xs"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenPopoverId(null);
-                        }}
-                      >
-                        <div className="flex items-center gap-2 font-semibold text-foreground">
-                          <Info size={18} className="text-muted-foreground" />
-                          <span>Produkt w zamówieniu</span>
-                        </div>
-
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock size={16} />
-                          <span>Data zamówienia: {product.zp[0].data}</span>
-                        </div>
-
-                        <div className="flex items-start gap-2 text-muted-foreground">
-                          <Package size={16} className="mt-1" />
-                          <span>
-                            Produkt zostanie uzupełniony o{" "}
-                            <strong className="text-foreground">stan magazynowy</strong> w ciągu
-                            kilku dni od daty zamówienia.
-                          </span>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                )}
 
                 <div className="flex justify-center mb-4">
                   <Image
@@ -224,12 +178,25 @@ export default function SearchResults() {
                   </div>
                 )}
 
-                <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                  <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
-                  <span className="text-xs text-foreground">
-                    {stan === 0 ? "brak w magazynie" : "w magazynie"}
-                  </span>
-                </div>
+<div className="absolute bottom-0 left-0 right-0 p-2 min-h-[56px] flex flex-col justify-center">
+  <div className="flex items-center">
+    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+    <span className="text-xs text-foreground">
+      {stan === 0 ? "brak w magazynie" : "w magazynie"}
+    </span>
+  </div>
+
+  <div className="h-[16px] mt-1">
+    {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 ? (
+<span className="text-xs ml-6 text-muted-foreground leading-tight">
+  <span className="font-medium text-foreground">dostawa</span> w toku
+</span>
+
+    ) : null}
+  </div>
+</div>
+
+
               </div>
             );
           })}

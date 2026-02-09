@@ -111,12 +111,23 @@ export default function PageClient({ products }: PageClientProps) {
                 </div>
 
                 {/* Stock */}
-                <div className="absolute bottom-0 left-0 p-2 flex items-center">
-                  <Squircle size={14} className={`${stanColor} fill-current mr-2`} />
-                  <span className="text-xs text-foreground">
-                    {stan === 0 ? "brak w magazynie" : "w magazynie"}
-                  </span>
-                </div>
+<div className="absolute bottom-0 left-0 right-0 p-2 min-h-[56px] flex flex-col justify-center">
+  <div className="flex items-center">
+    <Squircle size={16} className={`${stanColor} fill-current mr-2`} />
+    <span className="text-xs text-foreground">
+      {stan === 0 ? "brak w magazynie" : "w magazynie"}
+    </span>
+  </div>
+
+  <div className="h-[16px] mt-1">
+    {stan === 0 && Array.isArray(product.zp) && product.zp.length > 0 ? (
+<span className="text-xs ml-6 text-muted-foreground leading-tight">
+  <span className="font-medium text-foreground">dostawa</span> w toku
+</span>
+
+    ) : null}
+  </div>
+</div>
               </div>
             );
           })}
