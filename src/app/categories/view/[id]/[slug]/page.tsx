@@ -1,44 +1,24 @@
-// app/categories/view/page.tsx
 import { Suspense } from "react";
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import PageClient from "./PageClient";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getXt } from "../../../../../../services/api/xt";
 import { Category } from "../../../../../../types/category";
 import { Product } from "../../../../../../types/product";
+import { Skeleton } from "@/components/ui/skeleton";
+import PageClient from "./PageClient";
+import CategoryNameSetter from "@/components/layout/category/CategoryNameSetter";
 
 type PageProps = {
   params: Promise<{ id: string; slug: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-
-  const category = (await getXt(`xt/index?xt-id=${id}`)) as Category[];
-
-  if (!category || category.length === 0) {
-    return {
-      title: "Kategoria nieznana",
-      description: "Brak dostępnych danych dla tej kategorii.",
-    };
-  }
-
-  const categoryName = category[0]?.kod || "Kategoria";
-  return {
-    title: `${categoryName} - Sklep budowlany Bartex Gorzkowice Kamieńsk Rozprza`,
-    description: `${categoryName} - Produkty dostępne w naszej ofercie.`,
-  };
-}
-
 function buildTwKatalogParam(ids: string[]) {
   const clean = ids
     .map(String)
     .map((s) => s.trim())
-    .filter((s) => /^\d+$/.test(s));
-  if (clean.length === 0) return null;
-  return `(${clean.join(",")})`;
+    .filter(Boolean);
+
+  return clean.length ? `(${clean.join(",")})` : null;
 }
 
 async function ProductsSection({ id }: { id: string }) {
@@ -49,83 +29,75 @@ async function ProductsSection({ id }: { id: string }) {
     const katalogParam = buildTwKatalogParam(ids);
     if (!katalogParam) notFound();
 
-    const productUrl = `tw/index?tw-katalog=${katalogParam}`;
-    const products = (await getXt(productUrl)) as Product[];
+    const products = (await getXt(
+      `tw/index?tw-katalog=${katalogParam}`
+    )) as Product[];
 
     return <PageClient products={products ?? []} />;
   }
 
-  const productUrl = `tw/index?tw-katalog=${id}`;
-  const products = (await getXt(productUrl)) as Product[];
-
+  const products = (await getXt(`tw/index?tw-katalog=${id}`)) as Product[];
   return <PageClient products={products ?? []} />;
 }
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
 
+  const category = (await getXt(`xt/index?xt-id=${id}`)) as Category[];
+  const categoryName = category?.[0]?.kod;
+
   return (
-    <div className="container mx-auto bg-background text-foreground">
+    <>
+      <CategoryNameSetter name={categoryName} />
+
       <Suspense fallback={<ProductsSkeleton />}>
         <ProductsSection id={id} />
       </Suspense>
-    </div>
+    </>
   );
 }
 
 /**
  * ✅ Skeleton dopasowany 1:1 do PageClient cards:
  * - brak gap w grid (tak jak w PageClient)
- * - te same "krawędzie": border-r border-b, shadow-sm, p-4, rounded-none
- * - obrazek wycentrowany i 150x150 + mb-4
- * - title mb-2
- * - price wyrównane do prawej
- * - stock absolutnie na dole -> rezerwujemy miejsce pb-8
- * - badge absolutnie top-2 right-2
+ * - border-r border-b, rounded-none, p-4, pb-10
+ * - obrazek 150x150 wycentrowany + mb-4
+ * - title mb-2 (2 linie)
+ * - cena po prawej
+ * - stock absolutnie na dole + miejsce na "dostawa w toku"
  */
 function ProductsSkeleton() {
-  const cardClass = `
-    relative
-    border-r border-b border-border shadow-sm
-    bg-card text-card-foreground
-    rounded-noneexport default async function Page({ params }: PageProps) {
-  const { id } = await params;
-
-  return (
-    <Suspense fallback={<ProductsSkeleton />}>
-      <ProductsSection id={id} />
-    </Suspense>
-  );
-}
-
-    p-4
-  `;
-
   return (
     <div className="grid grid-cols-2 xl:grid-cols-4">
       {Array.from({ length: 12 }).map((_, i) => (
-        <div key={i} className={`${cardClass} pb-8`}>
-          {/* badge placeholder */}
- 
-
-          {/* image placeholder */}
+        <div
+          key={i}
+          className="
+            relative
+            bg-card text-card-foreground
+            border-b border-r border-background
+            rounded-none
+            p-4 pb-10
+          "
+        >
+          {/* image */}
           <div className="flex justify-center mb-4">
             <Skeleton className="h-[150px] w-[150px] rounded-none" />
           </div>
 
-          {/* title placeholder */}
+          {/* title */}
           <div className="mb-2 space-y-2">
             <Skeleton className="h-4 w-[90%] rounded-none" />
             <Skeleton className="h-4 w-[70%] rounded-none" />
           </div>
 
-          {/* price placeholder (right) */}
-          <div className="text-right">
+          {/* price */}
+          <div className="mt-auto text-right">
             <Skeleton className="ml-auto h-8 w-28 rounded-none" />
           </div>
 
-          {/* stock placeholder (bottom-left) */}
-          <div className="absolute bottom-0 left-0 p-2 flex items-center gap-2">
+          {/* stock only */}
+          <div className="absolute bottom-0 left-0 right-0 p-2 min-h-[40px] flex items-center gap-2">
             <Skeleton className="h-3.5 w-3.5 rounded-none" />
             <Skeleton className="h-3 w-24 rounded-none" />
           </div>
@@ -134,3 +106,4 @@ function ProductsSkeleton() {
     </div>
   );
 }
+
