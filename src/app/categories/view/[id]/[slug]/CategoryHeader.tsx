@@ -30,33 +30,13 @@ export default async function CategoryHeader({
       <h1 className="text-xl font-bold tracking-tight">
         
         {/* pierwsza litera z overlay */}
-        <span className="relative inline-block">
-          {/* bazowa litera */}
-          <span className="dark:text-white text-slate-800">
-            {first}
-          </span>
 
-          {/* czerwona litera – overlay */}
-          <span
-            aria-hidden
-            className="
-              pointer-events-none
-              absolute
-              left-[-0.09em]
-              top-0
-              text-brand
-              font-bold
-              tracking-tight
-              z-10
-            "
-          >
-            {first}
-          </span>
-        </span>
+          {/* bazowa litera */}
+    
 
         {/* reszta nazwy */}
         <span className="dark:text-white text-slate-800">
-          {rest}
+           {first}{rest}
         </span>
       </h1>
     </div>
