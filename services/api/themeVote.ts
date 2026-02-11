@@ -1,3 +1,4 @@
+//themeVote.ts
 import { fetchJson } from "./helper";
 
 export type ThemeChoice = "light" | "dark" | "declined";

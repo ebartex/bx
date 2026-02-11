@@ -113,7 +113,7 @@ export default function HomeClient() {
 
           <Link
             href="/products/view/79314/emulsja-gruntujaca-atlas-nkp-wiadro-10kg-walek"
-            className="relative w-full h-full block cursor-pointer"
+            className="relative block cursor-pointer"
           >
             <Image
               alt="Emulsja gruntująca ATLAS NKP"
