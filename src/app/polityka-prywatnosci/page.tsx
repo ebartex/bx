@@ -65,7 +65,15 @@ const PrivacyPolicy = () => {
               zdecydujemy się na wprowadzenie jakichkolwiek funkcji zbierających
               dane użytkowników. Każda zmiana będzie publikowana na tej stronie.
             </p>
-
+<h2 className="text-sm font-semibold mt-6">
+  6. Dane techniczne i funkcjonalne
+</h2>
+<p className="text-sm text-muted-foreground mb-4">
+  W celu ulepszania działania strony możemy zapisywać anonimowe informacje
+  techniczne, takie jak wybór motywu (jasny/ciemny). Informacje te nie
+  pozwalają na identyfikację użytkownika i służą wyłącznie poprawie
+  funkcjonalności serwisu.
+</p>
             <div className="mt-8">
               <Button asChild size="lg">
                 <Link href="/">Przejdź do strony głównej</Link>
