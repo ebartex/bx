@@ -131,6 +131,7 @@ export default function SearchResults() {
                   bg-card text-card-foreground border border-background rounded-none
                   p-4 pb-10 relative cursor-pointer flex flex-col justify-between
                   transition-colors hover:bg-muted/50
+                  active:bg-muted/50
                 "
                 onClick={() => handleProductClick(product.id, slug)}
               >
