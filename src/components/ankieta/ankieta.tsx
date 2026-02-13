@@ -98,7 +98,7 @@ export default function FeedbackBubble() {
             type="button"
             size="icon"
             variant="secondary"
-            className="h-11 w-11 rounded-full shadow-lg"
+            className="h-11 w-11 rounded-full shadow-lg cursor-pointer"
             aria-label={open ? "Zamknij ankietę" : "Otwórz ankietę"}
           >
             <MessageCircle className="h-5 w-5" />
