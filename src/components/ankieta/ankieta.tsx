@@ -164,7 +164,7 @@ export default function FeedbackBubble() {
                   type="button"
                   disabled={loading}
                   onClick={() => save("declined")}
-                  className="mt-3 w-full text-xs text-muted-foreground underline hover:text-foreground transition disabled:opacity-60"
+                  className="cursor-pointer mt-3 w-full text-xs text-muted-foreground underline hover:text-foreground transition disabled:opacity-60"
                 >
                   Nie teraz
                 </button>
