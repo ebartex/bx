@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { MessageCircle, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import { sendThemeVote } from "../../../services/api/themeVote";
 
 type Choice = "light" | "dark" | "declined";
@@ -24,13 +26,22 @@ function getAnonId() {
 
 export default function FeedbackBubble() {
   const [open, setOpen] = useState(false);
-  const [storedChoice, setStoredChoice] = useState<Choice | null>(null); // to co jest w localStorage
+  const [storedChoice, setStoredChoice] = useState<Choice | null>(null);
   const [step, setStep] = useState<Step>("question");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("theme-survey") as Choice | null;
-    if (stored) setStoredChoice(stored);
+
+    // jeśli już było głosowanie/odmowa – nie pokazuj wcale
+    if (stored) {
+      setStoredChoice(stored);
+      return;
+    }
+
+    // auto-open po wejściu (niedrażniąco)
+    const t = window.setTimeout(() => setOpen(true), 1200);
+    return () => window.clearTimeout(t);
   }, []);
 
   const close = () => {
@@ -40,7 +51,7 @@ export default function FeedbackBubble() {
 
   const finalizeAndHide = (v: Choice) => {
     localStorage.setItem("theme-survey", v);
-    setStoredChoice(v); // dopiero TERAZ ukryjemy na stałe (przez if na dole)
+    setStoredChoice(v); // dopiero teraz ukryjemy na stałe (if niżej)
     close();
     setStep("done");
   };
@@ -52,19 +63,22 @@ export default function FeedbackBubble() {
       setLoading(true);
 
       const anonId = getAnonId();
-      const url = `/vote/theme`; // jeśli trzeba, zmień na /api/vote/theme lub pełny URL
+
+      // UWAGA: jeśli Twój endpoint jest /api/vote/theme, zmień tutaj:
+      // const url = `${process.env.NEXT_PUBLIC_CAKE_API}/api/vote/theme`;
+      const url = `/vote/theme`;
 
       await sendThemeVote(url, { anon_id: anonId, choice: v });
 
-      // declined: bez podziękowania
+      // declined: bez podziękowania, po prostu schowaj
       if (v === "declined") {
         finalizeAndHide(v);
         return;
       }
 
-      // light/dark: pokaż podziękowanie, dopiero potem ukryj
+      // light/dark: pokaż podziękowanie i dopiero potem schowaj
       setStep("thanks");
-      setTimeout(() => finalizeAndHide(v), 1600);
+      window.setTimeout(() => finalizeAndHide(v), 1600);
     } catch (e) {
       console.error("Vote failed", e);
     } finally {
@@ -72,29 +86,39 @@ export default function FeedbackBubble() {
     }
   };
 
-  // Ukrywamy dopiero gdy już jest zapisane w localStorage (i po thanks)
+  // Ukryj całkowicie dopiero po zapisaniu wyboru (po thanks lub declined)
   if (storedChoice) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverAnchor asChild>
+        {/* Klik w dymek = toggle open/close (Radix/shadcn robi to za nas) */}
+        <PopoverTrigger asChild>
           <Button
             type="button"
             size="icon"
             variant="secondary"
             className="h-11 w-11 rounded-full shadow-lg"
-            aria-label="Feedback"
-            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Zamknij ankietę" : "Otwórz ankietę"}
           >
             <MessageCircle className="h-5 w-5" />
           </Button>
-        </PopoverAnchor>
+        </PopoverTrigger>
 
-        <PopoverContent align="end" side="top" sideOffset={12} className="w-[320px] p-4">
+        <PopoverContent
+          align="end"
+          side="top"
+          sideOffset={12}
+          className="w-[320px] p-4"
+        >
           <button
+            type="button"
             onClick={close}
-            className="absolute right-3 top-3 opacity-70 hover:opacity-100 transition"
+           className="absolute right-3 top-3 
+  opacity-70 hover:opacity-100 transition cursor-pointer
+  focus:outline-none focus:ring-0 focus-visible:ring-0
+  focus:border-none"
+
             aria-label="Zamknij"
           >
             <X className="h-4 w-4" />
@@ -103,7 +127,9 @@ export default function FeedbackBubble() {
           {step === "question" && (
             <>
               <div className="pr-6">
-                <p className="text-sm font-medium">Krótkie pytanie o wygląd strony</p>
+                <p className="text-sm font-medium">
+                  Krótkie pytanie o wygląd strony
+                </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Zajmie 2 sekundy — pomoże nam dobrać domyślny motyw.
                 </p>
@@ -116,7 +142,7 @@ export default function FeedbackBubble() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 cursor-pointer"
                     disabled={loading}
                     onClick={() => save("light")}
                   >
@@ -126,7 +152,7 @@ export default function FeedbackBubble() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 cursor-pointer"
                     disabled={loading}
                     onClick={() => save("dark")}
                   >
