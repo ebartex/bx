@@ -10,7 +10,7 @@ import Footer from "@/components/layout/footer/page";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import Pellet from "@/components/layout/topbar/pellet";
-import ThemeSurvey from "@/components/ankieta/ankieta";
+
 
 
 const poppins = Poppins({
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="xl:w-[1200px] mx-auto">
           <Footer />
         </div>
-        <ThemeSurvey/>
+  
       </body>
     </html>
   );
