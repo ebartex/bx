@@ -15,14 +15,14 @@ type Bubble = {
 };
 
 const words = [
-  "Kobieta",
-  "Woman",
-  "Femme",
-  "Frau",
-  "Mujer",
-  "Donna",
-  "Žena",
-  "Жінка",
+  "Dzień Kobiet",
+  "Women's Day",
+  "Journée des femmes",
+  "Frauentag",
+  "Día de la Mujer",
+  "Festa della Donna",
+  "День жінок",
+  "Mezinárodní den žen",
 ];
 
 function rnd(min: number, max: number) {
@@ -53,7 +53,7 @@ export default function WomensDayTopbar() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((i) => (i + 1) % words.length);
-    }, 2200);
+    }, 2400);
 
     return () => clearInterval(interval);
   }, []);
@@ -80,7 +80,7 @@ export default function WomensDayTopbar() {
         }
 
         .womensday-word {
-          animation: womensday-word 2.2s ease-in-out;
+          animation: womensday-word 2.4s ease-in-out;
         }
       `}</style>
     ),
@@ -130,15 +130,9 @@ export default function WomensDayTopbar() {
       <div className="relative mx-auto flex max-w-7xl items-center justify-center gap-3 px-3 py-2 sm:px-4">
         <Flower2 className="h-4 w-4 shrink-0 text-pink-600 dark:text-pink-300 sm:h-5 sm:w-5" />
 
-        <span className="shrink-0 text-sm font-semibold text-zinc-900 dark:text-zinc-50 sm:text-base">
-          Dzień Kobiet
-        </span>
-
-        <span className="text-zinc-400 dark:text-zinc-500">•</span>
-
         <span
           key={index}
-          className="womensday-word min-w-[84px] text-left text-sm font-semibold text-pink-700 dark:text-pink-300 sm:min-w-[96px] sm:text-base"
+          className="womensday-word text-center text-sm font-semibold text-zinc-900 dark:text-zinc-50 sm:text-base"
         >
           {words[index]}
         </span>

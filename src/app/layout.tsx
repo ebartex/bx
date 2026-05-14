@@ -10,7 +10,7 @@ import Footer from "@/components/layout/footer/page";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 
-import WomansDayTopbar from "@/components/layout/topbar/WomansDayTopbar";
+
 
 
 
@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body className="bg-background text-foreground">
  
-  <WomansDayTopbar />
+  d
 
 
         <Topbar />
